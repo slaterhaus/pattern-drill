@@ -1398,5 +1398,705 @@
       "cyclic-sort": "The numbers aren't bounded to a range matching index positions; groups are formed by inclusion choices, not by placing values into slots."
     },
     "complexity": "O(2^n) time / O(n) space"
+  },
+  {
+    "id": "modified-binary-search-01",
+    "statement": "A sorted array of distinct integers was rotated at an unknown pivot, so it consists of two sorted halves joined together. Given a target value, return its index in better than linear time, or -1 if the target is absent.",
+    "pattern": "modified-binary-search",
+    "difficulty": "medium",
+    "tell": "rotated at an unknown pivot",
+    "whyNotOthers": {
+      "two-pointers": "No pair or triplet is sought; a single target is located by repeatedly halving an ordered search space.",
+      "sliding-window": "There is no contiguous-range property to optimize; the array is probed, not scanned.",
+      "k-way-merge": "There is one array, not several sorted sources to combine.",
+      "trie": "The data is numeric and ordered; no prefix structure over strings is involved."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-02",
+    "statement": "You are given a mountain-shaped array of integers that strictly increases to a single peak and then strictly decreases. Return the index of the peak element without scanning every entry, using the fact that the slope on either side tells you which half still contains it.",
+    "pattern": "modified-binary-search",
+    "difficulty": "easy",
+    "tell": "the slope on either side tells you which half still contains it",
+    "whyNotOthers": {
+      "two-pointers": "The array isn't scanned from both ends toward a matching condition; each probe discards half the remaining range.",
+      "monotonic-stack": "No running sequence of increasing or decreasing elements is maintained; a single peak index is located directly.",
+      "greedy": "There is no sequence of local choices to commit to; the comparison at the midpoint alone determines which half to keep.",
+      "sliding-window": "No window of adjustable size is tracked; the whole array is halved repeatedly instead."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-03",
+    "statement": "You maintain a growing log of timestamped sensor readings stored in a sorted array, and only the first index where the value passes a fixed threshold is needed. Values below the threshold always come before values at or above it, so return the position of the earliest reading that meets the threshold in sub-linear time.",
+    "pattern": "modified-binary-search",
+    "difficulty": "easy",
+    "tell": "in sub-linear time",
+    "whyNotOthers": {
+      "sliding-window": "No contiguous span of readings is being sized; only the boundary index between two regions is wanted.",
+      "top-k-heap": "No ranking of the largest or smallest values is required, only the single crossover position in an already-ordered array.",
+      "two-pointers": "The array isn't traversed with two moving indices seeking a pairwise condition; the boolean split is exploited by halving.",
+      "cyclic-sort": "The values aren't a permutation of a known range being placed into position; they're already sorted and only a boundary is sought."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-04",
+    "statement": "A large sorted array of integers, potentially with repeats, may contain a value you're searching for, but you're told only whether a probed index holds a value equal to, less than, or greater than the target. Determine the leftmost index at which the target occurs, or -1 if it never appears, while touching as few indices as possible.",
+    "pattern": "modified-binary-search",
+    "difficulty": "easy",
+    "tell": "while touching as few indices as possible",
+    "whyNotOthers": {
+      "two-pointers": "There's no second index converging from the opposite end; a single probe point is repeatedly repositioned by comparison.",
+      "cyclic-sort": "The values aren't guaranteed to be a permutation of a contiguous range that can be placed by index; duplicates and gaps are allowed.",
+      "monotonic-stack": "No stack of pending elements is needed; the array's sortedness alone lets each comparison eliminate half the remaining range.",
+      "top-k-heap": "No ranking among multiple candidates is needed, only the boundary where a specific value first appears."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-05",
+    "statement": "You are given access to an infinite sorted stream of integers through a function that returns a value at a given index, with no way to know the stream's length in advance. Find the index of a target value using only a number of probes that grows logarithmically with the target's actual position.",
+    "pattern": "modified-binary-search",
+    "difficulty": "medium",
+    "tell": "a number of probes that grows logarithmically with the target's actual position",
+    "whyNotOthers": {
+      "sliding-window": "There's no contiguous subrange being resized; the unknown bound is found by doubling and then halving, not by sliding edges.",
+      "bfs": "There's no graph of neighboring states to expand layer by layer; the stream is a single ordered sequence probed directly.",
+      "top-k-heap": "No collection of best candidates is being maintained; a single exact target position is located.",
+      "k-way-merge": "There is one sorted stream here, not multiple sorted sources being combined into one order."
+    },
+    "complexity": "O(log p) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-06",
+    "statement": "Two sorted arrays of different lengths together hold an odd or even total number of values. Determine the value that would sit in the middle if the two arrays were merged into one sorted sequence, without actually merging them, by narrowing down a valid partition point in one array using comparisons against the other.",
+    "pattern": "modified-binary-search",
+    "difficulty": "hard",
+    "tell": "narrowing down a valid partition point in one array using comparisons against the other",
+    "whyNotOthers": {
+      "k-way-merge": "Actually merging the two arrays would answer the question but at linear cost; the partition point is instead found by halving one array's index range.",
+      "two-pointers": "Walking both arrays step by step to the midpoint works but takes time proportional to their combined length, not the logarithm of the smaller one.",
+      "top-k-heap": "No priority ranking of arbitrary elements is maintained; a specific partition boundary is being searched for directly.",
+      "greedy": "No sequence of irrevocable local choices is made; each candidate partition is validated and adjusted based on comparisons."
+    },
+    "complexity": "O(log(min(m, n))) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-07",
+    "statement": "A warehouse inventory list is sorted by product code, but an unknown number of entries near the start have had their codes corrupted to zero while the rest remain in order. Find the index of the first entry with a valid, non-corrupted code by exploiting the fact that corrupted and valid regions each stay contiguous and ordered.",
+    "pattern": "modified-binary-search",
+    "difficulty": "medium",
+    "tell": "corrupted and valid regions each stay contiguous and ordered",
+    "whyNotOthers": {
+      "cyclic-sort": "Product codes aren't a permutation of a known small range that can be placed by direct indexing; they're arbitrary sorted values with a corrupted prefix.",
+      "two-pointers": "No pair of values from opposite ends is being compared; a single probe index is repositioned based on which side of the boundary it falls in.",
+      "monotonic-stack": "No history of pending elements needs to be tracked; the boundary between two ordered regions is found directly by halving.",
+      "sliding-window": "No window needs to expand or shrink; only the single crossover index between corrupted and valid entries is wanted."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-08",
+    "statement": "A conference schedule assigns each session a start time from a sorted list of distinct slot times, and you must find the earliest slot time that is greater than or equal to a requested arrival time. The list can hold hundreds of thousands of slots, so scanning from the front would be too slow for repeated queries.",
+    "pattern": "modified-binary-search",
+    "difficulty": "easy",
+    "tell": "scanning from the front would be too slow for repeated queries",
+    "whyNotOthers": {
+      "sliding-window": "No contiguous block of sessions needs to be sized or scanned; only the single ceiling slot for a requested time is needed.",
+      "greedy": "No sequence of session choices is being committed to one at a time; a single lookup on sorted data is all that's required.",
+      "two-pointers": "The slots aren't being compared from two ends inward; one probe index is adjusted based on comparison with the requested time.",
+      "top-k-heap": "No ranking of the closest several slots is maintained; exactly one boundary slot is returned."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-09",
+    "statement": "You're given a sorted array where every element appears exactly twice except for one element that appears only once, and the array's length is always odd. Locate the index of the singly-occurring element by comparing whether pairs still line up on even-odd index boundaries to decide which half to keep.",
+    "pattern": "modified-binary-search",
+    "difficulty": "hard",
+    "tell": "comparing whether pairs still line up on even-odd index boundaries to decide which half to keep",
+    "whyNotOthers": {
+      "cyclic-sort": "The array holds duplicated values rather than a permutation of indices 1 through n, so values can't be placed by direct index swaps.",
+      "two-pointers": "No two indices converge from opposite ends comparing values; a single midpoint probe determines which half still holds the anomaly.",
+      "top-k-heap": "No frequency ranking across many distinct values is needed; exactly one non-duplicated element must be pinpointed.",
+      "monotonic-stack": "No sequence of increasing or decreasing values is tracked with a stack; the pairing pattern is checked directly at each probe."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "modified-binary-search-10",
+    "statement": "A shipment tracking system reports package counts per day in a sorted array of non-decreasing totals, and you must answer many queries asking for the earliest day on which the cumulative count reached at least some threshold. Each query must be answered without walking the array from the beginning.",
+    "pattern": "modified-binary-search",
+    "difficulty": "medium",
+    "tell": "must be answered without walking the array from the beginning",
+    "whyNotOthers": {
+      "sliding-window": "No window of days needs to expand or contract; each query resolves to a single boundary index on already-sorted totals.",
+      "greedy": "No irrevocable day-by-day decision is being made; each query is solved independently by halving the search range.",
+      "k-way-merge": "There is one sorted array of totals here, not multiple sorted sources being merged together.",
+      "top-k-heap": "No set of largest or smallest totals is being tracked; a single crossover day is located per query."
+    },
+    "complexity": "O(log n) time per query / O(1) space"
+  },
+  {
+    "id": "top-k-heap-01",
+    "statement": "A streaming service logs every song play as it happens, and at any moment a dashboard must display the 10 most-played songs so far without re-scanning the entire history. New plays keep arriving indefinitely, so only a small set of current leaders needs to be kept up to date.",
+    "pattern": "top-k-heap",
+    "difficulty": "easy",
+    "tell": "only a small set of current leaders needs to be kept up to date",
+    "whyNotOthers": {
+      "sliding-window": "There's no contiguous range of recent plays being tracked; every play ever recorded counts toward the ranking.",
+      "merge-intervals": "No time ranges are being combined or checked for overlap; only counts per song are being ranked.",
+      "cyclic-sort": "Song identifiers aren't a permutation of a known index range that can be placed directly; play counts must be compared and ranked.",
+      "k-way-merge": "There's a single incoming stream of plays, not several pre-sorted lists that need combining into one order."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-02",
+    "statement": "Given an unsorted list of quarterly sales figures for thousands of products, find the 5th largest figure without fully sorting the list. The list is far too large to sort repeatedly every time this question is asked.",
+    "pattern": "top-k-heap",
+    "difficulty": "easy",
+    "tell": "find the 5th largest figure without fully sorting the list",
+    "whyNotOthers": {
+      "modified-binary-search": "The sales figures aren't sorted or monotonic, so there's no ordered range to halve; candidates must be ranked as they're seen.",
+      "two-pointers": "There's no pair of values being sought or a pair of ends being walked inward; a running set of top candidates is maintained instead.",
+      "greedy": "Picking whichever figure looks largest at each step without keeping the right number of runner-up candidates can lose track of the true 5th place.",
+      "monotonic-stack": "No requirement that elements stay in increasing or decreasing order relative to neighbors; only the overall rank among all figures matters."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-03",
+    "statement": "You are analyzing word frequency across a large document collection and must report the 3 most frequently occurring words. New documents can be added to the collection continuously, and re-tallying every word from scratch each time a report is requested would be wasteful.",
+    "pattern": "top-k-heap",
+    "difficulty": "medium",
+    "tell": "re-tallying every word from scratch each time a report is requested would be wasteful",
+    "whyNotOthers": {
+      "trie": "A trie can index the words themselves efficiently, but it doesn't rank them by frequency; a separate structure is needed to track the top few counts.",
+      "k-way-merge": "The word counts aren't spread across pre-sorted lists to be combined in order; a small set of frequency leaders is maintained instead.",
+      "backtracking": "No combinations or sequences of words are being enumerated and undone; only the highest few frequencies need tracking.",
+      "sliding-window": "No contiguous span of the document text is being resized; frequencies accumulate across the entire collection."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-04",
+    "statement": "A network monitoring tool receives latency measurements from thousands of servers every second and must always be able to report the 20 servers currently experiencing the highest latency. Measurements keep replacing older ones for the same server, so the ranking must be refreshed continuously rather than recomputed from a full sort each second.",
+    "pattern": "top-k-heap",
+    "difficulty": "medium",
+    "tell": "the ranking must be refreshed continuously rather than recomputed from a full sort each second",
+    "whyNotOthers": {
+      "two-heaps": "There's no need to track a running median split between two balanced halves; only one ranked group of worst offenders matters.",
+      "sliding-window": "No contiguous time span of measurements is being resized; the current value per server is compared directly against the current leaders.",
+      "greedy": "Swapping in whichever new latency looks high without maintaining the smallest of the current leaders can drop a server that should still qualify.",
+      "union-find": "Servers aren't being grouped into connected clusters; each one is ranked independently by its own latency value."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-05",
+    "statement": "Given a large collection of two-dimensional points, find the 8 points that lie closest to the origin. Sorting every point by distance would work but wastes effort computing an exact order for points far outside the answer set.",
+    "pattern": "top-k-heap",
+    "difficulty": "easy",
+    "tell": "wastes effort computing an exact order for points far outside the answer set",
+    "whyNotOthers": {
+      "two-pointers": "The points aren't arranged along a line to be scanned from two ends; distance from the origin must be compared across all of them.",
+      "merge-intervals": "No ranges are being merged or checked for overlap; each point's distance is an independent value to rank.",
+      "modified-binary-search": "The points have no sorted order to exploit for halving; every distance must be evaluated against the current closest set.",
+      "backtracking": "No combination of points is being built up and abandoned; only the closest few by distance are tracked directly."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-06",
+    "statement": "A ride-sharing platform wants to identify the 15 drivers with the lowest average trip ratings out of a huge and constantly updated driver pool, in order to flag them for review. New ratings arrive constantly, and the flagged list should stay current without re-ranking the entire driver pool on every update.",
+    "pattern": "top-k-heap",
+    "difficulty": "medium",
+    "tell": "should stay current without re-ranking the entire driver pool on every update",
+    "whyNotOthers": {
+      "two-heaps": "There's no need to split drivers into a low half and a high half around a median; only one group of worst performers is being tracked.",
+      "cyclic-sort": "Driver ratings aren't a permutation of a fixed known range placeable by index; they must be compared and ranked by value.",
+      "k-way-merge": "Ratings aren't arriving as several pre-sorted lists to combine; each new rating is an independent update to compare against current leaders.",
+      "monotonic-stack": "No requirement exists that recent ratings stay in increasing or decreasing order; only the overall lowest few matter."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-07",
+    "statement": "You must schedule the 6 highest-priority support tickets out of an ever-growing queue for immediate handling, where priority is a numeric score assigned on arrival. Because new tickets keep arriving faster than the queue can be fully sorted, only the current best few need to stay identified at any time.",
+    "pattern": "top-k-heap",
+    "difficulty": "hard",
+    "tell": "only the current best few need to stay identified at any time",
+    "whyNotOthers": {
+      "greedy": "Always grabbing whichever ticket looks highest-priority right now without retaining the smallest among current leaders can miss a ticket that should still make the cut once it arrives.",
+      "two-heaps": "No median split between low and high halves is needed; a single group of top-priority tickets is all that's tracked.",
+      "topological-sort": "Tickets have no dependency relationships requiring an order to be resolved; priority scores alone determine ranking.",
+      "sliding-window": "There's no contiguous window of the ticket queue being resized; every ticket ever submitted is a candidate for the top group."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-08",
+    "statement": "Given a massive unsorted array of transaction amounts, find the k largest amounts, where k can be as small as 1 or as large as several thousand, and the array itself is far too large to sort entirely just to answer one query. The array is provided once and does not change.",
+    "pattern": "top-k-heap",
+    "difficulty": "hard",
+    "tell": "far too large to sort entirely just to answer one query",
+    "whyNotOthers": {
+      "modified-binary-search": "The transaction amounts have no sorted structure to exploit; every value must be compared against the current set of leaders.",
+      "sliding-window": "There's no contiguous span of the array being resized; every value anywhere in the array is a candidate for the top k.",
+      "k-way-merge": "There is a single unsorted array here, not multiple pre-sorted sources to merge together.",
+      "union-find": "Transaction amounts aren't being grouped into connected components; each is ranked independently by size."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-09",
+    "statement": "A social media platform needs to surface the 25 accounts with the most followers among millions of accounts, refreshed as follower counts change throughout the day. Recomputing a full ranking of every account whenever a single follower count changes would be far too slow.",
+    "pattern": "top-k-heap",
+    "difficulty": "medium",
+    "tell": "Recomputing a full ranking of every account whenever a single follower count changes would be far too slow",
+    "whyNotOthers": {
+      "sliding-window": "No contiguous subset of accounts is being scanned; follower counts across the entire population are compared to the current leaders.",
+      "two-heaps": "No running median or balanced split into two halves is required; a single group of top follower counts is maintained.",
+      "trie": "Account identifiers have no shared-prefix structure relevant here; ranking is based purely on numeric follower counts.",
+      "backtracking": "No combinations of accounts are being built and discarded; the top group is maintained incrementally as counts update."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "top-k-heap-10",
+    "statement": "Given millions of log entries each tagged with a numeric severity score, report the 12 entries with the highest severity seen so far as the log continues to grow unboundedly. It would be impractical to store and re-sort every entry ever seen just to answer this repeatedly.",
+    "pattern": "top-k-heap",
+    "difficulty": "easy",
+    "tell": "impractical to store and re-sort every entry ever seen just to answer this repeatedly",
+    "whyNotOthers": {
+      "merge-intervals": "Severity scores aren't ranges that need merging or overlap detection; each entry contributes a single value to rank.",
+      "cyclic-sort": "Severity scores aren't a permutation of a bounded index range placeable directly; they must be compared and ranked as they arrive.",
+      "monotonic-stack": "There's no requirement that severities stay in increasing or decreasing order relative to their neighbors in the log.",
+      "fast-slow-pointers": "There's no cycle or midpoint to detect in a sequence; the task is purely about ranking values by severity."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-01",
+    "statement": "You are given 6 separate log files from different servers, each already sorted by timestamp internally, and must produce one combined log file with every entry in overall chronological order. The files can each be very long, so loading and sorting all entries together from scratch would waste the fact that each file is already ordered.",
+    "pattern": "k-way-merge",
+    "difficulty": "easy",
+    "tell": "waste the fact that each file is already ordered",
+    "whyNotOthers": {
+      "modified-binary-search": "There is no single sorted array to search into; several already-sorted sources must be combined into one ordered output.",
+      "two-pointers": "More than two sources are involved, so a fixed pair of indices walking inward doesn't generalize the way tracking the smallest current entry across all sources does.",
+      "sliding-window": "No contiguous span of a single sequence is being resized; entries from separate sorted sources are being interleaved.",
+      "top-k-heap": "The goal is to produce the full combined ordering of every entry, not just the top few by some ranking."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-02",
+    "statement": "A music app maintains 4 separate playlists, each already sorted by song duration, and a user wants to browse all songs across every playlist in one combined ascending-duration order. There is no need to know which playlist a song originally came from once the combined order is produced.",
+    "pattern": "k-way-merge",
+    "difficulty": "easy",
+    "tell": "one combined ascending-duration order",
+    "whyNotOthers": {
+      "top-k-heap": "The full combined ordering of every song is needed, not just a fixed small number of the shortest or longest.",
+      "merge-intervals": "Song durations are single values being interleaved in order, not ranges being checked for overlap and merged.",
+      "modified-binary-search": "There isn't one sorted collection to probe into; several sorted lists must be woven together into one sequence.",
+      "cyclic-sort": "Durations aren't a permutation of a known index range placeable directly by value; they must be compared across playlists and merged."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-03",
+    "statement": "You are given k arrays of integers, each individually sorted in ascending order, and must find the overall smallest range that includes at least one number from every array. At each step, the array currently holding the smallest unconsidered value should advance to reveal its next candidate.",
+    "pattern": "k-way-merge",
+    "difficulty": "hard",
+    "tell": "the array currently holding the smallest unconsidered value should advance to reveal its next candidate",
+    "whyNotOthers": {
+      "sliding-window": "There isn't one sequence to slide a window across; values are drawn from k separate sorted arrays that must be advanced individually.",
+      "two-heaps": "A single group tracking the current minimum across sources is needed, not a balanced split of values into a low half and a high half.",
+      "greedy": "Committing to a range and never revisiting it would miss a tighter range; the current minimum source must repeatedly advance to check for improvement.",
+      "backtracking": "No combination of chosen elements is being built up and undone; the smallest current candidate across arrays is advanced directly."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-04",
+    "statement": "A distributed search engine splits its index across 8 shards, and each shard returns its matching results already sorted by relevance score. The final response to the user must present all shards' results merged into one relevance-sorted list without re-scoring or re-sorting every individual result from scratch.",
+    "pattern": "k-way-merge",
+    "difficulty": "medium",
+    "tell": "merged into one relevance-sorted list without re-scoring or re-sorting every individual result from scratch",
+    "whyNotOthers": {
+      "top-k-heap": "The complete merged ordering across all shards is wanted, not just a fixed number of the highest-scoring results.",
+      "union-find": "Results aren't being grouped into connected clusters; they're being interleaved by relevance score across sorted sources.",
+      "topological-sort": "There's no dependency ordering between results to resolve; each shard's list is already ordered and just needs interleaving.",
+      "modified-binary-search": "There isn't a single sorted collection to search into; multiple sorted sources must be combined into one sequence."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-05",
+    "statement": "Given a linked list where each node points to another sorted linked list instead of a single next value, flatten the whole structure into one linked list sorted by value across every nested list combined. Each nested list is already sorted on its own before flattening begins.",
+    "pattern": "k-way-merge",
+    "difficulty": "medium",
+    "tell": "flatten the whole structure into one linked list sorted by value across every nested list combined",
+    "whyNotOthers": {
+      "linked-list-reversal": "No list needs to be reversed in place; separate already-sorted lists need to be combined into a single ordered sequence.",
+      "fast-slow-pointers": "There's no cycle to detect or midpoint to find; the task is combining multiple sorted lists into one.",
+      "merge-intervals": "Node values are discrete points being interleaved in sorted order, not ranges being checked for overlap.",
+      "top-k-heap": "Every value from every nested list must appear in the final result, not just the top few by some ranking."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-06",
+    "statement": "You maintain k independent leaderboards, one per game region, each already sorted by score in descending order. Produce a single global leaderboard containing every player from every region in correct overall descending-score order.",
+    "pattern": "k-way-merge",
+    "difficulty": "easy",
+    "tell": "a single global leaderboard containing every player from every region in correct overall descending-score order",
+    "whyNotOthers": {
+      "top-k-heap": "Every player needs to appear in the final global ordering, not just a fixed number of the highest scorers overall.",
+      "two-heaps": "No split into two balanced halves around a median score is needed; the current best candidate across all region lists is repeatedly selected.",
+      "greedy": "Picking one region's leaderboard order and appending the rest without comparing across regions would produce an incorrectly ordered result.",
+      "union-find": "Players aren't being grouped into connected components; scores from separately sorted lists are being interleaved."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-07",
+    "statement": "An analytics pipeline receives k sorted arrays of event timestamps from k different data centers and must find the smallest timestamp that has appeared in every single one of the k arrays. At each step, whichever array is behind should be advanced toward matching the current candidate.",
+    "pattern": "k-way-merge",
+    "difficulty": "hard",
+    "tell": "whichever array is behind should be advanced toward matching the current candidate",
+    "whyNotOthers": {
+      "two-pointers": "More than two sorted sources are involved simultaneously, which calls for tracking the current position across all k arrays rather than just two indices.",
+      "modified-binary-search": "There isn't a single sorted array to search within; k separate sorted arrays must be advanced and compared together.",
+      "union-find": "Timestamps aren't being grouped into connected sets; the task is finding a common value while advancing through k ordered arrays.",
+      "sliding-window": "No single sequence has a window resized over it; separate sorted arrays are advanced individually to converge on a common value."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-08",
+    "statement": "You must design a system that repeatedly merges the results of k paginated API calls, each returning a sorted page of product prices, into one continuously growing sorted stream as new pages arrive. Each source keeps producing more sorted values over time rather than delivering everything at once.",
+    "pattern": "k-way-merge",
+    "difficulty": "medium",
+    "tell": "continuously growing sorted stream as new pages arrive",
+    "whyNotOthers": {
+      "top-k-heap": "The complete combined stream of prices in order is required, not merely the smallest or largest few values seen.",
+      "sliding-window": "There's no single contiguous sequence being resized; multiple independently arriving sorted sources are being interleaved.",
+      "cyclic-sort": "Prices aren't a permutation of a bounded index range to place directly; values from multiple sorted sources must be compared and merged.",
+      "merge-intervals": "Prices are discrete point values being interleaved in order, not ranges being tested for overlap and combined."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-09",
+    "statement": "Given k sorted arrays representing exam scores from k different classrooms, find the overall median score across every student in every classroom combined, without first copying all scores into one big array and sorting it from scratch. Each classroom's scores are already in ascending order.",
+    "pattern": "k-way-merge",
+    "difficulty": "medium",
+    "tell": "without first copying all scores into one big array and sorting it from scratch",
+    "whyNotOthers": {
+      "two-heaps": "A running median of a single incoming sequence would use two balanced heaps, but here multiple pre-sorted sources must first be interleaved in order to reach the middle position.",
+      "top-k-heap": "The median requires reaching the exact middle of the fully combined order, not just tracking a fixed number of largest or smallest scores.",
+      "modified-binary-search": "There's no one sorted array to binary search directly; several sorted classroom lists must be advanced together to find the combined middle.",
+      "greedy": "No single irrevocable choice per classroom determines the median; values across all classrooms must be compared and advanced in sorted order."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "k-way-merge-10",
+    "statement": "A video platform stores k separate watch-history files per device, each already sorted by watch date, and must generate one unified sorted history when a user views their combined activity across all devices. Every entry from every device file must appear in the final result.",
+    "pattern": "k-way-merge",
+    "difficulty": "easy",
+    "tell": "must generate one unified sorted history when a user views their combined activity across all devices",
+    "whyNotOthers": {
+      "top-k-heap": "Every entry from every device needs to appear in the output, not just a limited number of the most recent or oldest entries.",
+      "merge-intervals": "Watch dates are single points to interleave in order, not ranges of time to be checked for overlap and merged.",
+      "union-find": "Devices aren't being grouped into connected clusters; their already-sorted histories are being interleaved by date.",
+      "backtracking": "No combination of entries is being built and abandoned; the smallest next entry across device files is simply selected repeatedly."
+    },
+    "complexity": "O(n log k) time / O(k) space"
+  },
+  {
+    "id": "knapsack-01-01",
+    "statement": "A hiker is packing a single backpack with a strict weight limit and a set of distinct gear items, each with its own weight and a survival-value score. Every item can be brought along at most once, and the goal is to choose a subset that maximizes total survival value without exceeding the weight limit.",
+    "pattern": "knapsack-01",
+    "difficulty": "easy",
+    "tell": "Every item can be brought along at most once",
+    "whyNotOthers": {
+      "greedy": "Always grabbing the item with the best value-to-weight ratio can leave the backpack under capacity while a different combination would have scored higher.",
+      "backtracking": "Trying every subset directly would eventually find the answer, but overlapping capacity states make this solvable far faster by building up from smaller capacities.",
+      "sliding-window": "There's no contiguous run of items being scanned; any subset of the gear list can be chosen, not just a consecutive block.",
+      "knapsack-unbounded": "Each item is available only once, not in unlimited supply, so no item can be reused after it's packed."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-02",
+    "statement": "A jewel thief has a bag with a fixed carrying capacity and a list of unique jewels, each with a specific weight and a specific resale price. Each jewel can either be left behind or taken exactly once, and the thief wants the combination of jewels that yields the highest total resale price within the bag's capacity.",
+    "pattern": "knapsack-01",
+    "difficulty": "easy",
+    "tell": "either be left behind or taken exactly once",
+    "whyNotOthers": {
+      "greedy": "Taking whichever jewel has the best price-per-weight first can still leave room that a different, less locally attractive combination would have filled more profitably.",
+      "top-k-heap": "This isn't about ranking jewels by a single score and taking the best few; capacity constraints mean the optimal subset isn't simply the highest-priced items.",
+      "knapsack-unbounded": "Each jewel exists as a single unique item here, not something that can be picked repeatedly.",
+      "two-pointers": "No sorted array is scanned from both ends toward each other; every jewel is an independent inclusion/exclusion decision under a shared capacity."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-03",
+    "statement": "A conference organizer has a fixed number of minutes in a single time slot and a list of proposed talks, each with a run time and an expected attendance score, where each talk can be scheduled at most once in that slot. Choose the subset of talks that maximizes total expected attendance without exceeding the slot's total minutes.",
+    "pattern": "knapsack-01",
+    "difficulty": "medium",
+    "tell": "each talk can be scheduled at most once in that slot",
+    "whyNotOthers": {
+      "merge-intervals": "No overlapping time ranges are being combined; each talk is a discrete item with a duration cost, chosen or skipped as a whole.",
+      "greedy": "Filling the slot with whichever talk has the best attendance-per-minute first can leave leftover minutes that a different combination would use more effectively.",
+      "backtracking": "Enumerating every subset of talks would work but ignores that overlapping partial-capacity results can be reused, which is what makes this efficiently solvable bottom-up.",
+      "knapsack-unbounded": "Each talk is a single available slot-filling option here, not something that can be scheduled multiple times."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-04",
+    "statement": "A research lab has one shared server with a fixed memory budget and a list of distinct experiments waiting to run, each requiring a specific memory allocation and expected to produce a specific insight score if it runs. Each experiment can run at most once during this cycle, and the lab wants the combination that maximizes total insight score within the memory budget.",
+    "pattern": "knapsack-01",
+    "difficulty": "medium",
+    "tell": "Each experiment can run at most once during this cycle",
+    "whyNotOthers": {
+      "greedy": "Running whichever experiment has the highest insight-per-memory ratio first can strand unused memory that a different combination would have filled more valuably.",
+      "top-k-heap": "This isn't simply ranking experiments by insight score and taking the top few; the memory budget forces tradeoffs that a pure ranking ignores.",
+      "knapsack-unbounded": "Each experiment is a one-time option in this cycle, not something that can be repeated to accumulate more insight.",
+      "union-find": "Experiments aren't being grouped into connected clusters; each is an independent include-or-exclude decision under one shared budget."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-05",
+    "statement": "You are given a list of unique donation pledges, each with a specific dollar amount and a specific community-impact score, and a fundraising target that must not be exceeded in total pledged amount. Each pledge can be accepted or declined but not split or repeated, and the goal is to maximize total impact score without the accepted pledges' amounts exceeding the target.",
+    "pattern": "knapsack-01",
+    "difficulty": "medium",
+    "tell": "can be accepted or declined but not split or repeated",
+    "whyNotOthers": {
+      "greedy": "Accepting whichever pledge has the best impact-per-dollar first can leave room under the target that a different combination of pledges would have used more effectively.",
+      "knapsack-unbounded": "Each pledge is a single distinct commitment that can be accepted at most once, not a repeatable option.",
+      "backtracking": "Trying every combination of pledges directly would eventually work but ignores that overlapping partial-budget subproblems make a bottom-up approach far faster.",
+      "sliding-window": "No contiguous block of pledges is being scanned; any subset of the full pledge list can be accepted."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-06",
+    "statement": "A moving company has one truck with a strict volume limit and a list of distinct furniture pieces waiting to be shipped, each with a specific volume and a specific delivery fee earned if shipped. Each piece of furniture can go on the truck at most once this trip, and the goal is to maximize total delivery fees without exceeding the truck's volume limit.",
+    "pattern": "knapsack-01",
+    "difficulty": "easy",
+    "tell": "Each piece of furniture can go on the truck at most once this trip",
+    "whyNotOthers": {
+      "greedy": "Loading whichever piece earns the most fee per unit volume first can leave truck space that a different combination of pieces would fill more profitably.",
+      "knapsack-unbounded": "Each furniture piece is a single physical item available once, not a type of item that can be loaded repeatedly.",
+      "merge-intervals": "There are no overlapping ranges to combine here; each piece is a discrete inclusion decision under a shared volume budget.",
+      "two-pointers": "The furniture pieces aren't being scanned from two ends of a sorted list; every piece is an independent choice evaluated against remaining volume."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-07",
+    "statement": "A film festival curator has one screening block with a fixed total runtime and a list of distinct submitted films, each with its own runtime and a predicted audience-score. Each film can be included in the block at most once, and the curator wants the subset maximizing total predicted audience score without exceeding the block's runtime.",
+    "pattern": "knapsack-01",
+    "difficulty": "hard",
+    "tell": "Each film can be included in the block at most once",
+    "whyNotOthers": {
+      "greedy": "Slotting in whichever film has the best score-per-minute first can leave runtime unused that a different combination of films would fill more effectively.",
+      "backtracking": "Enumerating every subset of films would eventually find the best block but ignores that overlapping runtime-budget subproblems make bottom-up computation far more efficient.",
+      "knapsack-unbounded": "Each submitted film is a single available entry, not something that can be screened multiple times in the same block.",
+      "topological-sort": "There's no dependency ordering between films to resolve; each is an independent include-or-exclude choice under a shared runtime limit."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-08",
+    "statement": "A satellite has a single fixed power budget for its next transmission window and a list of distinct pending data packets, each requiring a specific amount of power to send and carrying a specific scientific-value score. Each packet can be transmitted at most once during the window, and mission control wants the combination maximizing total scientific value within the power budget.",
+    "pattern": "knapsack-01",
+    "difficulty": "hard",
+    "tell": "Each packet can be transmitted at most once during the window",
+    "whyNotOthers": {
+      "greedy": "Sending whichever packet has the best value-per-power first can leave power unused that a different combination of packets would use more effectively.",
+      "knapsack-unbounded": "Each pending packet is a single one-time transmission opportunity in this window, not a repeatable option.",
+      "top-k-heap": "Simply ranking packets by scientific value and sending the top few ignores that the power budget forces tradeoffs a plain ranking can't capture.",
+      "sliding-window": "No contiguous block of packets is being scanned in sequence; any subset of the pending packets may be chosen for transmission."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-09",
+    "statement": "A museum is assembling a temporary exhibit within a single fixed floor-space budget, choosing from a list of distinct available artifacts, each occupying its own floor-space and drawing its own projected visitor-interest score. Each artifact can be included in the exhibit at most once, and the curator wants to maximize total projected visitor interest without exceeding the available floor space.",
+    "pattern": "knapsack-01",
+    "difficulty": "easy",
+    "tell": "Each artifact can be included in the exhibit at most once",
+    "whyNotOthers": {
+      "greedy": "Including whichever artifact has the best interest-per-space ratio first can leave floor space unused that a different combination would fill more effectively.",
+      "knapsack-unbounded": "Each artifact is a single unique object available once, not something duplicated or reused within the exhibit.",
+      "merge-intervals": "No overlapping ranges of floor space are being merged; each artifact is a discrete inclusion decision under one shared space budget.",
+      "backtracking": "Directly enumerating every possible artifact subset would eventually work but ignores that overlapping space-budget subproblems make bottom-up computation far faster."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-01-10",
+    "statement": "A charity auction has one bidder with a fixed total spending limit and a list of distinct lots up for auction, each with a fixed winning price and a fixed sentimental-value score to that bidder. Each lot can be won at most once, and the bidder wants the set of lots maximizing total sentimental value without the combined winning prices exceeding the spending limit.",
+    "pattern": "knapsack-01",
+    "difficulty": "medium",
+    "tell": "Each lot can be won at most once",
+    "whyNotOthers": {
+      "greedy": "Bidding on whichever lot has the best sentimental-value-per-dollar first can leave budget unspent that a different combination of lots would use more effectively.",
+      "knapsack-unbounded": "Each auction lot is a single unique item that can be won at most once, not a type of item purchasable in any quantity.",
+      "top-k-heap": "Ranking lots purely by sentimental value and picking the top few ignores that the spending limit forces tradeoffs a plain ranking can't capture.",
+      "two-pointers": "The lots aren't scanned from two ends of a sorted list; each lot is an independent include-or-exclude decision against the remaining budget."
+    },
+    "complexity": "O(n × W) time / O(W) space"
+  },
+  {
+    "id": "knapsack-unbounded-01",
+    "statement": "A vending machine needs to make exact change for a customer using a fixed set of coin denominations, where an unlimited supply of each denomination is available. Determine the minimum number of coins needed to make the exact amount, or report that it's impossible.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "easy",
+    "tell": "an unlimited supply of each denomination is available",
+    "whyNotOthers": {
+      "greedy": "Always using the largest denomination that fits can produce more coins than necessary for certain denomination sets, so each amount must be built up from smaller verified amounts.",
+      "knapsack-01": "Each denomination can be reused any number of times here, unlike a setting where each item is usable only once.",
+      "backtracking": "Trying every combination of coin counts would eventually work but ignores that overlapping subproblems for smaller amounts make bottom-up computation far more efficient.",
+      "cyclic-sort": "Coin values aren't a permutation of a known index range being placed directly; amounts are built up incrementally from smaller achievable amounts."
+    },
+    "complexity": "O(amount × n) time / O(amount) space"
+  },
+  {
+    "id": "knapsack-unbounded-02",
+    "statement": "A carpenter has a single rod of a given length and a price list showing how much each cut length of rod sells for, and can cut the rod into any number of pieces of any of those lengths, reusing the same length multiple times if it's profitable. Determine the maximum total revenue obtainable by cutting the rod optimally.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "medium",
+    "tell": "reusing the same length multiple times if it's profitable",
+    "whyNotOthers": {
+      "knapsack-01": "Each cut length can be used as many times as fits within the rod, unlike items that can each be selected at most once.",
+      "greedy": "Always cutting off the piece with the best price-per-length first can leave a remaining stub that sells for less than a different cutting pattern would earn.",
+      "sliding-window": "No contiguous span of the rod is being resized directly; the best revenue for each total length is built up from smaller achievable lengths.",
+      "backtracking": "Enumerating every possible sequence of cuts would eventually find the best revenue but ignores that overlapping length subproblems make bottom-up computation far faster."
+    },
+    "complexity": "O(n × length) time / O(length) space"
+  },
+  {
+    "id": "knapsack-unbounded-03",
+    "statement": "A snack shop sells energy bars in a few fixed package sizes, each with its own calorie count, and a hiker wants to buy packages, potentially several of the same size, totaling exactly a target calorie count while buying as few packages as possible. Any package size may be purchased any number of times.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "easy",
+    "tell": "Any package size may be purchased any number of times",
+    "whyNotOthers": {
+      "greedy": "Buying as many of the highest-calorie package as fits first can overshoot or leave a remainder that no other package combination can close exactly.",
+      "knapsack-01": "The same package size can be bought repeatedly, unlike a setting where each available item can be chosen at most once.",
+      "top-k-heap": "This isn't about ranking package sizes and picking the best few; every achievable calorie total up to the target must be tracked to find the minimum package count.",
+      "two-pointers": "The package sizes aren't scanned from two ends of a sorted list; the minimum count for each calorie total is built up from smaller totals."
+    },
+    "complexity": "O(n × target) time / O(target) space"
+  },
+  {
+    "id": "knapsack-unbounded-04",
+    "statement": "A 3D printer farm can produce parts of several standard sizes, each consuming a certain amount of filament and yielding a certain profit when sold, and any size can be printed as many times as desired. Given a total filament budget, determine the maximum total profit achievable by choosing how many of each part size to print.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "medium",
+    "tell": "any size can be printed as many times as desired",
+    "whyNotOthers": {
+      "knapsack-01": "Each part size can be printed repeatedly here, unlike items restricted to a single use.",
+      "greedy": "Always printing whichever part size has the best profit-per-filament ratio first can leave filament unused that a different mix of sizes would spend more profitably.",
+      "top-k-heap": "Ranking part sizes by profit and always choosing the top one ignores that filament constraints make a mix of sizes optimal in many cases.",
+      "backtracking": "Enumerating every combination of print counts would eventually find the best profit but ignores that overlapping filament-budget subproblems make bottom-up computation far more efficient."
+    },
+    "complexity": "O(n × budget) time / O(budget) space"
+  },
+  {
+    "id": "knapsack-unbounded-05",
+    "statement": "A stamp collector wants to affix stamps totaling exactly a required postage value on an envelope, choosing from a small set of stamp denominations available in unlimited quantity from a sheet. Find the fewest number of stamps needed to reach the exact postage value, or determine that it cannot be reached.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "easy",
+    "tell": "available in unlimited quantity from a sheet",
+    "whyNotOthers": {
+      "greedy": "Repeatedly using the largest stamp denomination that still fits can overshoot the exact postage or require more stamps than a different mix of denominations.",
+      "knapsack-01": "Any stamp denomination can be reused as many times as needed, unlike a scenario where each denomination is usable only once.",
+      "two-pointers": "The denominations aren't scanned from two ends toward each other; the minimum stamp count is built up for every postage value from smaller ones.",
+      "cyclic-sort": "Stamp denominations aren't a permutation of a bounded index range being placed by direct index; the minimum count is computed incrementally."
+    },
+    "complexity": "O(n × postage) time / O(postage) space"
+  },
+  {
+    "id": "knapsack-unbounded-06",
+    "statement": "A candy factory produces gift boxes in several fixed weights, each generating a certain profit, and can produce any number of boxes of any single weight to fill a shipping container up to its exact weight capacity. Determine the maximum total profit achievable by choosing quantities of each box weight, where the container must be filled to exactly its capacity.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "hard",
+    "tell": "can produce any number of boxes of any single weight",
+    "whyNotOthers": {
+      "knapsack-01": "Box weights can be repeated any number of times in the shipment, unlike items limited to a single inclusion.",
+      "greedy": "Filling the container with whichever box weight has the best profit ratio first can make hitting the exact capacity impossible, while a different quantity mix would both fit exactly and profit more.",
+      "top-k-heap": "This isn't a matter of ranking box weights and picking favorites; every achievable exact weight total must be evaluated to find the best profit.",
+      "merge-intervals": "No overlapping ranges are involved; discrete box weights are combined by exact quantity to reach a target capacity."
+    },
+    "complexity": "O(n × capacity) time / O(capacity) space"
+  },
+  {
+    "id": "knapsack-unbounded-07",
+    "statement": "A construction crew is tiling a hallway of a fixed total length using a catalog of tile lengths, where each tile length can be laid down any number of times in a row, and wants to know in how many distinct ways the hallway can be tiled exactly end to end. Order of the tiles along the hallway matters, and each tile length remains available for reuse throughout.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "hard",
+    "tell": "each tile length can be laid down any number of times in a row",
+    "whyNotOthers": {
+      "knapsack-01": "Tile lengths can be reused repeatedly along the hallway, unlike a set of items each usable only once.",
+      "backtracking": "Enumerating every ordered tiling sequence directly would eventually count them all but ignores that overlapping remaining-length subproblems make bottom-up counting far more efficient.",
+      "sliding-window": "No window is being resized over a fixed sequence; the number of ways to reach each length is built up from smaller lengths using every tile option.",
+      "greedy": "There's no single best next tile to commit to when counting all valid tilings; every tile length must be considered as a possible next piece at each length."
+    },
+    "complexity": "O(length × n) time / O(length) space"
+  },
+  {
+    "id": "knapsack-unbounded-08",
+    "statement": "An investor can buy shares of a few different funds, each fund requiring a fixed dollar amount per share and returning a fixed expected-gain score per share purchased, and any number of shares of any fund may be bought. Given a total investment budget, determine the maximum total expected gain achievable by choosing how many shares of each fund to buy.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "medium",
+    "tell": "any number of shares of any fund may be bought",
+    "whyNotOthers": {
+      "knapsack-01": "Shares of the same fund can be purchased repeatedly here, unlike a setting where each investment option can be chosen only once.",
+      "greedy": "Buying only the fund with the best expected-gain-per-dollar ratio can leave budget unspent in increments that a different mix of fund purchases would use more profitably.",
+      "top-k-heap": "This isn't about ranking funds and picking a fixed number of top performers; the budget constraint requires evaluating every affordable combination of share counts.",
+      "union-find": "Funds aren't being grouped into connected components; each purchase decision is evaluated independently against the remaining budget."
+    },
+    "complexity": "O(n × budget) time / O(budget) space"
+  },
+  {
+    "id": "knapsack-unbounded-09",
+    "statement": "A print shop offers a menu of poster sizes, each with a fixed cost to produce and a fixed square-footage of paper used, and wants to know the fewest posters needed to use up exactly a given amount of paper in stock, with any poster size printable any number of times. If no combination of poster sizes exactly exhausts the paper, report that it's impossible.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "medium",
+    "tell": "with any poster size printable any number of times",
+    "whyNotOthers": {
+      "greedy": "Repeatedly printing the largest poster size that still fits the remaining paper can leave a remainder no combination can close exactly, even though a different mix would use the paper up entirely.",
+      "knapsack-01": "Any poster size can be printed multiple times toward the total, unlike a setting where each size could be used only once.",
+      "modified-binary-search": "The poster sizes have no sorted structure being probed by halving; every achievable paper total must be evaluated incrementally from smaller totals.",
+      "two-pointers": "Poster sizes aren't scanned from two ends of a sorted list toward each other; the minimum poster count is built up for every paper total from smaller ones."
+    },
+    "complexity": "O(n × paper) time / O(paper) space"
+  },
+  {
+    "id": "knapsack-unbounded-10",
+    "statement": "A bakery sells bread loaves in a handful of standard sizes, each with its own weight and its own price, and a caterer wants to fill an order for at least a target total weight of bread while spending as little as possible, buying any number of loaves of any size. Loaves of a given size remain available in unlimited supply for the order.",
+    "pattern": "knapsack-unbounded",
+    "difficulty": "easy",
+    "tell": "Loaves of a given size remain available in unlimited supply for the order",
+    "whyNotOthers": {
+      "greedy": "Always buying whichever loaf size has the best weight-per-price ratio first can overshoot the target awkwardly, spending more than a different combination of loaf sizes would.",
+      "knapsack-01": "Loaf sizes can be purchased repeatedly to fill the order, unlike a setting where each available loaf could be chosen at most once.",
+      "top-k-heap": "Ranking loaf sizes by value and buying only the top one ignores that the target-weight constraint requires evaluating combinations, not a fixed top few.",
+      "backtracking": "Trying every possible sequence of loaf purchases would eventually find the cheapest order but ignores that overlapping weight-total subproblems make bottom-up computation far more efficient."
+    },
+    "complexity": "O(n × target) time / O(target) space"
   }
 ]
