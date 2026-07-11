@@ -981,17 +981,17 @@
   },
   {
     "id": "dfs-01",
-    "statement": "You are given a grid of land and water cells. A group of land cells connected horizontally or vertically forms one region. Count how many separate regions of land exist in the grid, fully exploring each region before moving to the next unvisited land cell.",
+    "statement": "You are given a binary tree representing an arithmetic expression: every leaf holds a number, and every internal node holds an operator that applies to the results of its two child subtrees. Compute the value of the whole expression, given that an operator node's result cannot be produced until both of its children's results are already known.",
     "pattern": "dfs",
     "difficulty": "easy",
-    "tell": "fully exploring each region before moving to the next unvisited land cell",
+    "tell": "an operator node's result cannot be produced until both of its children's results are already known",
     "whyNotOthers": {
-      "bfs": "Expanding layer by layer from each land cell would also find the regions, but the natural recursive dive into every connected neighbor is the more direct fit here.",
-      "union-find": "Union-Find can group connected land cells too, but the problem is framed around exhaustively walking each region's neighbors rather than merging sets.",
-      "backtracking": "There's no candidate choice being tried and later undone; every connected land cell is simply visited once and marked.",
-      "topological-sort": "There's no dependency ordering among cells; regions are found purely by undirected adjacency exploration."
+      "bfs": "Visiting nodes level by level reaches an operator before either operand subtree has been evaluated, so its result cannot be produced at visit time; values must be assembled bottom-up from the leaves.",
+      "topological-sort": "Child-before-parent evaluation is an ordering of sorts, but no separate dependency graph needs building and sorting; the tree's own recursive structure already provides the order.",
+      "monotonic-stack": "No comparison against a running increasing or decreasing trend applies; each node's value depends only on its own two children's completed results.",
+      "backtracking": "No candidate choice is ever tried and undone; every node's value is computed exactly once from its children's finished results."
     },
-    "complexity": "O(rows × cols) time / O(rows × cols) space"
+    "complexity": "O(n) time / O(h) space"
   },
   {
     "id": "dfs-02",
@@ -1023,17 +1023,17 @@
   },
   {
     "id": "dfs-04",
-    "statement": "You are given a grid of rooms where some rooms contain a spreading gas leak. Two leaks belong to the same hazard zone if their rooms are adjacent, directly or through a chain of adjacent leaking rooms. Count the number of distinct hazard zones, walking each zone's full chain of adjacent leaks before starting the next.",
+    "statement": "You are given a company's folder hierarchy as a tree, where each folder may directly contain files and subfolders. A folder is considered removable when it directly holds no files and every one of its subfolders is itself removable. Count the removable folders, noting that a folder's verdict cannot be decided until the verdict of every subfolder beneath it is complete.",
     "pattern": "dfs",
     "difficulty": "easy",
-    "tell": "walking each zone's full chain of adjacent leaks before starting the next",
+    "tell": "a folder's verdict cannot be decided until the verdict of every subfolder beneath it is complete",
     "whyNotOthers": {
-      "bfs": "Expanding outward ring by ring from each leak would also identify the zones, but walking each chain fully before moving on is the more direct recursive fit.",
-      "union-find": "Union-Find would also group adjacent leaking rooms into zones, but the task is framed as exhausting each connected chain through recursive exploration.",
-      "monotonic-stack": "No comparison against a running increasing or decreasing trend applies; zones are formed purely by adjacency between leaking rooms.",
-      "topological-sort": "There is no directional dependency between rooms to order; adjacency here is undirected."
+      "bfs": "Processing folders level by level reaches a parent before any of its subfolders has a verdict, so the parent cannot be judged at visit time; verdicts must bubble up from the deepest folders first.",
+      "topological-sort": "The child-before-parent order falls out of the tree's own structure; no separate dependency graph over folders needs to be built and sorted.",
+      "union-find": "No merging of folders into connected groups occurs; each folder's verdict comes from its own contents plus its subfolders' completed verdicts.",
+      "greedy": "There's no locally optimal folder to pick per step; every subfolder's verdict must be fully computed before its parent can be judged at all."
     },
-    "complexity": "O(rows × cols) time / O(rows × cols) space"
+    "complexity": "O(n) time / O(h) space"
   },
   {
     "id": "dfs-05",
@@ -1051,17 +1051,17 @@
   },
   {
     "id": "dfs-06",
-    "statement": "You are given a directed graph of web pages where each edge is a link from one page to another, and a starting page. Determine the total number of distinct pages reachable from the start, including pages only reachable through long chains of links, by following each link path to its full end before returning to try a page's next link.",
+    "statement": "You are given a network of relay stations arranged as a tree, each with a coverage score. Activate a set of stations maximizing the total score, under the rule that a station may never be activated together with its direct parent because their signals interfere. For every station, the best totals for activating it or skipping it can only be formed once both totals are known for each of its children.",
     "pattern": "dfs",
     "difficulty": "hard",
-    "tell": "following each link path to its full end before returning to try a page's next link",
+    "tell": "the best totals for activating it or skipping it can only be formed once both totals are known for each of its children",
     "whyNotOthers": {
-      "bfs": "Expanding one layer of links at a time would also find every reachable page, but following each link path to its full end before returning is the more direct recursive fit here.",
-      "topological-sort": "No overall ordering of all pages by dependency is being requested; only the count of pages reachable from one starting page matters.",
-      "union-find": "The links are directed, so merging pages into undirected connected components would not respect the one-way nature of a link.",
-      "greedy": "There's no single best link to follow per page; every reachable page must be visited regardless of how deep its link chain runs."
+      "bfs": "Level-by-level processing reaches a station before either total exists for any of its children, so its own pair of totals cannot be formed at visit time; results must combine bottom-up from the leaves.",
+      "knapsack-01": "Include-or-exclude choices per station resemble a knapsack, but the interference constraint follows the tree's parent-child structure, so each node's answer is built from its children's answers rather than a weight-capacity table.",
+      "greedy": "Always activating the station with the higher score can force skipping children whose combined scores exceed it; only completed subtree results decide correctly.",
+      "backtracking": "Enumerating every valid activation set and undoing choices explodes exponentially; each subtree's two best totals are computed once and reused at its parent."
     },
-    "complexity": "O(V + E) time / O(V) space"
+    "complexity": "O(n) time / O(h) space"
   },
   {
     "id": "dfs-07",
@@ -1093,15 +1093,15 @@
   },
   {
     "id": "dfs-09",
-    "statement": "You are given a tree of employees where each node lists its direct reports. For every employee, compute the total headcount of their entire reporting chain, including themselves, by fully resolving each direct report's total before adding it to the running count at their manager.",
+    "statement": "You are given a tree of employees where each node lists its direct reports. For every employee, compute the total headcount of their entire reporting chain, including themselves. An employee's headcount cannot be finalized until the headcount of every direct report has been fully computed and handed back up to them.",
     "pattern": "dfs",
     "difficulty": "easy",
-    "tell": "fully resolving each direct report's total before adding it to the running count at their manager",
+    "tell": "cannot be finalized until the headcount of every direct report has been fully computed and handed back up",
     "whyNotOthers": {
-      "bfs": "Processing managers level by level doesn't naturally produce each direct report's finished subtree total before it's needed at the manager above.",
-      "topological-sort": "While reports must be resolved before their manager, no full linear ordering of all employees is being requested, only per-node subtree totals.",
-      "greedy": "There's no locally optimal choice being made per employee; every direct report's count is simply computed and summed exactly once.",
-      "union-find": "There's no need to merge employees into connected groups; the reporting structure is already a tree, and totals are just summed recursively."
+      "bfs": "Processing employees level by level reaches every manager before any report's headcount exists, so the manager's total cannot be finalized at visit time; totals must return upward from the leaves.",
+      "topological-sort": "The report-before-manager order is already given by the tree itself; no separate dependency graph needs building and sorting to obtain it.",
+      "greedy": "There's no locally optimal choice being made per employee; every direct report's count is simply computed once and handed up to be summed.",
+      "union-find": "There's no need to merge employees into connected groups; the reporting structure is already a tree, and totals are just summed bottom-up."
     },
     "complexity": "O(n) time / O(h) space"
   },
