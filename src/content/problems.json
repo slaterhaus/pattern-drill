@@ -1,0 +1,702 @@
+[
+  {
+    "id": "sliding-window-01",
+    "statement": "You are given an array of positive integers and a number k. Find the maximum sum of any contiguous run of exactly k elements. The array can be very large, so recomputing each candidate sum from scratch will be too slow.",
+    "pattern": "sliding-window",
+    "difficulty": "easy",
+    "tell": "maximum sum of any contiguous run of exactly k elements",
+    "whyNotOthers": {
+      "two-pointers": "Nothing is sorted and no pair is sought; a fixed-width range slides over the array instead of two ends converging.",
+      "top-k-heap": "k is the width of the run, not a count of largest elements to rank with a heap.",
+      "knapsack-01": "There is no take-or-skip choice per element; the chosen elements must be contiguous.",
+      "greedy": "No local exchange argument exists; the answer comes from mechanically scanning every window."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "sliding-window-02",
+    "statement": "Given a string of lowercase letters, find the length of the shortest substring that contains every distinct character appearing in the string at least once. If the whole string is already the answer, return its length. Assume the string is non-empty and may repeat characters heavily.",
+    "pattern": "sliding-window",
+    "difficulty": "medium",
+    "tell": "shortest substring that contains every distinct character",
+    "whyNotOthers": {
+      "two-pointers": "The two ends do not move toward each other with a sorted comparison; one boundary expands while the other only contracts once the constraint is met.",
+      "trie": "There is no prefix structure to search; the task is about a contiguous span of one string, not a dictionary of words.",
+      "monotonic-stack": "Order relative to neighbors doesn't matter here, only which characters are currently inside the span.",
+      "backtracking": "There is no need to try and undo choices; a single forward pass with a shrinking window suffices."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "sliding-window-03",
+    "statement": "You manage a factory sensor log represented as an array of temperature readings. Determine the length of the longest stretch of consecutive readings where the difference between the highest and lowest value never exceeds a given tolerance. Readings can rise and fall unpredictably throughout the log.",
+    "pattern": "sliding-window",
+    "difficulty": "medium",
+    "tell": "longest stretch of consecutive readings where the difference between the highest and lowest value never exceeds",
+    "whyNotOthers": {
+      "monotonic-stack": "Tracking the running min and max of a shrinking/growing span is close, but the core loop is still window-based, not a stack that pops on comparison.",
+      "two-pointers": "The two boundaries aren't converging toward a sorted target; the right end always advances and the left only catches up when the tolerance breaks.",
+      "modified-binary-search": "There is no sorted or monotonic answer space to binary search over; readings are unordered noise.",
+      "greedy": "A single greedy pick per step cannot verify the tolerance constraint across the whole span without tracking a window."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "sliding-window-04",
+    "statement": "Given an array of integers and a target sum s, find the length of the smallest contiguous span whose elements add up to at least s. If no such span exists, return zero. All values in the array are positive, so growing a span always increases its total.",
+    "pattern": "sliding-window",
+    "difficulty": "easy",
+    "tell": "length of the smallest contiguous span whose elements add up to at least",
+    "whyNotOthers": {
+      "two-pointers": "Both indices move in the same direction as the span grows and shrinks, rather than starting at opposite ends of a sorted array.",
+      "cyclic-sort": "Values are not guaranteed to lie in a bounded range like 1..n, so index-based placement doesn't apply.",
+      "greedy": "Picking the largest remaining element at each step doesn't guarantee the shortest contiguous span; the whole span must be tracked.",
+      "k-way-merge": "There is only one array here, not several sorted lists to merge."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "sliding-window-05",
+    "statement": "You are streaming characters from a live chat feed into a fixed-size display buffer of width k. At every point after the first k characters, report whether the most recent k characters read so far form a palindrome. Process the whole feed and output one boolean per position from k onward.",
+    "pattern": "sliding-window",
+    "difficulty": "hard",
+    "tell": "the most recent k characters read so far form a palindrome",
+    "whyNotOthers": {
+      "two-pointers": "Checking a palindrome uses two pointers internally, but the outer problem is about maintaining a fixed-width span over a stream, which is the dominant structural pattern.",
+      "monotonic-stack": "There's no need to discard elements based on an ordering comparison; the buffer simply slides forward by one position each time.",
+      "trie": "No shared prefixes across multiple strings are being indexed; this is a single evolving span of characters.",
+      "fast-slow-pointers": "There is no cycle or midpoint to locate; the data is a linear stream, not a linked sequence to traverse at two speeds."
+    },
+    "complexity": "O(n) time / O(k) space"
+  },
+  {
+    "id": "sliding-window-06",
+    "statement": "Given two strings, a source and a pattern, determine whether the source contains a contiguous span whose letters can be rearranged to exactly match the pattern. The source may be much longer than the pattern, and matches can start anywhere. Return true as soon as one qualifying span is found.",
+    "pattern": "sliding-window",
+    "difficulty": "medium",
+    "tell": "contiguous span whose letters can be rearranged to exactly match",
+    "whyNotOthers": {
+      "two-pointers": "The two boundaries don't converge from opposite ends of a sorted structure; one advances while the other trails to keep a fixed character count.",
+      "trie": "There's no dictionary of words to search character-by-character; only one pattern's letter frequency needs matching.",
+      "backtracking": "No combinatorial arrangement needs to be tried and undone; letter counts alone decide whether a span qualifies.",
+      "union-find": "There's no notion of merging groups or connectivity between elements; it's purely a frequency comparison over a moving span."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "sliding-window-07",
+    "statement": "You are given a row of house prices and an integer budget b. Find the maximum number of consecutive houses you could buy without exceeding the budget if you must purchase every house in the chosen consecutive stretch. Prices are all positive and the row can be long.",
+    "pattern": "sliding-window",
+    "difficulty": "easy",
+    "tell": "maximum number of consecutive houses you could buy without exceeding the budget",
+    "whyNotOthers": {
+      "greedy": "Simply buying the cheapest houses first ignores the requirement that the chosen houses form one consecutive stretch.",
+      "two-pointers": "Although two indices are tracked, they don't start at opposite ends of a sorted array converging toward each other; they bound a shrinking or growing run.",
+      "knapsack-01": "Each house isn't an independent include/exclude decision; the selection must be one unbroken run of houses.",
+      "modified-binary-search": "There's no monotonic predicate over a sorted index to binary search; the running sum must be tracked incrementally."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "sliding-window-08",
+    "statement": "Given an array of integers and an integer limit, find the length of the longest contiguous subarray such that the absolute difference between any two elements in it is less than or equal to the limit. The array is unsorted and can contain both large spikes and long flat stretches.",
+    "pattern": "sliding-window",
+    "difficulty": "hard",
+    "tell": "length of the longest contiguous subarray such that the absolute difference between any two elements in it is less than or equal to the limit",
+    "whyNotOthers": {
+      "monotonic-stack": "Maintaining running max and min candidates resembles a monotonic structure, but the overall control flow is still an expanding and contracting span, not stack popping based on order.",
+      "two-pointers": "The left boundary only advances to repair a broken constraint; it does not start from the opposite end of the array like a classic converging pair search.",
+      "modified-binary-search": "The subarray length isn't a monotonic property that can be tested with a single sorted comparison; it must be verified by scanning.",
+      "union-find": "There's no need to group indices into connected components; only a single contiguous run is being tracked at a time."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "sliding-window-09",
+    "statement": "A delivery app logs order counts for every minute of the day in an array. Given a window length w, find the w-minute window with the highest total order count, and report its starting minute. Ties should resolve to the earliest starting minute. The log always has more entries than w.",
+    "pattern": "sliding-window",
+    "difficulty": "medium",
+    "tell": "w-minute window with the highest total order count",
+    "whyNotOthers": {
+      "two-heaps": "There's no need to track a running median by splitting values into two balanced heaps; only a running sum over a fixed span is needed.",
+      "top-k-heap": "Only the single best window is wanted, not a ranked list of the top several windows, so a heap of candidates is unnecessary overhead.",
+      "greedy": "Choosing the locally largest minute repeatedly does not identify the best fixed-length contiguous window.",
+      "k-way-merge": "There is one array of counts, not multiple sorted sequences that need merging together."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "sliding-window-10",
+    "statement": "Given a string, find the length of the longest substring in which no character repeats. The string may be empty, may be a single repeated character, or may have every character distinct, and your solution must handle all of these smoothly without extra passes.",
+    "pattern": "sliding-window",
+    "difficulty": "easy",
+    "tell": "length of the longest substring in which no character repeats",
+    "whyNotOthers": {
+      "two-pointers": "Both boundaries move forward together rather than starting at opposite ends of a sorted sequence and converging.",
+      "trie": "There is no set of multiple words sharing prefixes to organize; only one string's internal repeats matter.",
+      "dfs": "There's no branching tree or graph of choices to explore recursively; the answer comes from one linear scan.",
+      "backtracking": "No candidate substring needs to be built up and abandoned; a shrinking/growing span tracks validity directly."
+    },
+    "complexity": "O(n) time / O(min(n, alphabet size)) space"
+  },
+  {
+    "id": "two-pointers-01",
+    "statement": "You are given an array of integers sorted in ascending order and a target value. Find the indices of the two numbers that add up exactly to the target, assuming exactly one solution exists. Your answer should avoid the cost of checking every possible pair against every other pair.",
+    "pattern": "two-pointers",
+    "difficulty": "easy",
+    "tell": "array of integers sorted in ascending order",
+    "whyNotOthers": {
+      "sliding-window": "The task asks for a pair summing to a target, not a contiguous run satisfying a length or sum constraint.",
+      "modified-binary-search": "A single binary search per element would work but is slower and more complex than sweeping from both ends at once given the sorted order.",
+      "cyclic-sort": "Values aren't guaranteed to be a range like 1..n that can be placed by index; they are arbitrary sorted integers.",
+      "greedy": "There's no locally optimal choice to commit to at each step; the two ends must be compared and adjusted based on the sum."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "two-pointers-02",
+    "statement": "Given an array of integers that may include duplicates, find all unique triplets whose values sum to zero. Each triplet should be reported only once regardless of the order elements originally appeared in. The array can be reordered freely before processing.",
+    "pattern": "two-pointers",
+    "difficulty": "medium",
+    "tell": "find all unique triplets whose values sum to zero",
+    "whyNotOthers": {
+      "backtracking": "Trying every combination and undoing choices would explore far more states than necessary once the array is sorted and swept from both ends.",
+      "sliding-window": "There's no contiguous span requirement; the three chosen values can sit anywhere in the sorted array.",
+      "top-k-heap": "No ranking or extraction of extreme values is needed; the goal is an exact sum match, not the k largest or smallest values.",
+      "union-find": "There's no notion of merging elements into connected groups; each triplet is evaluated independently by its sum."
+    },
+    "complexity": "O(n^2) time / O(1) extra space"
+  },
+  {
+    "id": "two-pointers-03",
+    "statement": "You are given two arrays of integers, each already sorted in ascending order. Merge them into a single sorted sequence without allocating a third array larger than necessary, writing the result back into the array that has enough trailing empty space to hold both. Both arrays can vary in length.",
+    "pattern": "two-pointers",
+    "difficulty": "easy",
+    "tell": "two arrays of integers, each already sorted in ascending order",
+    "whyNotOthers": {
+      "k-way-merge": "Only two sorted sequences are involved, so a heap-based merge built for many lists is unnecessary machinery here.",
+      "cyclic-sort": "Values aren't confined to a range like 1..n for index-based placement; they are general sorted integers from two sources.",
+      "modified-binary-search": "Finding an insertion point once would help for a single value, but merging entire sequences needs a full linear sweep of both ends.",
+      "monotonic-stack": "There's no need to discard earlier elements based on an ordering comparison; both sequences are already sorted and just need interleaving."
+    },
+    "complexity": "O(m + n) time / O(1) extra space"
+  },
+  {
+    "id": "two-pointers-04",
+    "statement": "Given an array of integers already sorted in non-decreasing order that may contain negative numbers, produce a new array of the squares of each number, also sorted in non-decreasing order. Do this without sorting the squared values from scratch afterward.",
+    "pattern": "two-pointers",
+    "difficulty": "medium",
+    "tell": "array of the squares of each number, also sorted in non-decreasing order",
+    "whyNotOthers": {
+      "sliding-window": "There's no contiguous subrange constraint; every element must appear in the output, just reordered by square value.",
+      "cyclic-sort": "The input values are signed integers, not indices confined to a bounded range, so placement by value into index slots doesn't apply.",
+      "modified-binary-search": "A single search would locate one value, but building the whole sorted output needs a linear sweep comparing both extremes at once.",
+      "greedy": "There's no locally optimal single choice; the largest square could come from either end, so both ends must be compared each step."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "two-pointers-05",
+    "statement": "You are given an array representing the heights of vertical lines placed along a number line. Choose two lines such that, together with the axis, they form a container holding the maximum amount of water. Return that maximum amount. Lines can be far apart or adjacent.",
+    "pattern": "two-pointers",
+    "difficulty": "medium",
+    "tell": "Choose two lines such that, together with the axis, they form a container holding the maximum amount of water",
+    "whyNotOthers": {
+      "greedy": "Repeatedly picking the two tallest lines seen so far fails when they're far apart or narrow; the search must systematically narrow the width from both ends.",
+      "monotonic-stack": "There's no need to pop elements based on an increasing or decreasing trend; the area only depends on the shorter of two chosen heights and their distance.",
+      "sliding-window": "The area formula depends on the shorter of two boundary heights rather than a running property of everything between them, so it isn't a contiguous-sum style window.",
+      "top-k-heap": "The answer isn't about ranking the tallest few lines; even short lines can win if they're far enough apart."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "two-pointers-06",
+    "statement": "Given a sorted array of integers, remove duplicate values in place so that each unique value appears only once, preserving the original relative order, and return the count of unique values. You must not use another array proportional in size to the input.",
+    "pattern": "two-pointers",
+    "difficulty": "easy",
+    "tell": "remove duplicate values in place so that each unique value appears only once",
+    "whyNotOthers": {
+      "cyclic-sort": "Values aren't restricted to a range like 1..n usable as array indices; they are arbitrary sorted numbers being deduplicated by comparison.",
+      "sliding-window": "There's no variable-length span being measured for a sum or count constraint; one slow index simply tracks where the next unique value should be written.",
+      "union-find": "No grouping of elements into connected sets happens; adjacent equal values are simply skipped in a single sorted pass.",
+      "monotonic-stack": "Nothing needs to be popped based on comparing to a previous extreme; equal neighbors are just overwritten in place."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "two-pointers-07",
+    "statement": "You are given an array of integers and a target sum. Among all pairs of elements, find the pair whose sum is closest to the target, and return that sum. The array can contain both positive and negative numbers, and it should first be arranged so both ends can be compared efficiently.",
+    "pattern": "two-pointers",
+    "difficulty": "medium",
+    "tell": "pair whose sum is closest to the target, and return that sum",
+    "whyNotOthers": {
+      "modified-binary-search": "A single binary search finds one closest value, but pairing two elements together requires sweeping both ends simultaneously after sorting.",
+      "sliding-window": "There's no contiguous run of elements involved; any two elements from anywhere in the sorted array can form the pair.",
+      "greedy": "Picking the single largest or smallest element first doesn't guarantee the closest pair sum; both ends must be adjusted based on comparison to the target.",
+      "top-k-heap": "The goal isn't to rank multiple candidate sums by size, only to find the one pair closest to a specific target."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
+  },
+  {
+    "id": "two-pointers-08",
+    "statement": "Given a string, determine whether it reads the same forward and backward after removing all non-alphanumeric characters and ignoring letter case. The string may include punctuation, spaces, and mixed capitalization scattered throughout its length.",
+    "pattern": "two-pointers",
+    "difficulty": "easy",
+    "tell": "determine whether it reads the same forward and backward after removing all non-alphanumeric characters",
+    "whyNotOthers": {
+      "sliding-window": "There's no variable-size contiguous span to track; the whole string is compared symmetrically from both ends inward.",
+      "monotonic-stack": "No ordering comparison against previous elements is needed; only symmetric equality between mirrored positions matters.",
+      "trie": "There's no dictionary of multiple words sharing prefixes; a single string is checked for its own symmetry.",
+      "backtracking": "No combinations need to be tried and undone; a single forward-and-backward comparison settles the answer directly."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "two-pointers-09",
+    "statement": "You are given an array of integers sorted in ascending order along with a target sum, and you must count how many distinct pairs of elements sum to less than the target. Elements can repeat in value but each array position should be counted at most once per pair. The array can be large.",
+    "pattern": "two-pointers",
+    "difficulty": "hard",
+    "tell": "count how many distinct pairs of elements sum to less than the target",
+    "whyNotOthers": {
+      "sliding-window": "The pairs aren't required to be contiguous positions in the array; any two sorted positions can combine, so it isn't a sliding span.",
+      "modified-binary-search": "Searching once per element for a boundary works but is less efficient than sweeping both ends inward and counting ranges in bulk.",
+      "greedy": "There is no single locally optimal pair to commit to; every valid combination when one end moves must be counted together.",
+      "top-k-heap": "The task counts qualifying pairs rather than ranking or extracting the largest or smallest sums."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "two-pointers-10",
+    "statement": "Given an array of integers sorted in ascending order, find the smallest window of three numbers, not necessarily adjacent, whose sum is closest to a given target without going over it. Return that sum. Assume the array has at least three elements and can contain repeated values.",
+    "pattern": "two-pointers",
+    "difficulty": "hard",
+    "tell": "find the smallest window of three numbers, not necessarily adjacent, whose sum is closest to a given target",
+    "whyNotOthers": {
+      "sliding-window": "The name mentions a window, but the three chosen numbers need not be physically adjacent, so a contiguous-span scan doesn't apply.",
+      "greedy": "Fixing the largest possible first choice and moving on doesn't guarantee the closest triple sum; both remaining ends must be adjusted based on comparison.",
+      "backtracking": "Trying and undoing every triple combination is far more work than fixing one index and sweeping the other two from opposite ends of the sorted remainder.",
+      "modified-binary-search": "A single search locates one value near a target, but combining three interdependent values needs two ends compared together, not an isolated search."
+    },
+    "complexity": "O(n^2) time / O(1) extra space"
+  },
+  {
+    "id": "fast-slow-pointers-01",
+    "statement": "You are given the head of a singly linked list. Determine whether the list contains a loop, meaning some node's next reference eventually points back to an earlier node in the list instead of ending at null. Do this without using any extra data structure to remember visited nodes.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "easy",
+    "tell": "Determine whether the list contains a loop",
+    "whyNotOthers": {
+      "two-pointers": "Both traversal pointers start at the same node and move at different speeds rather than beginning at opposite ends of a sorted structure.",
+      "union-find": "Tracking which nodes have been merged into a cycle could work but requires extra memory; the intended trick avoids any auxiliary structure entirely.",
+      "dfs": "A recursive traversal would still need a visited set to detect revisiting a node, defeating the constant-space requirement.",
+      "monotonic-stack": "There's no ordering comparison between node values; the loop is a structural property of the links themselves, not the data they hold."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-02",
+    "statement": "Given the head of a singly linked list of unknown length, return the value stored in the middle node. If the list has an even number of nodes, return the value of the second of the two middle nodes. You may only traverse the list a single time.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "easy",
+    "tell": "return the value stored in the middle node",
+    "whyNotOthers": {
+      "two-pointers": "There's only one list and no sorted array of values to converge from both ends; one pointer moves twice as fast as the other along the same chain.",
+      "modified-binary-search": "The list's length is unknown up front and nodes can't be accessed by index, so jumping to a computed midpoint isn't possible.",
+      "linked-list-reversal": "No links need to be rewired or reversed; the goal is only to locate a node, not restructure the list.",
+      "k-way-merge": "There is a single list here, not multiple sorted lists that need combining."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-03",
+    "statement": "A singly linked list contains a cycle. Find and return the specific node where that cycle begins, not merely whether one exists. You are not permitted to modify the list's structure or use any auxiliary storage proportional to its length.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "hard",
+    "tell": "Find and return the specific node where that cycle begins",
+    "whyNotOthers": {
+      "union-find": "Grouping nodes to detect where a cycle forms would need memory per node, which the constant-space constraint rules out here.",
+      "two-pointers": "The two traversal pointers move at different speeds from the same start rather than beginning at opposite ends of a sorted sequence.",
+      "dfs": "A recursive search could find the cycle's entry with a visited set, but that costs memory proportional to the list, unlike the intended approach.",
+      "bfs": "Layer-by-layer exploration doesn't fit a singly linked structure where each node has only one outgoing link to follow."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-04",
+    "statement": "You repeatedly transform a positive integer by replacing it with the sum of the squares of its digits, continuing this process on each new number produced. Determine whether repeating this transformation eventually reaches the value one, or instead falls into an infinite repeating loop that never includes one.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "easy",
+    "tell": "Determine whether repeating this transformation eventually reaches the value one, or instead falls into an infinite repeating loop",
+    "whyNotOthers": {
+      "cyclic-sort": "The sequence of transformed numbers isn't an array of values confined to a range 1..n that can be placed by index; it's an implicit chain to walk.",
+      "greedy": "There's no locally optimal choice to make at each step; the transformation is fixed and deterministic, only the loop-detection strategy is chosen.",
+      "modified-binary-search": "There's no sorted or monotonic sequence to search over; the sequence of transformed values can rise and fall unpredictably.",
+      "backtracking": "No branching choices need to be tried and undone; each number deterministically produces exactly one successor to follow."
+    },
+    "complexity": "O(log n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-05",
+    "statement": "Given the head of a singly linked list, determine whether its sequence of values reads the same forward and backward, treating the list itself as the sequence to check rather than an array. You should avoid copying every value into a separate array before comparing.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "medium",
+    "tell": "sequence of values reads the same forward and backward",
+    "whyNotOthers": {
+      "two-pointers": "A linked list can't be indexed from both ends directly like an array; the midpoint must first be located by pointers moving at different speeds, then the second half reversed.",
+      "linked-list-reversal": "Reversing the second half is one step of the solution, but locating where to split the list first is the more fundamental structural challenge.",
+      "monotonic-stack": "Pushing every value onto a stack to compare against the front would work but abandons the constant extra space that traversal-based splitting achieves.",
+      "union-find": "There's no merging of disjoint groups of nodes; the check is about the order of a single chain's values."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-06",
+    "statement": "Given the head of a singly linked list and an integer k, return the value of the node that sits k positions from the end of the list, without first computing the list's total length in a separate pass. The list is guaranteed to have at least k nodes.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "easy",
+    "tell": "node that sits k positions from the end of the list, without first computing the list's total length",
+    "whyNotOthers": {
+      "two-pointers": "Although two references are used, they move through a single linked chain rather than starting at opposite ends of a sorted array.",
+      "modified-binary-search": "Nodes in a linked list can't be accessed by computed index, so jumping directly to a position via search doesn't apply.",
+      "linked-list-reversal": "No links are rewired to reverse direction; one pointer is simply kept a fixed distance ahead of the other during a single traversal.",
+      "k-way-merge": "There is a single list here, not several sorted lists whose elements need combining in order."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-07",
+    "statement": "You are given the head of a singly linked list that may or may not contain a cycle. If it does contain a cycle, return the total number of nodes that are part of that cycle. If there is no cycle, return zero. You must not modify the list or use memory proportional to its length.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "medium",
+    "tell": "return the total number of nodes that are part of that cycle",
+    "whyNotOthers": {
+      "union-find": "Counting how many nodes eventually join together could use disjoint-set tracking, but that needs memory per node, unlike the constant-space traversal intended here.",
+      "dfs": "A depth-first traversal could count cycle nodes with a visited set, but that again costs memory proportional to the list's length.",
+      "two-pointers": "The two references start together and move at different speeds rather than beginning at opposite ends of a sorted collection.",
+      "topological-sort": "There's no dependency ordering among distinct tasks to resolve; this is about detecting and measuring a cycle in one linked chain."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-08",
+    "statement": "Given the head of a singly linked list, rearrange its nodes so that the second half of the list is reversed and interleaved with the first half, alternating one node from each half, without allocating a new list or array for the result. The list can have an odd or even number of nodes.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "hard",
+    "tell": "rearrange its nodes so that the second half of the list is reversed and interleaved with the first half",
+    "whyNotOthers": {
+      "linked-list-reversal": "Reversing the second half is a necessary step, but finding the midpoint to split the list first is the piece that determines the overall approach.",
+      "two-pointers": "The two traversal references move at different speeds through a single chain rather than beginning at opposite ends of a sorted array to converge.",
+      "monotonic-stack": "There's no comparison against a running maximum or minimum; nodes are relocated based purely on their position, not their values.",
+      "k-way-merge": "Only one list is being restructured internally, not several sorted lists being merged together."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-09",
+    "statement": "You are given an array where each value at an index points to another index to visit next, forming an implicit chain of hops through the array itself. Starting from index zero, determine whether following these hops repeatedly leads into a cycle whose length is greater than one. Do not allocate a visited array proportional to the input size.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "medium",
+    "tell": "following these hops repeatedly leads into a cycle whose length is greater than one",
+    "whyNotOthers": {
+      "cyclic-sort": "Although values act like indices, the goal is detecting a cycle in the hop sequence, not placing each number into its matching slot.",
+      "union-find": "Merging visited indices into groups could detect the cycle but needs memory per index, which the space constraint here rules out.",
+      "bfs": "There's no branching exploration of multiple neighbors per step; each index deterministically hops to exactly one next index.",
+      "topological-sort": "The array doesn't represent a dependency graph to order; it's a single chain of hops to check for a repeating loop."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "fast-slow-pointers-10",
+    "statement": "Given the head of a singly linked list, split it into two halves as evenly as possible and return the head of the second half, leaving the first half's final node pointing to null. If the list has an odd number of nodes, the extra node should belong to the first half. Do this in one traversal.",
+    "pattern": "fast-slow-pointers",
+    "difficulty": "medium",
+    "tell": "split it into two halves as evenly as possible and return the head of the second half",
+    "whyNotOthers": {
+      "two-pointers": "There's a single linked chain being traversed by pointers moving at different speeds, not an array being scanned from both ends inward.",
+      "linked-list-reversal": "No links need to be reversed here; the list is only cut into two pieces at the located midpoint.",
+      "modified-binary-search": "Nodes can't be jumped to by computed index in a linked list, so the midpoint must be found by traversal rather than search.",
+      "k-way-merge": "Only one list is being divided, not multiple sorted lists being combined into one ordered sequence."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "merge-intervals-01",
+    "statement": "You are given a list of meeting time ranges, each with a start and end time, not necessarily in any order. Combine any ranges that overlap or touch each other into single spans, and return the resulting list of non-overlapping ranges sorted by start time. Some ranges may be fully contained within others.",
+    "pattern": "merge-intervals",
+    "difficulty": "easy",
+    "tell": "Combine any ranges that overlap or touch each other into single spans",
+    "whyNotOthers": {
+      "two-pointers": "There's a single collection of ranges to consolidate after sorting, not two separate sorted sequences whose ends are compared against each other.",
+      "greedy": "Merging looks like a sequence of local choices, but the overlap check against a running merged span is the defining mechanic, not an exchange-argument optimization.",
+      "monotonic-stack": "A stack of increasing or decreasing values isn't the structure here; ranges are combined based on overlapping bounds after sorting by start time.",
+      "topological-sort": "There's no dependency ordering between distinct tasks; ranges are combined purely based on numeric overlap of their bounds."
+    },
+    "complexity": "O(n log n) time / O(n) space"
+  },
+  {
+    "id": "merge-intervals-02",
+    "statement": "Given a list of non-overlapping ranges already sorted by start time, insert one new range into the list, merging it with any existing ranges it overlaps, and return the updated list still sorted and non-overlapping. The new range's position relative to the others is unknown in advance.",
+    "pattern": "merge-intervals",
+    "difficulty": "medium",
+    "tell": "insert one new range into the list, merging it with any existing ranges it overlaps",
+    "whyNotOthers": {
+      "modified-binary-search": "Finding where the new range would fit could use binary search, but merging it with neighbors on both sides still requires directly comparing overlapping bounds.",
+      "two-pointers": "Only one list is being updated with a single new element, not two separate sorted sequences being interleaved from both ends.",
+      "k-way-merge": "There's a single list receiving one new range, not multiple sorted lists whose elements need combining together.",
+      "greedy": "There's no sequence of independent optimal picks; the new range is compared against existing bounds until overlap stops."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "merge-intervals-03",
+    "statement": "Two employees each have a list of their own busy time ranges throughout the day, both lists already sorted by start time. Find all the time ranges when both employees are simultaneously free, given each person's schedule is bounded by the start and end of their working day. Busy ranges within one person's list never overlap each other.",
+    "pattern": "merge-intervals",
+    "difficulty": "medium",
+    "tell": "Find all the time ranges when both employees are simultaneously free",
+    "whyNotOthers": {
+      "two-pointers": "Comparing two sorted lists of busy ranges resembles walking two sequences, but the core operation is intersecting and merging overlapping bounds, not converging toward a target sum.",
+      "k-way-merge": "Only two schedules are involved here rather than many sorted lists that require a heap to merge efficiently.",
+      "two-heaps": "There's no need to track a running median or split values into balanced high and low groups; the task is comparing overlapping time bounds.",
+      "greedy": "Advancing through both lists picking the earliest ending busy range at each step is a detail of implementation, but the defining structure is overlap comparison between interval bounds."
+    },
+    "complexity": "O(m + n) time / O(m + n) space"
+  },
+  {
+    "id": "merge-intervals-04",
+    "statement": "You are given a list of intervals representing job start and end times, not sorted in any particular order. Determine the minimum number of meeting rooms required to schedule every job without any two overlapping jobs sharing the same room at the same time. Some jobs may share exact boundary times without conflicting.",
+    "pattern": "merge-intervals",
+    "difficulty": "medium",
+    "tell": "minimum number of meeting rooms required to schedule every job without any two overlapping jobs sharing the same room",
+    "whyNotOthers": {
+      "two-heaps": "Tracking active end times with a heap is one valid implementation detail, but the underlying reasoning is about counting concurrent overlapping ranges, the hallmark of interval scheduling.",
+      "greedy": "Assigning jobs to rooms one at a time is a greedy-flavored step, but the real driver is measuring how many ranges overlap at once, which is an interval-overlap problem.",
+      "topological-sort": "There's no dependency ordering where one job must happen before another; conflicts are purely about overlapping time bounds.",
+      "union-find": "Jobs aren't being grouped into connected components by shared identity; the count needed is the peak number of simultaneously active ranges."
+    },
+    "complexity": "O(n log n) time / O(n) space"
+  },
+  {
+    "id": "merge-intervals-05",
+    "statement": "Given a list of intervals representing intermittent power outages logged by different sensors across a single day, all given as start and end times in no particular order, find the total duration of time during which at least one outage was occurring. Overlapping outages should not be double-counted in the total.",
+    "pattern": "merge-intervals",
+    "difficulty": "medium",
+    "tell": "find the total duration of time during which at least one outage was occurring",
+    "whyNotOthers": {
+      "sliding-window": "There's no single contiguous span being expanded or contracted over an array; distinct time ranges from multiple sensors must first be sorted and combined.",
+      "greedy": "There's no sequence of independent optimal picks; the total is computed by consolidating overlapping bounds after sorting by start time.",
+      "two-pointers": "A single list of ranges is being consolidated here, not two separate sorted sequences being compared from opposite ends.",
+      "monotonic-stack": "Nothing is being popped based on an increasing or decreasing trend; overlap is judged by comparing each range's bounds to a running merged span."
+    },
+    "complexity": "O(n log n) time / O(n) space"
+  },
+  {
+    "id": "merge-intervals-06",
+    "statement": "You are given a list of intervals representing reserved seating blocks on a train car, and a new group's desired reservation range. Determine whether the new group's range can be added without overlapping any existing reservation. The existing reservations are already sorted and guaranteed not to overlap each other.",
+    "pattern": "merge-intervals",
+    "difficulty": "easy",
+    "tell": "Determine whether the new group's range can be added without overlapping any existing reservation",
+    "whyNotOthers": {
+      "modified-binary-search": "Locating roughly where the new range would sit could use binary search, but confirming no overlap still requires comparing bounds against the actual neighboring ranges directly.",
+      "two-pointers": "Only one list of existing ranges is being checked against a single new range, not two sequences being swept from opposite ends toward each other.",
+      "greedy": "There's no sequence of independent optimal choices to make; the check is a direct comparison of the new range's bounds against existing ones.",
+      "union-find": "No grouping of elements into connected sets occurs; overlap is a pairwise numeric comparison between ranges, not a connectivity question."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "merge-intervals-07",
+    "statement": "Given a list of intervals representing employee vacation requests with start and end days, find the maximum number of requests that can be approved such that no two approved requests share any day in common. Requests are not given in any sorted order and vary widely in length.",
+    "pattern": "merge-intervals",
+    "difficulty": "hard",
+    "tell": "find the maximum number of requests that can be approved such that no two approved requests share any day in common",
+    "whyNotOthers": {
+      "greedy": "Picking requests by earliest end day is the implementation trick, but recognizing that conflicts are defined by overlapping day ranges is what identifies this as an interval problem first.",
+      "knapsack-01": "Each request isn't weighed against a capacity budget; conflicts arise purely from overlapping date ranges, not from a value-versus-weight tradeoff.",
+      "topological-sort": "There's no ordering dependency where one request must precede another; the constraint is simply that chosen ranges cannot overlap in time.",
+      "two-pointers": "A single collection of ranges is being filtered for maximum non-overlap, not two separate sorted sequences being compared from opposite ends."
+    },
+    "complexity": "O(n log n) time / O(n) space"
+  },
+  {
+    "id": "merge-intervals-08",
+    "statement": "You are given two separate lists of ranges representing free time slots for two different teams, each list already sorted and internally non-overlapping. A meeting of a specific required duration needs to be scheduled in a slot where both teams are free. Find the earliest such slot that can fit the meeting.",
+    "pattern": "merge-intervals",
+    "difficulty": "easy",
+    "tell": "meeting of a specific required duration needs to be scheduled in a slot where both teams are free",
+    "whyNotOthers": {
+      "two-pointers": "Comparing two sorted lists resembles a two-pointer sweep, but the underlying operation is intersecting overlapping bounds between ranges rather than converging on a single target value.",
+      "sliding-window": "There's no single array with a variable-length contiguous span to expand or shrink; two separate range lists are being intersected against each other.",
+      "k-way-merge": "Only two lists of ranges are involved rather than many sorted sequences requiring a heap to merge efficiently.",
+      "modified-binary-search": "The qualifying slot isn't found via a monotonic search over sorted values; it emerges from directly comparing overlapping bounds between two lists."
+    },
+    "complexity": "O(m + n) time / O(1) extra space"
+  },
+  {
+    "id": "merge-intervals-09",
+    "statement": "Given a list of intervals representing video clips, each defined by a start and end frame, determine the minimum number of clips needed to cover an entire target range from frame zero to a given end frame. If full coverage is impossible with the given clips, indicate that no solution exists. Clips can overlap each other freely.",
+    "pattern": "merge-intervals",
+    "difficulty": "hard",
+    "tell": "minimum number of clips needed to cover an entire target range from frame zero to a given end frame",
+    "whyNotOthers": {
+      "greedy": "Repeatedly choosing the clip that extends coverage the farthest is the implementation strategy, but the problem is fundamentally about reasoning over overlapping range bounds, which frames it as an interval problem.",
+      "knapsack-unbounded": "Clips aren't being reused an unlimited number of times to fill a capacity; each clip is used at most once and coverage depends on overlapping bounds, not repeated selection.",
+      "dfs": "Exploring every combination of clip choices recursively is far less efficient than sorting by start frame and reasoning about overlap directly.",
+      "topological-sort": "There's no dependency ordering between clips that must be respected; the goal is purely covering a numeric range with overlapping spans."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
+  },
+  {
+    "id": "merge-intervals-10",
+    "statement": "You are given a list of intervals representing subscription active periods for a customer, possibly overlapping or adjacent, given in no particular order. Determine the total number of distinct calendar days on which the customer had at least one active subscription. Overlapping periods must not inflate the count of active days.",
+    "pattern": "merge-intervals",
+    "difficulty": "easy",
+    "tell": "Determine the total number of distinct calendar days on which the customer had at least one active subscription",
+    "whyNotOthers": {
+      "sliding-window": "There's no single array being scanned with a shrinking or growing span; separate date ranges must first be sorted and consolidated before counting.",
+      "cyclic-sort": "Values here are date ranges rather than numbers confined to 1..n suitable for index-based placement.",
+      "greedy": "There's no sequence of locally optimal decisions to make; the count comes directly from merging overlapping ranges and summing their lengths.",
+      "two-pointers": "A single list of ranges is consolidated here rather than two separate sorted sequences being compared from opposite ends toward each other."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-01",
+    "statement": "You are given an array containing n distinct numbers, each ranging from 1 to n but with exactly one number missing from that range and the array otherwise unsorted. Find the missing number without using any extra array or set to track which numbers have appeared. The array's length is n minus one.",
+    "pattern": "cyclic-sort",
+    "difficulty": "easy",
+    "tell": "each ranging from 1 to n but with exactly one number missing from that range",
+    "whyNotOthers": {
+      "two-pointers": "The array isn't sorted and there's no pair or target sum to converge on from both ends; each value needs to land at its matching index instead.",
+      "modified-binary-search": "There's no sorted order to exploit for a binary search; the values need to be placed into their expected index positions to reveal the gap.",
+      "greedy": "There's no sequence of locally optimal picks; every value is deterministically placed at its own index until a mismatch reveals the missing number.",
+      "monotonic-stack": "No ordering comparison against previous elements is needed; the fix is placing each number directly at the index matching its value."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-02",
+    "statement": "Given an array of n integers where each value lies between 1 and n and duplicates are allowed, find every number that appears more than once. You must not allocate an extra array or hash set to count occurrences, and each element should be examined a bounded number of times.",
+    "pattern": "cyclic-sort",
+    "difficulty": "medium",
+    "tell": "each value lies between 1 and n and duplicates are allowed",
+    "whyNotOthers": {
+      "two-pointers": "The array isn't sorted, and there's no pair of ends to converge; each value is matched against the index it should occupy.",
+      "top-k-heap": "There's no ranking of values by size needed; duplicates are found by checking whether a value already sits at its expected index slot.",
+      "union-find": "No merging of elements into connected groups occurs; duplicates surface directly by attempting to place each value into its indexed slot.",
+      "backtracking": "No combinations need to be tried and undone; a single deterministic pass placing values at their index reveals every duplicate."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-03",
+    "statement": "You are given an unsorted array of n integers, each between 1 and n, with no duplicates and no numbers missing. Rearrange the array in place so that every value ends up at the index matching its value minus one, using only a constant amount of extra memory. Do this with the fewest possible swaps.",
+    "pattern": "cyclic-sort",
+    "difficulty": "easy",
+    "tell": "Rearrange the array in place so that every value ends up at the index matching its value minus one",
+    "whyNotOthers": {
+      "two-pointers": "There's no sorted order or pair of ends converging toward each other; each element is swapped directly toward the index its value implies.",
+      "greedy": "There's no sequence of independent optimal choices being weighed; each out-of-place value is swapped into its correct slot until the whole array is settled.",
+      "monotonic-stack": "No comparison against a running increasing or decreasing trend is involved; placement depends only on a value's own numeric identity.",
+      "union-find": "There's no need to track connected groups of elements; each value is independently placed at the index it numerically implies."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-04",
+    "statement": "Given an array of n integers where each value ranges from 1 to n, one number occurs twice and this causes another number in the range to be entirely absent. Find both the duplicated number and the missing number using only constant extra space beyond the input array itself.",
+    "pattern": "cyclic-sort",
+    "difficulty": "medium",
+    "tell": "one number occurs twice and this causes another number in the range to be entirely absent",
+    "whyNotOthers": {
+      "two-pointers": "The array isn't sorted and there's no target sum between two elements; each value's identity determines its correct index slot instead.",
+      "modified-binary-search": "There's no monotonic sorted sequence to search over directly; the array must be rearranged by placing values into index slots to expose the mismatch.",
+      "union-find": "No connected components are being tracked between elements; the duplicate and missing values are found by direct index placement.",
+      "top-k-heap": "There's no need to rank values by magnitude; the answer comes from noticing which index fails to receive its expected value during placement."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-05",
+    "statement": "You are given an array of size n containing numbers from 1 to n, but the array might have several numbers missing and, as a result, several duplicates filling those gaps. Return a list of every number in the range 1 to n that does not appear anywhere in the array, without using extra space proportional to n.",
+    "pattern": "cyclic-sort",
+    "difficulty": "medium",
+    "tell": "Return a list of every number in the range 1 to n that does not appear anywhere in the array",
+    "whyNotOthers": {
+      "two-pointers": "There's no sorted array or pair of converging ends; the trick is placing each number at the index its value implies and reading off the gaps.",
+      "greedy": "There's no sequence of independent optimal decisions; each value is deterministically swapped toward its indexed slot until the array stabilizes.",
+      "bfs": "There's no graph or tree of neighbors to explore layer by layer; the array is rearranged directly by value-to-index correspondence.",
+      "topological-sort": "There's no dependency ordering among elements; missing numbers are revealed purely by which index fails to hold its matching value."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-06",
+    "statement": "Given an unsorted array of n integers ranging from 0 to n, with exactly one number from that range missing, find the missing number. Note the range now includes zero, so the array has one fewer valid slot than values in the range. Avoid any extra array or hash set to track which numbers were seen.",
+    "pattern": "cyclic-sort",
+    "difficulty": "easy",
+    "tell": "integers ranging from 0 to n, with exactly one number from that range missing",
+    "whyNotOthers": {
+      "two-pointers": "The array is unsorted and there's no pair of values to converge on from both ends; each number is instead matched against the index it should occupy.",
+      "modified-binary-search": "Sorting first to enable a binary search would work but discards the more direct trick of placing each value at its own index in one pass.",
+      "monotonic-stack": "No comparison against a running increasing or decreasing sequence applies; the missing value is exposed by direct index placement.",
+      "greedy": "There isn't a sequence of independent optimal choices; every value is swapped toward its implied index until the mismatch reveals the answer."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-07",
+    "statement": "You are given an array of n integers where each value is between 1 and n, and the array may contain several duplicates and several missing values in equal amount. Return two lists: one of every duplicated number and one of every missing number. Extra space proportional to n is not allowed.",
+    "pattern": "cyclic-sort",
+    "difficulty": "hard",
+    "tell": "Return two lists: one of every duplicated number and one of every missing number",
+    "whyNotOthers": {
+      "two-pointers": "There's no sorted structure or pair of ends to converge; the approach places each value at the index its number implies and reads off mismatches.",
+      "union-find": "No grouping of elements into connected sets is required; duplicates and gaps are both revealed through direct index placement of values.",
+      "top-k-heap": "There's no need to rank values by magnitude; the duplicates and missing numbers surface purely from which index holds the wrong or a repeated value.",
+      "backtracking": "No combination of choices needs to be tried and undone; a single deterministic placement pass reveals both lists directly."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-08",
+    "statement": "Given an array of n integers where values range from 1 to n and duplicates may occur any number of times, find the single smallest positive number that is missing from the array. The array is not sorted and may be quite large, but only constant extra memory beyond the array is allowed.",
+    "pattern": "cyclic-sort",
+    "difficulty": "hard",
+    "tell": "find the single smallest positive number that is missing from the array",
+    "whyNotOthers": {
+      "two-pointers": "There's no sorted sequence or pair of converging ends; each value is placed at the index corresponding to its own number to expose the first gap.",
+      "modified-binary-search": "There's no monotonic property across the unsorted array to binary search directly; values must first be rearranged by index placement.",
+      "greedy": "There isn't a single locally optimal choice per step; every in-range value is swapped toward its implied index until a full pass exposes the smallest gap.",
+      "top-k-heap": "The task isn't about ranking or extracting large values; it's about which small positive index fails to receive its matching value."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-09",
+    "statement": "You are given an array of n integers where each value is between 1 and n, and it is known that the array is almost correctly arranged except that exactly one pair of adjacent values has been swapped. Determine which two positions were swapped by finding the two values that do not sit in their expected index slots.",
+    "pattern": "cyclic-sort",
+    "difficulty": "easy",
+    "tell": "exactly one pair of adjacent values has been swapped",
+    "whyNotOthers": {
+      "two-pointers": "There's no sorted array with a target sum to converge toward from both ends; the fix comes from comparing each value against the index it should occupy.",
+      "monotonic-stack": "No running increasing or decreasing comparison is needed; the mismatch is found by checking direct value-to-index correspondence.",
+      "greedy": "There isn't a sequence of independent optimal choices; a single pass placing values at their expected indices directly reveals the swapped pair.",
+      "union-find": "No connected components need tracking between elements; the answer comes from noticing exactly two indices holding each other's expected values."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "cyclic-sort-10",
+    "statement": "Given an array of n integers where each value ranges from 1 to n, find the first value encountered, in index order, that does not match the number occupying its expected slot after the array has conceptually been arranged so each number sits at its own index. Do not allocate an auxiliary array to check this.",
+    "pattern": "cyclic-sort",
+    "difficulty": "medium",
+    "tell": "does not match the number occupying its expected slot after the array has conceptually been arranged so each number sits at its own index",
+    "whyNotOthers": {
+      "two-pointers": "The array isn't sorted for a converging-ends search; each number's own value determines the index slot it belongs in.",
+      "modified-binary-search": "There's no sorted monotonic sequence to search directly; values must be placed at their implied indices to expose the first mismatch.",
+      "greedy": "There's no sequence of independent locally optimal picks; a single deterministic placement pass surfaces the first mismatched index.",
+      "top-k-heap": "There's no need to rank or extract extreme values; the answer depends only on direct index-to-value correspondence during a linear pass."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  }
+]
