@@ -1051,17 +1051,17 @@
   },
   {
     "id": "dfs-06",
-    "statement": "You are given a large sudoku-like grid with some cells pre-filled and a set of placement rules. Determine whether the grid can be completely filled so every rule is satisfied, exhausting all consequences of a placement before deciding it fails and trying a different value in that cell.",
+    "statement": "You are given a directed graph of web pages where each edge is a link from one page to another, and a starting page. Determine the total number of distinct pages reachable from the start, including pages only reachable through long chains of links, by following each link path to its full end before returning to try a page's next link.",
     "pattern": "dfs",
     "difficulty": "hard",
-    "tell": "exhausting all consequences of a placement before deciding it fails and trying a different value in that cell",
+    "tell": "following each link path to its full end before returning to try a page's next link",
     "whyNotOthers": {
-      "backtracking": "Trying and undoing candidate values per cell is part of the process, but the deciding structure here is recursively diving into a full grid completion, not enumerating independent subsets.",
-      "bfs": "Expanding all partially filled grids of a given number of placements at once would explode the search space; diving deep into one placement's consequences first is more direct.",
-      "greedy": "Locking in whichever value looks locally valid without exploring consequences can produce dead ends deep in the grid with no way to recover.",
-      "union-find": "There are no groups of cells being merged based on connectivity; validity depends on rule constraints per row, column, and box."
+      "bfs": "Expanding one layer of links at a time would also find every reachable page, but following each link path to its full end before returning is the more direct recursive fit here.",
+      "topological-sort": "No overall ordering of all pages by dependency is being requested; only the count of pages reachable from one starting page matters.",
+      "union-find": "The links are directed, so merging pages into undirected connected components would not respect the one-way nature of a link.",
+      "greedy": "There's no single best link to follow per page; every reachable page must be visited regardless of how deep its link chain runs."
     },
-    "complexity": "O(9^(rows × cols)) time / O(rows × cols) space"
+    "complexity": "O(V + E) time / O(V) space"
   },
   {
     "id": "dfs-07",
@@ -1079,17 +1079,17 @@
   },
   {
     "id": "dfs-08",
-    "statement": "You are given a two-dimensional board of letters and a target word. Determine whether the word can be traced out by moving between horizontally or vertically adjacent cells, using each cell at most once per attempt, committing to a chain of adjacent letters and abandoning it the moment it can no longer match the target.",
+    "statement": "You are given a large binary tree where each node stores a positive or negative integer. Determine the maximum total value obtainable by summing the values along any downward path that starts and ends anywhere within a single subtree, computing each subtree's best downward contribution fully before combining it at the parent above.",
     "pattern": "dfs",
     "difficulty": "hard",
-    "tell": "committing to a chain of adjacent letters and abandoning it the moment it can no longer match the target",
+    "tell": "computing each subtree's best downward contribution fully before combining it at the parent above",
     "whyNotOthers": {
-      "backtracking": "Undoing a committed cell when a chain fails resembles backtracking's structure, but the traversal itself is a recursive descent through adjacent board cells, which is the dominant pattern here.",
-      "bfs": "Expanding all partial matches of the same length at once wastes effort compared to diving along one candidate chain and abandoning it early on mismatch.",
-      "trie": "A trie would help if many target words were searched at once, but a single target word is matched by direct adjacency traversal instead.",
-      "greedy": "Committing to whichever adjacent letter looks promising without the ability to retreat can miss a valid path that requires an early different choice."
+      "bfs": "Processing the tree level by level doesn't naturally produce each subtree's finished best-path value before it's needed at the parent above.",
+      "backtracking": "No candidate path is being built node by node and undone on failure; each subtree's best downward value is computed once and reused going up.",
+      "topological-sort": "There is no dependency ordering being resolved among nodes outside the tree's own parent-child structure; only combined subtree values matter.",
+      "greedy": "Picking the child with the larger value without fully computing both subtrees can miss the true best path spanning deeper into the weaker-looking side."
     },
-    "complexity": "O(rows × cols × 4^L) time / O(L) space"
+    "complexity": "O(n) time / O(h) space"
   },
   {
     "id": "dfs-09",
