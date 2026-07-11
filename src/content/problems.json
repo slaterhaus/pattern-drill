@@ -1516,7 +1516,7 @@
     "statement": "You're given a sorted array where every element appears exactly twice except for one element that appears only once, and the array's length is always odd. Locate the index of the singly-occurring element by comparing whether pairs still line up on even-odd index boundaries to decide which half to keep.",
     "pattern": "modified-binary-search",
     "difficulty": "hard",
-    "tell": "comparing whether pairs still line up on even-odd index boundaries to decide which half to keep",
+    "tell": "every element appears exactly twice except for one",
     "whyNotOthers": {
       "cyclic-sort": "The array holds duplicated values rather than a permutation of indices 1 through n, so values can't be placed by direct index swaps.",
       "two-pointers": "No two indices converge from opposite ends comparing values; a single midpoint probe determines which half still holds the anomaly.",
@@ -1656,7 +1656,7 @@
     "statement": "A social media platform needs to surface the 25 accounts with the most followers among millions of accounts, refreshed as follower counts change throughout the day. Recomputing a full ranking of every account whenever a single follower count changes would be far too slow.",
     "pattern": "top-k-heap",
     "difficulty": "medium",
-    "tell": "Recomputing a full ranking of every account whenever a single follower count changes would be far too slow",
+    "tell": "the most followers among millions of accounts",
     "whyNotOthers": {
       "sliding-window": "No contiguous subset of accounts is being scanned; follower counts across the entire population are compared to the current leaders.",
       "two-heaps": "No running median or balanced split into two halves is required; a single group of top follower counts is maintained.",
@@ -1712,7 +1712,7 @@
     "statement": "You are given k arrays of integers, each individually sorted in ascending order, and must find the overall smallest range that includes at least one number from every array. At each step, the array currently holding the smallest unconsidered value should advance to reveal its next candidate.",
     "pattern": "k-way-merge",
     "difficulty": "hard",
-    "tell": "the array currently holding the smallest unconsidered value should advance to reveal its next candidate",
+    "tell": "k arrays of integers, each individually sorted",
     "whyNotOthers": {
       "sliding-window": "There isn't one sequence to slide a window across; values are drawn from k separate sorted arrays that must be advanced individually.",
       "two-heaps": "A single group tracking the current minimum across sources is needed, not a balanced split of values into a low half and a high half.",
@@ -1726,7 +1726,7 @@
     "statement": "A distributed search engine splits its index across 8 shards, and each shard returns its matching results already sorted by relevance score. The final response to the user must present all shards' results merged into one relevance-sorted list without re-scoring or re-sorting every individual result from scratch.",
     "pattern": "k-way-merge",
     "difficulty": "medium",
-    "tell": "merged into one relevance-sorted list without re-scoring or re-sorting every individual result from scratch",
+    "tell": "each shard returns its matching results already sorted",
     "whyNotOthers": {
       "top-k-heap": "The complete merged ordering across all shards is wanted, not just a fixed number of the highest-scoring results.",
       "union-find": "Results aren't being grouped into connected clusters; they're being interleaved by relevance score across sorted sources.",
@@ -1754,7 +1754,7 @@
     "statement": "You maintain k independent leaderboards, one per game region, each already sorted by score in descending order. Produce a single global leaderboard containing every player from every region in correct overall descending-score order.",
     "pattern": "k-way-merge",
     "difficulty": "easy",
-    "tell": "a single global leaderboard containing every player from every region in correct overall descending-score order",
+    "tell": "k independent leaderboards, one per game region, each already sorted",
     "whyNotOthers": {
       "top-k-heap": "Every player needs to appear in the final global ordering, not just a fixed number of the highest scorers overall.",
       "two-heaps": "No split into two balanced halves around a median score is needed; the current best candidate across all region lists is repeatedly selected.",
@@ -1810,7 +1810,7 @@
     "statement": "A video platform stores k separate watch-history files per device, each already sorted by watch date, and must generate one unified sorted history when a user views their combined activity across all devices. Every entry from every device file must appear in the final result.",
     "pattern": "k-way-merge",
     "difficulty": "easy",
-    "tell": "must generate one unified sorted history when a user views their combined activity across all devices",
+    "tell": "k separate watch-history files per device, each already sorted",
     "whyNotOthers": {
       "top-k-heap": "Every entry from every device needs to appear in the output, not just a limited number of the most recent or oldest entries.",
       "merge-intervals": "Watch dates are single points to interleave in order, not ranges of time to be checked for overlap and merged.",
