@@ -698,5 +698,705 @@
       "top-k-heap": "There's no need to rank or extract extreme values; the answer depends only on direct index-to-value correspondence during a linear pass."
     },
     "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "linked-list-reversal-01",
+    "statement": "You are given the head of a singly linked list. Rearrange the nodes so the list reads in the opposite order, changing only the next pointers of the existing nodes and returning the new head. You may not create new nodes or copy values into an array.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "easy",
+    "tell": "changing only the next pointers of the existing nodes",
+    "whyNotOthers": {
+      "fast-slow-pointers": "Two speeds are useful for finding a midpoint or cycle, not for flipping every next pointer along the chain.",
+      "two-pointers": "There is no pair of values to compare or converge on; a running trio of previous, current, and next node references does the work instead.",
+      "dfs": "The list has no branching structure to explore recursively into subtrees; it is one straight chain whose links get flipped.",
+      "topological-sort": "There is no dependency graph or ordering constraint among nodes; the same nodes are simply relinked in the reverse direction."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-02",
+    "statement": "Given the head of a singly linked list and two positions marking a sub-range, rewire the pointers so that only the nodes between those two positions come out in flipped order, while the nodes before and after stay untouched. Do this in a single pass without allocating a new list.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "medium",
+    "tell": "rewire the pointers so that only the nodes between those two positions come out in flipped order",
+    "whyNotOthers": {
+      "fast-slow-pointers": "No midpoint or cycle detection is needed; the two given positions already mark exactly where the flip starts and ends.",
+      "two-pointers": "The two positions aren't converging index bounds on a sorted array; they are boundary markers on a chain whose internal links must be rewired.",
+      "backtracking": "There is no branching set of choices to try and undo; each node's next pointer is deterministically redirected exactly once.",
+      "monotonic-stack": "No comparison against a running trend of values decides anything here; only positional splicing of the sub-range matters."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-03",
+    "statement": "You are given the head of a singly linked list and an integer k. Flip the order of nodes within every consecutive block of k nodes, leaving any final partial block at the end exactly as it was. Perform the rearrangement using only the existing nodes.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "medium",
+    "tell": "Flip the order of nodes within every consecutive block of k nodes",
+    "whyNotOthers": {
+      "sliding-window": "A block of k nodes is examined at a time, but the goal is rewiring pointers within each block, not tracking a running aggregate over a span.",
+      "fast-slow-pointers": "There's no need to detect a midpoint or cycle; each block boundary is found by simply counting k nodes forward.",
+      "k-way-merge": "There is only a single list here, not several sorted lists whose smallest fronts need merging together.",
+      "backtracking": "There is no set of candidate choices to try and undo; each block's nodes are deterministically relinked in one forward pass."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-04",
+    "statement": "Given the head of a singly linked list, determine whether the sequence of values reads the same forward and backward. You must do this using only constant extra memory beyond a few pointers, without copying the values into an array first.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "medium",
+    "tell": "using only constant extra memory beyond a few pointers, without copying the values into an array first",
+    "whyNotOthers": {
+      "fast-slow-pointers": "Locating the midpoint uses two speeds, but confirming the palindrome then requires flipping the second half's links to compare outward.",
+      "two-pointers": "The values live in a singly linked chain, not an indexable array, so there is no direct way to start pointers at both ends and step inward.",
+      "monotonic-stack": "No running increasing or decreasing trend is being tracked; only whether values mirror each other around the middle matters.",
+      "cyclic-sort": "Values aren't bounded to a range matching the list's length for index placement; the check is purely about mirrored order."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-05",
+    "statement": "You are given the head of a singly linked list where nodes alternate between two interleaved sub-sequences woven together one node at a time. Separate them apart, then flip one of the two resulting chains before returning both heads, touching only existing next pointers.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "hard",
+    "tell": "flip one of the two resulting chains before returning both heads, touching only existing next pointers",
+    "whyNotOthers": {
+      "fast-slow-pointers": "The two interleaved chains are already marked by alternating position, so no midpoint-finding traversal at two speeds is required to split them.",
+      "two-pointers": "The nodes cannot be indexed from both ends like an array; separating and flipping is done by walking next references one link at a time.",
+      "k-way-merge": "The two sub-sequences are being pulled apart and flipped, not merged together from sorted fronts into one output.",
+      "topological-sort": "There is no dependency ordering to resolve among nodes; the woven pattern is undone by direct pointer surgery."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-06",
+    "statement": "Given the head of a singly linked list, group its nodes into consecutive pairs and swap the two nodes within each pair, leaving a lone final node untouched if the list length is odd. The swap must be achieved by relinking existing nodes rather than swapping their stored values.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "easy",
+    "tell": "The swap must be achieved by relinking existing nodes rather than swapping their stored values",
+    "whyNotOthers": {
+      "two-pointers": "The pairs aren't found by scanning from opposite ends of a sorted structure; adjacent nodes are handled two at a time moving forward.",
+      "fast-slow-pointers": "No midpoint or cycle detection is involved; each pair boundary is simply the next two nodes in sequence.",
+      "backtracking": "There's no set of choices to explore and undo; every adjacent pair is swapped in one deterministic forward pass.",
+      "greedy": "There's no locally optimal decision being weighed per node; the pairing and relinking rule is fixed regardless of values."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-07",
+    "statement": "You are given the head of a singly linked list and an integer k that is guaranteed to be no larger than the list's length. Flip the order of just the first k nodes, leaving every node after that block pointing onward exactly as before. Only pointer relinking within the first block is permitted.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "easy",
+    "tell": "Flip the order of just the first k nodes",
+    "whyNotOthers": {
+      "two-pointers": "There is no pair of values or sorted ends being compared; a running trio of previous, current, and next node references flips the block instead.",
+      "fast-slow-pointers": "No midpoint or cycle needs locating; the boundary of the block to flip is simply the k-th node counted from the front.",
+      "k-way-merge": "Only one list is being restructured here, not several sorted lists whose heads are repeatedly compared and merged.",
+      "cyclic-sort": "Node values aren't being placed into index slots based on their numeric range; only positional relinking matters."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-08",
+    "statement": "Given the head of a singly linked list and a value x, rearrange the nodes so that every node with a value less than x comes before every node with a value greater than or equal to x, while preserving each group's original relative order. The rearrangement must relink nodes rather than copy values.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "medium",
+    "tell": "The rearrangement must relink nodes rather than copy values",
+    "whyNotOthers": {
+      "two-pointers": "Values are not being compared from two ends of a sorted array converging inward; nodes are instead peeled off into two separate chains and rejoined.",
+      "cyclic-sort": "Values aren't bounded to a range that matches list indices for direct index placement; the partition is based purely on comparison against x.",
+      "merge-intervals": "There are no ranges or intervals being combined; single node values are being partitioned into two groups.",
+      "greedy": "No sequence of locally optimal picks is being made; every node is deterministically routed to one of two chains based on its value."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-09",
+    "statement": "You are given the head of a singly linked list that may contain a cycle where the tail connects back into an earlier node, flipping the direction every node's next pointer points during traversal for the acyclic prefix before the loop. Return the new head of that flipped prefix, or null if the whole list is one cycle.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "hard",
+    "tell": "flipping the direction every node's next pointer points during traversal for the acyclic prefix before the loop",
+    "whyNotOthers": {
+      "fast-slow-pointers": "Detecting whether and where a cycle begins uses two speeds, but rewriting the prefix's links afterward is a separate relinking pass.",
+      "union-find": "No merging of disjoint node groups into components is needed; the task is purely about redirecting next pointers along a chain.",
+      "topological-sort": "There is no dependency ordering being computed among distinct tasks; a single chain of nodes has its direction flipped.",
+      "dfs": "Recursively exploring branches doesn't apply to a singly linked structure with one successor per node; only pointer relinking is needed."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "linked-list-reversal-10",
+    "statement": "Given the head of a singly linked list, rearrange it so every node's next pointer instead points to the node that was previously two positions ahead, effectively flipping the odd-indexed and even-indexed nodes into two separately ordered but interleaved reversed chains. Only pointer relinking is allowed.",
+    "pattern": "linked-list-reversal",
+    "difficulty": "easy",
+    "tell": "flipping the odd-indexed and even-indexed nodes into two separately ordered but interleaved reversed chains",
+    "whyNotOthers": {
+      "two-pointers": "The odd and even nodes aren't accessed from two ends of a sorted array converging inward; they are split by alternating position along one chain.",
+      "fast-slow-pointers": "No midpoint or cycle needs locating; every node's parity determines which of the two chains it belongs to.",
+      "sliding-window": "There is no contiguous span of nodes being tracked with a running aggregate; every node is permanently rerouted by its position parity.",
+      "k-way-merge": "The two interleaved chains are being separated and flipped, not merged together from sorted fronts."
+    },
+    "complexity": "O(n) time / O(1) space"
+  },
+  {
+    "id": "bfs-01",
+    "statement": "You are given a grid of open cells and walls, a starting cell, and an exit cell. Each move goes one cell up, down, left, or right through open cells. Return the minimum number of moves needed to reach the exit, or -1 if it cannot be reached.",
+    "pattern": "bfs",
+    "difficulty": "easy",
+    "tell": "minimum number of moves needed to reach the exit",
+    "whyNotOthers": {
+      "dfs": "Depth-first exploration finds a path but not necessarily the shortest one in an unweighted grid.",
+      "backtracking": "One optimal distance is needed, not an enumeration of every possible route.",
+      "greedy": "Always stepping toward the exit can walk into dead ends; no local choice is provably safe.",
+      "union-find": "Connectivity answers whether the exit is reachable, not in how few moves."
+    },
+    "complexity": "O(rows × cols) time / O(rows × cols) space"
+  },
+  {
+    "id": "bfs-02",
+    "statement": "You are given an unweighted graph of friendships between people, represented as an adjacency list, and two specific people in it. Determine the fewest number of introductions needed to connect them, processing everyone at the current distance before moving one step further out.",
+    "pattern": "bfs",
+    "difficulty": "easy",
+    "tell": "processing everyone at the current distance before moving one step further out",
+    "whyNotOthers": {
+      "dfs": "Diving deep along one chain of friends first can find a connecting path, but not the shortest one, since it doesn't expand outward by distance.",
+      "topological-sort": "Friendships have no directional dependency to order; this is an undirected reachability question about distance, not sequencing.",
+      "union-find": "Union-Find would confirm the two people share a network at all, but it cannot report how many introductions separate them.",
+      "backtracking": "No candidate chain needs to be built and abandoned; every person at the current distance is simply visited before the next ring outward."
+    },
+    "complexity": "O(V + E) time / O(V) space"
+  },
+  {
+    "id": "bfs-03",
+    "statement": "Given a binary tree, produce a list of lists where each inner list contains the values of all nodes at that depth, ordered from the root's level down to the deepest level. Nodes on the same depth must all be grouped together in the same inner list.",
+    "pattern": "bfs",
+    "difficulty": "easy",
+    "tell": "Nodes on the same depth must all be grouped together in the same inner list",
+    "whyNotOthers": {
+      "dfs": "A depth-first traversal reaches every node, but grouping by depth in order requires tracking how many nodes sit at the current distance from the root.",
+      "topological-sort": "There is no dependency ordering between parent and child values to resolve; only grouping by depth matters.",
+      "trie": "No shared prefixes of sequences are being indexed; this is a plain binary tree grouped by depth level.",
+      "monotonic-stack": "No comparison against a running increasing or decreasing sequence of values applies; grouping depends only on distance from the root."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "bfs-04",
+    "statement": "You are given an n by n chessboard and a single knight starting on one square. Using only standard knight moves, find the fewest moves needed for the knight to reach a given target square, or -1 if the target can never be reached from the start.",
+    "pattern": "bfs",
+    "difficulty": "easy",
+    "tell": "find the fewest moves needed for the knight to reach a given target square",
+    "whyNotOthers": {
+      "dfs": "Chasing one sequence of knight moves as deep as possible can reach the target eventually, but not necessarily in the fewest moves.",
+      "backtracking": "This isn't about enumerating every possible move sequence and undoing choices; a single shortest move count is needed across an expanding search frontier.",
+      "modified-binary-search": "There is no sorted or monotonic property over board squares to binary search; every reachable square must be explored by distance.",
+      "greedy": "Committing to whichever move looks closest to the target at each step can walk past a shorter path that requires temporarily moving away."
+    },
+    "complexity": "O(n^2) time / O(n^2) space"
+  },
+  {
+    "id": "bfs-05",
+    "statement": "You are given a word ladder problem: a start word, an end word, and a dictionary of valid words, all the same length. Each step may change exactly one letter to form another valid dictionary word. Find the fewest number of single-letter changes needed to transform the start word into the end word, processing all words reachable in one change before trying two changes.",
+    "pattern": "bfs",
+    "difficulty": "medium",
+    "tell": "processing all words reachable in one change before trying two changes",
+    "whyNotOthers": {
+      "dfs": "Following one chain of single-letter swaps deep into the dictionary can reach the end word, but not necessarily in the fewest changes.",
+      "backtracking": "Enumerating every possible sequence of letter swaps and undoing dead ends is unnecessary when only the shortest chain length is required.",
+      "trie": "A trie helps look up whether a word exists in the dictionary quickly, but it doesn't decide the order in which words are explored to minimize steps.",
+      "union-find": "Grouping words that are reachable from each other would show connectivity, but not the minimum number of single-letter changes between two specific words."
+    },
+    "complexity": "O(n × L × 26) time / O(n × L) space"
+  },
+  {
+    "id": "bfs-06",
+    "statement": "You are given a large office building represented as a grid, where some cells are rooms and others are walls, and every room starts with a countdown to the nearest fire exit already marked as unknown. Fill in every room's countdown with the number of doorways it takes to reach the closest exit, expanding outward from all exits at once.",
+    "pattern": "bfs",
+    "difficulty": "medium",
+    "tell": "expanding outward from all exits at once",
+    "whyNotOthers": {
+      "dfs": "Exploring deeply from a single exit first can compute some distance, but starting the expansion from every exit simultaneously is what guarantees the nearest one wins for each room.",
+      "topological-sort": "There's no dependency ordering between rooms to resolve; distance from any exit is a matter of unweighted shortest steps.",
+      "greedy": "Picking the exit that looks nearest from a room's own perspective without expanding layer by layer can misjudge true doorway distance.",
+      "union-find": "Grouping rooms into connected clusters shows reachability to some exit, but not the exact number of doorways to the nearest one."
+    },
+    "complexity": "O(rows × cols) time / O(rows × cols) space"
+  },
+  {
+    "id": "bfs-07",
+    "statement": "You are given a rotten piece of fruit represented on a grid alongside fresh fruit cells and empty cells, where every minute each rotten cell spreads rot to its adjacent fresh neighbors simultaneously. Determine the minimum number of minutes until no fresh fruit remains, or -1 if some fresh fruit can never be reached.",
+    "pattern": "bfs",
+    "difficulty": "medium",
+    "tell": "every minute each rotten cell spreads rot to its adjacent fresh neighbors simultaneously",
+    "whyNotOthers": {
+      "dfs": "Spreading rot down one branch of neighbors fully before another misrepresents the simultaneous, minute-by-minute spread from every rotten cell at once.",
+      "union-find": "Grouping fruit cells into connected clusters shows which fresh cells are reachable at all, but not how many minutes the spread takes.",
+      "topological-sort": "There's no dependency chain to order between individual pieces of fruit; only simultaneous, distance-based spreading matters.",
+      "backtracking": "No candidate spreading pattern needs to be tried and undone; the spread proceeds deterministically outward from every rotten cell."
+    },
+    "complexity": "O(rows × cols) time / O(rows × cols) space"
+  },
+  {
+    "id": "bfs-08",
+    "statement": "You are given a network of computers as an undirected graph and a maximum number of hops h. For a given source computer, count how many other computers can be reached using h or fewer hops along the network's connections, visiting nearer computers before any that are farther away.",
+    "pattern": "bfs",
+    "difficulty": "medium",
+    "tell": "visiting nearer computers before any that are farther away",
+    "whyNotOthers": {
+      "dfs": "Chasing one connection chain as deep as possible before backtracking doesn't naturally stop counting exactly at h hops from the source.",
+      "union-find": "Union-Find reveals which computers share a network at all, but not how many hops separate them from a specific source.",
+      "topological-sort": "The network has no directional dependency to order; hops are measured over an undirected connection graph.",
+      "greedy": "There's no single best next hop to commit to; every computer at the current hop distance must be counted before moving farther out."
+    },
+    "complexity": "O(V + E) time / O(V) space"
+  },
+  {
+    "id": "bfs-09",
+    "statement": "You are given an m by n grid representing a garden where some cells contain a sprinkler that waters itself and all four neighboring cells the moment it activates, and all sprinklers activate at the same instant. Determine the minimum number of activation rounds needed until every cell in the garden has been watered, expanding outward ring by ring from all sprinklers together.",
+    "pattern": "bfs",
+    "difficulty": "hard",
+    "tell": "expanding outward ring by ring from all sprinklers together",
+    "whyNotOthers": {
+      "dfs": "Watering outward from one sprinkler's branch fully before another fails to capture that every sprinkler activates simultaneously each round.",
+      "union-find": "Grouping garden cells into connected clusters would only show which cells eventually get watered, not the round count for full coverage.",
+      "topological-sort": "There's no dependency ordering between cells; watering spreads by unweighted distance from multiple simultaneous sources.",
+      "greedy": "Choosing to expand from whichever sprinkler looks most promising ignores that all sprinklers must be expanded from at once, every round."
+    },
+    "complexity": "O(rows × cols) time / O(rows × cols) space"
+  },
+  {
+    "id": "bfs-10",
+    "statement": "You are given a puzzle represented as a string of six digits, a target string of six digits, and a list of forbidden intermediate strings that may never be produced. In a single move you may increment or decrement any one digit by one, wrapping between 9 and 0. Find the fewest moves to reach the target without ever passing through a forbidden string, expanding outward from the start one move at a time.",
+    "pattern": "bfs",
+    "difficulty": "hard",
+    "tell": "expanding outward from the start one move at a time",
+    "whyNotOthers": {
+      "dfs": "Trying one chain of digit changes as deep as possible before another does not guarantee the fewest moves to the target.",
+      "backtracking": "Enumerating every sequence of digit turns and undoing dead ends is far more work than tracking distance layer by layer.",
+      "modified-binary-search": "There's no sorted or monotonic search space over the six-digit strings to binary search directly; the state space must be explored move by move.",
+      "greedy": "Turning whichever digit looks closest to the target each time can walk straight into a forbidden string with no way to recover."
+    },
+    "complexity": "O(10^6) time / O(10^6) space"
+  },
+  {
+    "id": "dfs-01",
+    "statement": "You are given a grid of land and water cells. A group of land cells connected horizontally or vertically forms one region. Count how many separate regions of land exist in the grid, fully exploring each region before moving to the next unvisited land cell.",
+    "pattern": "dfs",
+    "difficulty": "easy",
+    "tell": "fully exploring each region before moving to the next unvisited land cell",
+    "whyNotOthers": {
+      "bfs": "Expanding layer by layer from each land cell would also find the regions, but the natural recursive dive into every connected neighbor is the more direct fit here.",
+      "union-find": "Union-Find can group connected land cells too, but the problem is framed around exhaustively walking each region's neighbors rather than merging sets.",
+      "backtracking": "There's no candidate choice being tried and later undone; every connected land cell is simply visited once and marked.",
+      "topological-sort": "There's no dependency ordering among cells; regions are found purely by undirected adjacency exploration."
+    },
+    "complexity": "O(rows × cols) time / O(rows × cols) space"
+  },
+  {
+    "id": "dfs-02",
+    "statement": "Given the root of a binary tree, determine whether there exists a path from the root to some leaf where the values along that path sum exactly to a given target. You must exhaust each branch down to its leaves before concluding it holds no such path.",
+    "pattern": "dfs",
+    "difficulty": "easy",
+    "tell": "exhaust each branch down to its leaves before concluding it holds no such path",
+    "whyNotOthers": {
+      "bfs": "Checking level by level doesn't naturally accumulate a running sum along one root-to-leaf path; the sum must be carried down a single branch at a time.",
+      "backtracking": "The running sum is simply carried forward or subtracted back on return, but there is no set of discrete choices being enumerated and undone.",
+      "topological-sort": "There is no dependency ordering to resolve among tree nodes; only whether one path's values total the target matters.",
+      "greedy": "Choosing the child with the largest value at each step doesn't guarantee finding a path that sums exactly to the target."
+    },
+    "complexity": "O(n) time / O(h) space"
+  },
+  {
+    "id": "dfs-03",
+    "statement": "You are given a directed graph representing course prerequisites and a specific course. List every other course that must eventually be reachable by following prerequisite links starting from the given course, following each chain of prerequisites all the way to its end before trying the next one.",
+    "pattern": "dfs",
+    "difficulty": "medium",
+    "tell": "following each chain of prerequisites all the way to its end before trying the next one",
+    "whyNotOthers": {
+      "topological-sort": "No overall ordering of all courses by dependency is being requested; only which courses are reachable from one starting course matters.",
+      "bfs": "Expanding one layer of prerequisites at a time would also find every reachable course, but chasing each chain to its end is the more natural fit for this exhaustive reachability check.",
+      "union-find": "The prerequisite links are directed, so grouping courses into undirected connected components would not respect the direction of the requirement.",
+      "backtracking": "No candidate set of courses is being built and later discarded; every reachable course is simply visited once via its prerequisite links."
+    },
+    "complexity": "O(V + E) time / O(V) space"
+  },
+  {
+    "id": "dfs-04",
+    "statement": "You are given a grid of rooms where some rooms contain a spreading gas leak. Two leaks belong to the same hazard zone if their rooms are adjacent, directly or through a chain of adjacent leaking rooms. Count the number of distinct hazard zones, walking each zone's full chain of adjacent leaks before starting the next.",
+    "pattern": "dfs",
+    "difficulty": "easy",
+    "tell": "walking each zone's full chain of adjacent leaks before starting the next",
+    "whyNotOthers": {
+      "bfs": "Expanding outward ring by ring from each leak would also identify the zones, but walking each chain fully before moving on is the more direct recursive fit.",
+      "union-find": "Union-Find would also group adjacent leaking rooms into zones, but the task is framed as exhausting each connected chain through recursive exploration.",
+      "monotonic-stack": "No comparison against a running increasing or decreasing trend applies; zones are formed purely by adjacency between leaking rooms.",
+      "topological-sort": "There is no directional dependency between rooms to order; adjacency here is undirected."
+    },
+    "complexity": "O(rows × cols) time / O(rows × cols) space"
+  },
+  {
+    "id": "dfs-05",
+    "statement": "Given the root of a binary tree, determine the length of the longest path between any two nodes in the tree, where the path may or may not pass through the root. Compute each subtree's deepest downward reach fully before combining results at its parent.",
+    "pattern": "dfs",
+    "difficulty": "medium",
+    "tell": "Compute each subtree's deepest downward reach fully before combining results at its parent",
+    "whyNotOthers": {
+      "bfs": "Processing the tree level by level doesn't naturally produce each subtree's deepest reach needed to combine at every parent along the way.",
+      "backtracking": "No candidate path is being built node by node and undone on failure; each subtree's depth is computed once and reused going up.",
+      "topological-sort": "There is no dependency ordering being resolved among nodes; only combined subtree depths matter for the longest path.",
+      "greedy": "Picking the child that looks deepest without fully computing both subtrees can miss the true longest path spanning both sides."
+    },
+    "complexity": "O(n) time / O(h) space"
+  },
+  {
+    "id": "dfs-06",
+    "statement": "You are given a large sudoku-like grid with some cells pre-filled and a set of placement rules. Determine whether the grid can be completely filled so every rule is satisfied, exhausting all consequences of a placement before deciding it fails and trying a different value in that cell.",
+    "pattern": "dfs",
+    "difficulty": "hard",
+    "tell": "exhausting all consequences of a placement before deciding it fails and trying a different value in that cell",
+    "whyNotOthers": {
+      "backtracking": "Trying and undoing candidate values per cell is part of the process, but the deciding structure here is recursively diving into a full grid completion, not enumerating independent subsets.",
+      "bfs": "Expanding all partially filled grids of a given number of placements at once would explode the search space; diving deep into one placement's consequences first is more direct.",
+      "greedy": "Locking in whichever value looks locally valid without exploring consequences can produce dead ends deep in the grid with no way to recover.",
+      "union-find": "There are no groups of cells being merged based on connectivity; validity depends on rule constraints per row, column, and box."
+    },
+    "complexity": "O(9^(rows × cols)) time / O(rows × cols) space"
+  },
+  {
+    "id": "dfs-07",
+    "statement": "You are given a directed graph of file dependencies. Determine whether the graph contains a cycle, meaning some file directly or indirectly depends on itself, by chasing each dependency chain to its end or until a node already on the current chain is revisited.",
+    "pattern": "dfs",
+    "difficulty": "medium",
+    "tell": "chasing each dependency chain to its end or until a node already on the current chain is revisited",
+    "whyNotOthers": {
+      "topological-sort": "A topological ordering would fail to exist if a cycle is present, but the detection here is framed as walking each chain and tracking the current recursion path, not producing a full order.",
+      "bfs": "Detecting a back-edge onto the current chain relies on knowing which nodes are still open on the active path, which fits a recursive chain walk more directly than layer-by-layer expansion.",
+      "union-find": "The dependency edges are directed, so merging nodes into undirected connected sets would not correctly detect a directed cycle.",
+      "greedy": "There's no locally optimal choice to make per file; every dependency edge must be followed to confirm no chain loops back on itself."
+    },
+    "complexity": "O(V + E) time / O(V) space"
+  },
+  {
+    "id": "dfs-08",
+    "statement": "You are given a two-dimensional board of letters and a target word. Determine whether the word can be traced out by moving between horizontally or vertically adjacent cells, using each cell at most once per attempt, committing to a chain of adjacent letters and abandoning it the moment it can no longer match the target.",
+    "pattern": "dfs",
+    "difficulty": "hard",
+    "tell": "committing to a chain of adjacent letters and abandoning it the moment it can no longer match the target",
+    "whyNotOthers": {
+      "backtracking": "Undoing a committed cell when a chain fails resembles backtracking's structure, but the traversal itself is a recursive descent through adjacent board cells, which is the dominant pattern here.",
+      "bfs": "Expanding all partial matches of the same length at once wastes effort compared to diving along one candidate chain and abandoning it early on mismatch.",
+      "trie": "A trie would help if many target words were searched at once, but a single target word is matched by direct adjacency traversal instead.",
+      "greedy": "Committing to whichever adjacent letter looks promising without the ability to retreat can miss a valid path that requires an early different choice."
+    },
+    "complexity": "O(rows × cols × 4^L) time / O(L) space"
+  },
+  {
+    "id": "dfs-09",
+    "statement": "You are given a tree of employees where each node lists its direct reports. For every employee, compute the total headcount of their entire reporting chain, including themselves, by fully resolving each direct report's total before adding it to the running count at their manager.",
+    "pattern": "dfs",
+    "difficulty": "easy",
+    "tell": "fully resolving each direct report's total before adding it to the running count at their manager",
+    "whyNotOthers": {
+      "bfs": "Processing managers level by level doesn't naturally produce each direct report's finished subtree total before it's needed at the manager above.",
+      "topological-sort": "While reports must be resolved before their manager, no full linear ordering of all employees is being requested, only per-node subtree totals.",
+      "greedy": "There's no locally optimal choice being made per employee; every direct report's count is simply computed and summed exactly once.",
+      "union-find": "There's no need to merge employees into connected groups; the reporting structure is already a tree, and totals are just summed recursively."
+    },
+    "complexity": "O(n) time / O(h) space"
+  },
+  {
+    "id": "dfs-10",
+    "statement": "You are given a grid representing a cave system where some cells are flooded and water spreads only downhill to strictly lower adjacent cells. Starting from each unflooded high cell, determine whether water could eventually reach the lowest boundary cell by fully tracing one downhill chain of cells before considering another starting cell.",
+    "pattern": "dfs",
+    "difficulty": "medium",
+    "tell": "fully tracing one downhill chain of cells before considering another starting cell",
+    "whyNotOthers": {
+      "bfs": "Expanding outward one elevation step at a time from every cell simultaneously is possible, but tracing one full downhill chain before another matches the recursive structure more directly here.",
+      "topological-sort": "Although elevation implies a strict order along any single path, no single global ordering of all cells is being computed, only per-cell reachability.",
+      "greedy": "Committing to whichever downhill neighbor looks lowest without fully exploring every branch can miss a valid path through a different neighbor.",
+      "union-find": "The downhill relationship is directional based on elevation, so merging cells into undirected connected groups would not respect that direction."
+    },
+    "complexity": "O(rows × cols) time / O(rows × cols) space"
+  },
+  {
+    "id": "two-heaps-01",
+    "statement": "You are processing a live stream of numbers arriving one at a time and must be able to report, after each new number arrives, the middle value of all numbers seen so far, or the average of the two middle values when the count so far is even. Do not re-sort the entire collection of seen numbers on every arrival.",
+    "pattern": "two-heaps",
+    "difficulty": "easy",
+    "tell": "Do not re-sort the entire collection of seen numbers on every arrival",
+    "whyNotOthers": {
+      "sliding-window": "There is no fixed or shrinking span of the stream being tracked; every number ever seen remains part of the answer.",
+      "top-k-heap": "A single heap ranks the k largest or smallest elements, but here two balanced groups are needed so the boundary between them gives the middle value.",
+      "modified-binary-search": "Numbers arrive in an arbitrary, unsorted order over time, so there's no sorted array to binary search for a middle position.",
+      "cyclic-sort": "Values aren't bounded to a small range matching an index scheme; the stream can contain arbitrary numbers with no index placement to exploit."
+    },
+    "complexity": "O(log n) time per insertion / O(n) space"
+  },
+  {
+    "id": "two-heaps-02",
+    "statement": "You are given a large sequence of stock trade prices arriving in real time, and must repeatedly answer, after every new trade, what fraction of trades so far were at or below the current running middle price. Recomputing this fraction by scanning all past trades each time is too slow.",
+    "pattern": "two-heaps",
+    "difficulty": "medium",
+    "tell": "answer, after every new trade, what fraction of trades so far were at or below the current running middle price",
+    "whyNotOthers": {
+      "sliding-window": "Every trade ever seen stays relevant to the running middle; there is no span of recent trades that ages out of consideration.",
+      "top-k-heap": "Only the single largest or smallest k trades would be tracked with one heap, but the running middle requires balancing two halves of all trades.",
+      "monotonic-stack": "No comparison against a recent increasing or decreasing run of prices applies; the middle price depends on the full distribution seen so far.",
+      "merge-intervals": "There are no overlapping ranges of time or price being combined; individual trade prices are being ranked against each other."
+    },
+    "complexity": "O(log n) time per trade / O(n) space"
+  },
+  {
+    "id": "two-heaps-03",
+    "statement": "You are designing a system that ingests exam scores throughout the day and must always be ready to answer what the middle score would be if the exam ended at this very instant, without waiting to collect every score first or re-sorting the whole list of scores received so far.",
+    "pattern": "two-heaps",
+    "difficulty": "medium",
+    "tell": "without waiting to collect every score first or re-sorting the whole list of scores received so far",
+    "whyNotOthers": {
+      "top-k-heap": "A single heap ranking the highest or lowest scores doesn't identify the middle score; two balanced groups of scores are needed for that.",
+      "modified-binary-search": "Scores arrive continuously and unsorted, so there's no static sorted array in which to binary search for a middle index.",
+      "sliding-window": "No expiring window of recent scores is involved; every score ever ingested still contributes to the running middle.",
+      "greedy": "There's no single locally optimal choice per incoming score; maintaining the middle requires balancing two ongoing groups of scores."
+    },
+    "complexity": "O(log n) time per insertion / O(n) space"
+  },
+  {
+    "id": "two-heaps-04",
+    "statement": "Given a very large array of integers that must be processed in one pass, report the middle value of every prefix of the array as you scan from left to right, where the middle of a prefix of even length is the average of its two central values. Recomputing each prefix's middle from scratch is disallowed.",
+    "pattern": "two-heaps",
+    "difficulty": "hard",
+    "tell": "report the middle value of every prefix of the array as you scan from left to right",
+    "whyNotOthers": {
+      "sliding-window": "The relevant range is always the entire prefix seen so far, not a shrinking or fixed-size span that ages elements out.",
+      "top-k-heap": "One heap can rank the largest few elements of a prefix, but finding its exact middle needs two balanced groups split at the center.",
+      "modified-binary-search": "Each prefix is unsorted as it grows, so there is no static sorted structure to binary search directly for the middle index.",
+      "monotonic-stack": "No comparison against a recent increasing or decreasing run of values decides the middle; it depends on the full balance of values seen."
+    },
+    "complexity": "O(n log n) time / O(n) space"
+  },
+  {
+    "id": "two-heaps-05",
+    "statement": "You manage a delivery fleet whose reported travel times arrive continuously throughout the day, and dispatch must always know the current middle travel time to flag routes taking longer than typical. New times keep arriving indefinitely, and old times never get removed once reported.",
+    "pattern": "two-heaps",
+    "difficulty": "easy",
+    "tell": "dispatch must always know the current middle travel time to flag routes taking longer than typical",
+    "whyNotOthers": {
+      "sliding-window": "No time-based expiry of old readings is described; every reported travel time remains part of the ongoing middle calculation.",
+      "top-k-heap": "Ranking only the slowest few routes with one heap wouldn't reveal the overall middle travel time across all reports.",
+      "merge-intervals": "There are no overlapping time ranges to combine; individual travel time values are simply being ranked against each other.",
+      "cyclic-sort": "Travel times aren't bounded to a small range matching array indices, so there's no index-placement trick to apply."
+    },
+    "complexity": "O(log n) time per insertion / O(n) space"
+  },
+  {
+    "id": "two-heaps-06",
+    "statement": "You are given a schedule of meeting requests, each with a priority weight, arriving one at a time throughout the day, and must maintain the ability to instantly report the priority weight that would rank exactly in the middle of all requests received so far, with ties broken toward the lower of the two central weights.",
+    "pattern": "two-heaps",
+    "difficulty": "medium",
+    "tell": "instantly report the priority weight that would rank exactly in the middle of all requests received so far",
+    "whyNotOthers": {
+      "top-k-heap": "A single heap can surface the highest-priority requests, but locating the exact middle weight requires two balanced groups meeting at a boundary.",
+      "merge-intervals": "The meeting requests aren't being merged based on overlapping time ranges; only their priority weights are being ranked.",
+      "sliding-window": "There is no recent span of requests that expires; the middle must reflect every request received since the start.",
+      "greedy": "No single locally optimal request is chosen at each step; the running middle depends on the balance of all weights seen so far."
+    },
+    "complexity": "O(log n) time per insertion / O(n) space"
+  },
+  {
+    "id": "two-heaps-07",
+    "statement": "You are given a fixed array of integers and must answer many queries, each asking for the median of a different prefix length starting from the beginning of the array. Queries arrive in increasing order of prefix length, and the running middle value must be updated incrementally as each new element joins the group.",
+    "pattern": "two-heaps",
+    "difficulty": "medium",
+    "tell": "the running middle value must be updated incrementally as each new element joins the group",
+    "whyNotOthers": {
+      "modified-binary-search": "The array is fixed but unsorted, so there's no sorted structure to binary search for a middle position at each prefix length.",
+      "sliding-window": "The prefix only ever grows from the start; there's no trailing boundary that shrinks or a fixed width that slides forward.",
+      "top-k-heap": "One heap could track the k largest elements of a prefix, but the median needs two balanced groups split around the center.",
+      "merge-intervals": "There are no ranges to merge here; the query concerns the ranked middle of a growing group of individual values."
+    },
+    "complexity": "O(n log n) time / O(n) space"
+  },
+  {
+    "id": "two-heaps-08",
+    "statement": "You are given a small classroom's quiz scores arriving one at a time as the teacher grades each paper, and after every paper is graded you must announce the current middle score to the class without waiting for grading to finish or regrading every paper seen so far.",
+    "pattern": "two-heaps",
+    "difficulty": "easy",
+    "tell": "announce the current middle score to the class without waiting for grading to finish or regrading every paper seen so far",
+    "whyNotOthers": {
+      "sliding-window": "No paper's score ever expires from consideration; every graded paper remains part of the running middle.",
+      "top-k-heap": "A single heap ranking only the highest scores wouldn't reveal the exact middle score of the whole class so far.",
+      "modified-binary-search": "Scores arrive ungraded and unsorted one at a time, so there is no static sorted array to binary search for the middle.",
+      "greedy": "There's no single locally optimal score to pick per paper; the middle depends on the balance of every score announced so far."
+    },
+    "complexity": "O(log n) time per paper / O(n) space"
+  },
+  {
+    "id": "two-heaps-09",
+    "statement": "You are given a continuous stream of exam scores and must repeatedly answer whether the score that just arrived is above, below, or equal to the running middle score of everything seen so far, updating the running middle efficiently after each new score arrives.",
+    "pattern": "two-heaps",
+    "difficulty": "easy",
+    "tell": "updating the running middle efficiently after each new score arrives",
+    "whyNotOthers": {
+      "sliding-window": "No expiring span of recent scores is described; every score ever seen remains part of the running middle.",
+      "top-k-heap": "A single heap ranking only the largest scores doesn't expose the exact middle value needed for comparison.",
+      "modified-binary-search": "Scores arrive continuously and unsorted, so there's no static sorted array to binary search for the middle position.",
+      "monotonic-stack": "No comparison against a recent increasing or decreasing run of scores applies; the middle depends on the full balance of scores seen."
+    },
+    "complexity": "O(log n) time per score / O(n) space"
+  },
+  {
+    "id": "two-heaps-10",
+    "statement": "You are given a continuous feed of temperature readings and must support two operations at any time: inserting a new reading, and reporting what the middle reading would be if a single specified reading were temporarily excluded from the feed, without rebuilding the ranked structure of all readings from scratch each time.",
+    "pattern": "two-heaps",
+    "difficulty": "hard",
+    "tell": "without rebuilding the ranked structure of all readings from scratch each time",
+    "whyNotOthers": {
+      "sliding-window": "No trailing readings expire based on a span; the temporarily excluded reading is a one-off exception, not a moving boundary.",
+      "top-k-heap": "A single heap ranking the most extreme readings doesn't expose the middle value or make it easy to exclude one specific reading.",
+      "modified-binary-search": "Readings arrive continuously and unsorted, so there's no static sorted array to binary search for the middle position.",
+      "monotonic-stack": "No comparison against a recent increasing or decreasing run of readings applies; the middle depends on the full balance of all readings."
+    },
+    "complexity": "O(log n) time per operation / O(n) space"
+  },
+  {
+    "id": "backtracking-01",
+    "statement": "You are given a set of distinct integers. Produce every possible grouping of them, including the empty grouping and the full set itself, where each grouping is considered regardless of the order its elements are listed in. Build each grouping one element decision at a time, and undo the most recent decision once every extension from it has been tried.",
+    "pattern": "backtracking",
+    "difficulty": "easy",
+    "tell": "Build each grouping one element decision at a time, and undo the most recent decision once every extension from it has been tried",
+    "whyNotOthers": {
+      "bfs": "Expanding all groupings of the same size at once could work, but building one candidate at a time and retracting the last choice is the more natural fit for exploring every combination.",
+      "dfs": "A recursive dive touches every grouping eventually, but the defining feature here is explicitly undoing the last included element once its branch is exhausted, not just depth-first traversal.",
+      "greedy": "There's no single best element to lock in per step; every possible inclusion or exclusion combination must be explored to produce every grouping.",
+      "cyclic-sort": "The integers aren't bounded to a range matching index positions; groupings are formed by choice, not by placing values into slots."
+    },
+    "complexity": "O(2^n) time / O(n) space"
+  },
+  {
+    "id": "backtracking-02",
+    "statement": "You are given a list of n distinct numbers. Generate every possible ordering of the entire list, where each ordering uses all n numbers exactly once. Build each ordering by choosing one unused number at a time, and remove your most recent choice from the ordering once every completion from that point has been tried.",
+    "pattern": "backtracking",
+    "difficulty": "medium",
+    "tell": "remove your most recent choice from the ordering once every completion from that point has been tried",
+    "whyNotOthers": {
+      "bfs": "Expanding all partial orderings of the same length at once quickly becomes unwieldy compared to extending one ordering at a time and retracting its last pick.",
+      "dfs": "Recursing through choices reaches every ordering, but the essential structure here is explicitly restoring an unused number after a branch is exhausted, which is the retreat step.",
+      "cyclic-sort": "The numbers aren't being placed into index slots based on their own value; instead every distinct arrangement of the full list must be produced.",
+      "topological-sort": "There is no dependency constraint between numbers dictating a valid order; every arrangement of all n numbers is equally valid to produce."
+    },
+    "complexity": "O(n!) time / O(n) space"
+  },
+  {
+    "id": "backtracking-03",
+    "statement": "You are given a set of distinct positive integers and a target sum. Find every distinct group of numbers from the set, using each number at most once, whose values add up exactly to the target. Add one candidate number to the current group, explore further, then remove it before trying the next candidate.",
+    "pattern": "backtracking",
+    "difficulty": "medium",
+    "tell": "Add one candidate number to the current group, explore further, then remove it before trying the next candidate",
+    "whyNotOthers": {
+      "sliding-window": "The chosen numbers don't need to be contiguous in the original set, so there's no span of adjacent elements to expand or shrink.",
+      "dfs": "The recursive structure touches every combination, but the deciding feature is removing a number from the current group before trying the next candidate, which is the explicit retreat step.",
+      "greedy": "Locking in the largest number that still fits the remaining target at each step can skip over a valid combination reachable only with a smaller earlier pick.",
+      "knapsack-01": "A dynamic programming table could tell whether some group sums to the target, but listing every distinct qualifying group requires trying and retracting individual choices."
+    },
+    "complexity": "O(2^n) time / O(target) space"
+  },
+  {
+    "id": "backtracking-04",
+    "statement": "You are given an integer n representing pairs of parentheses. Generate every string of length 2n made only of parentheses that is properly balanced and correctly nested. Add one character to the string being built, recurse, and then remove that character before trying a different one in its place.",
+    "pattern": "backtracking",
+    "difficulty": "easy",
+    "tell": "Add one character to the string being built, recurse, and then remove that character before trying a different one in its place",
+    "whyNotOthers": {
+      "bfs": "Expanding every partial string of the same length at once wastes effort compared to extending one string character by character and retracting the last one.",
+      "dfs": "A recursive descent reaches every valid string, but the defining trait here is explicitly removing the last placed character once its branch is exhausted, which is the retreat step.",
+      "monotonic-stack": "No comparison against a running increasing or decreasing sequence of values applies; validity depends on balanced counts of open and close characters.",
+      "greedy": "Always adding whichever character seems locally fine without the ability to retract a bad choice can produce an unbalanced string with no way to recover."
+    },
+    "complexity": "O(4^n / sqrt(n)) time / O(n) space"
+  },
+  {
+    "id": "backtracking-05",
+    "statement": "You are given an n by n chessboard. Place n queens on the board so that no two queens share a row, column, or diagonal, and report every distinct arrangement that satisfies this. Place one queen per row, recurse to the next row, and remove the queen just placed before trying a different column in that row.",
+    "pattern": "backtracking",
+    "difficulty": "hard",
+    "tell": "remove the queen just placed before trying a different column in that row",
+    "whyNotOthers": {
+      "dfs": "Recursing row by row touches every arrangement, but explicitly removing a queen once every continuation from her placement fails is the retreat step that defines the search here.",
+      "greedy": "Committing to whichever column looks safest per row without the ability to retract a queen can dead-end deep in the board with no way to recover.",
+      "bfs": "Expanding all partial boards with the same number of queens placed at once is far more memory-hungry than placing one queen at a time and retracting on failure.",
+      "union-find": "There are no groups of queens being merged based on shared connectivity; validity is checked directly against row, column, and diagonal constraints."
+    },
+    "complexity": "O(n!) time / O(n) space"
+  },
+  {
+    "id": "backtracking-06",
+    "statement": "You are given a list of distinct letters and an integer k. Produce every possible selection of exactly k letters from the list, where each selection is considered regardless of the order its letters are listed in. Add one letter to the current selection, recurse, and remove that letter before trying the next candidate in its place.",
+    "pattern": "backtracking",
+    "difficulty": "easy",
+    "tell": "remove that letter before trying the next candidate in its place",
+    "whyNotOthers": {
+      "greedy": "There's no single best letter to lock in per position; every possible selection of size k must be explored to enumerate them all.",
+      "dfs": "Recursing through candidate letters reaches every selection, but explicitly removing the current letter before trying the next candidate is the retreat step central to this search.",
+      "sliding-window": "The letters aren't scanned as a contiguous span with a running aggregate; selections are built by including or excluding individual letters.",
+      "cyclic-sort": "The letters aren't bounded to a numeric range matching index positions; selections are formed by choice, not by placing values into slots."
+    },
+    "complexity": "O(2^n) time / O(n) space"
+  },
+  {
+    "id": "backtracking-07",
+    "statement": "You are given a string containing only digits, each mapped to a set of letters as on an old phone keypad. Produce every possible letter combination the digit string could represent. Choose one letter for the current digit, recurse into the next digit, and remove that letter choice before trying the next letter mapped to the same digit.",
+    "pattern": "backtracking",
+    "difficulty": "medium",
+    "tell": "remove that letter choice before trying the next letter mapped to the same digit",
+    "whyNotOthers": {
+      "trie": "There's no dictionary of known words being searched letter by letter; every raw combination the keypad mapping allows must be produced, valid word or not.",
+      "bfs": "Expanding every partial combination of the same length at once is less direct than extending one combination letter by letter and retracting the last choice.",
+      "dfs": "The recursive descent reaches every combination, but explicitly removing the current letter choice before trying the next mapped letter is the retreat step central to this search.",
+      "cyclic-sort": "Digits and letters aren't being placed into index slots based on numeric value; every valid letter substitution per digit must be explored."
+    },
+    "complexity": "O(4^n) time / O(n) space"
+  },
+  {
+    "id": "backtracking-08",
+    "statement": "You are given a string containing only letters. Produce every version of the string obtainable by independently making each individual letter either lowercase or uppercase, leaving digits or symbols untouched if any appear. Decide the case of the current letter, recurse to the next position, and flip that decision before trying the opposite case.",
+    "pattern": "backtracking",
+    "difficulty": "easy",
+    "tell": "flip that decision before trying the opposite case",
+    "whyNotOthers": {
+      "sliding-window": "The letters aren't scanned as a contiguous span with a running aggregate; every position independently branches into two case choices.",
+      "dfs": "Recursing letter by letter reaches every case combination, but flipping the current letter's case decision before trying the opposite one is the retreat step that defines this search.",
+      "greedy": "There's no single best case to lock in per letter; every combination of upper and lower case choices must be produced.",
+      "cyclic-sort": "Letters aren't bounded to a numeric range matching index positions; case combinations are formed by binary choice per letter, not index placement."
+    },
+    "complexity": "O(2^n) time / O(n) space"
+  },
+  {
+    "id": "backtracking-09",
+    "statement": "You are given a two-dimensional grid of letters and a list of target words. For each target word, determine whether it can be traced through adjacent grid cells without reusing a cell, exploring all four directions from the current cell, retreating from the cell just added the moment no direction continues the word, and trying the next direction from the previous cell instead.",
+    "pattern": "backtracking",
+    "difficulty": "hard",
+    "tell": "retreating from the cell just added the moment no direction continues the word, and trying the next direction from the previous cell instead",
+    "whyNotOthers": {
+      "dfs": "The traversal recurses into neighboring cells, but explicitly retreating from the just-added cell and marking it unused again before trying another direction is the retreat step defining this search.",
+      "trie": "Checking many target words against the same grid could benefit from a trie, but a single word's path is found by exploring and retracting grid moves directly.",
+      "bfs": "Expanding all partial paths of the same length at once is far less direct than extending one path cell by cell and retracting on a dead end.",
+      "union-find": "There are no groups of cells being merged by connectivity; validity depends on the exact sequence of letters traced along one path."
+    },
+    "complexity": "O(rows × cols × 4^L) time / O(L) space"
+  },
+  {
+    "id": "backtracking-10",
+    "statement": "You are given a list of numbers that may contain duplicates and a target sum. Find every distinct group of numbers, using each position in the list at most once, that adds up exactly to the target, making sure identical groups aren't reported twice even though duplicate values exist. Add a number to the current group, recurse, then remove it before advancing past any duplicate values at the same recursion depth.",
+    "pattern": "backtracking",
+    "difficulty": "medium",
+    "tell": "remove it before advancing past any duplicate values at the same recursion depth",
+    "whyNotOthers": {
+      "greedy": "Committing to the largest number that still fits the remaining target at each step can skip over a valid group reachable only with a smaller earlier pick.",
+      "dfs": "The recursive descent through candidates reaches every group, but explicitly removing the current number and skipping duplicate values at the same depth is the retreat step central to this search.",
+      "knapsack-01": "A dynamic programming table could confirm some group sums to the target, but listing every distinct qualifying group without duplicates requires trying and retracting individual choices.",
+      "cyclic-sort": "The numbers aren't bounded to a range matching index positions; groups are formed by inclusion choices, not by placing values into slots."
+    },
+    "complexity": "O(2^n) time / O(n) space"
   }
 ]
