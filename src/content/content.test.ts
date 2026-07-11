@@ -36,4 +36,14 @@ describe('problems.json', () => {
       expect(p.complexity, p.id).toContain('O(');
     }
   });
+
+  it('has exactly 10 problems per pattern (4 easy, 4 medium, 2 hard)', () => {
+    for (const pattern of PATTERNS) {
+      const ofPattern = problems.filter((p) => p.pattern === pattern);
+      expect(ofPattern, pattern).toHaveLength(10);
+      expect(ofPattern.filter((p) => p.difficulty === 'easy'), pattern).toHaveLength(4);
+      expect(ofPattern.filter((p) => p.difficulty === 'medium'), pattern).toHaveLength(4);
+      expect(ofPattern.filter((p) => p.difficulty === 'hard'), pattern).toHaveLength(2);
+    }
+  });
 });

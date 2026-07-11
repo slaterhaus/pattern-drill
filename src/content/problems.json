@@ -2098,5 +2098,705 @@
       "backtracking": "Trying every possible sequence of loaf purchases would eventually find the cheapest order but ignores that overlapping weight-total subproblems make bottom-up computation far more efficient."
     },
     "complexity": "O(n × target) time / O(target) space"
+  },
+  {
+    "id": "topological-sort-01",
+    "statement": "A university course catalog lists, for many courses, which other courses must be completed first. Given the full list of prerequisite pairs, produce one valid order in which a student could take all the courses so that every prerequisite is finished before the course that depends on it, or report that no such order exists.",
+    "pattern": "topological-sort",
+    "difficulty": "easy",
+    "tell": "produce one valid order in which a student could take all the courses",
+    "whyNotOthers": {
+      "dfs": "A single traversal can detect a cycle, but producing one full, globally consistent completion order for every course requires tracking in-degrees or finish times across the whole graph, not just exploring one path.",
+      "bfs": "Plain layer-by-layer expansion from one starting course doesn't account for courses needing several different prerequisites completed by others first.",
+      "union-find": "Courses aren't being grouped into connected clusters; the requirement is a linear sequence respecting direction, and prerequisite edges are directional, not symmetric merges.",
+      "greedy": "There's no single locally-best course to lock in early without regard to the rest; the whole dependency structure must be respected simultaneously to build the order."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-02",
+    "statement": "A build system tracks, for a set of software modules, which other modules each one imports and must therefore be compiled after. Given all the import relationships, determine an order to compile every module so that each module is compiled only after everything it imports, and flag the build as broken if the imports form an unbreakable cycle.",
+    "pattern": "topological-sort",
+    "difficulty": "easy",
+    "tell": "compiled only after everything it imports",
+    "whyNotOthers": {
+      "dfs": "Traversal alone can flag a cycle by revisiting an in-progress module, but assembling the actual full compile order for every module needs the accumulated ordering information from across the entire graph.",
+      "bfs": "Expanding outward from a single module doesn't capture modules with multiple independent imports that must each be resolved by other branches first.",
+      "backtracking": "There's no need to search over alternative partial orders and undo choices; a direct construction from in-degrees yields the order without any backtracking.",
+      "greedy": "No single import can be judged best to compile first in isolation; the entire dependency graph must be checked so nothing is compiled before something it needs."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-03",
+    "statement": "A recipe automation tool models kitchen steps as tasks, where some steps cannot start until other specific steps have finished, such as a sauce needing to be reduced before it's plated. Given all such step dependencies, output one sequence of steps that respects every dependency, or state that the dependencies contradict each other and no sequence can satisfy them all.",
+    "pattern": "topological-sort",
+    "difficulty": "medium",
+    "tell": "one sequence of steps that respects every dependency",
+    "whyNotOthers": {
+      "dfs": "A depth-first walk can surface a contradiction by finding a revisited in-progress step, but it doesn't by itself hand back the single sequence covering all steps that a scheduler would actually follow.",
+      "bfs": "Steps can depend on several other steps finishing first, so expanding one step's neighbors at a time misses steps that only become ready once multiple unrelated branches complete.",
+      "greedy": "Picking whichever step looks quickest to do next, without checking what still depends on it, can strand later steps whose prerequisites were skipped over.",
+      "knapsack-01": "No step is being included or excluded to fit a capacity; every step must appear exactly once in the resulting sequence."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-04",
+    "statement": "A city's zoning office reviews permit applications where some permits cannot be approved until other related permits are already approved, forming a network of approval dependencies across departments. Given this network, determine a valid processing order for every permit that honors all such dependencies, or report that the dependencies loop back on themselves with no valid order.",
+    "pattern": "topological-sort",
+    "difficulty": "medium",
+    "tell": "a valid processing order for every permit that honors all such dependencies",
+    "whyNotOthers": {
+      "bfs": "Some permits wait on several unrelated departments finishing their own approvals, so a single outward expansion from one permit cannot correctly place every permit in the full order.",
+      "dfs": "A recursive exploration can identify a cyclic dependency, but reading off the entire cross-department processing order for every permit requires aggregating finishing information across all branches, not just one path.",
+      "union-find": "Permits aren't being merged into shared groups; the approval relationships point in a direction that must be preserved in the output sequence, not treated as symmetric connections.",
+      "two-heaps": "No running median or balanced split between two halves of values is involved; this is purely about respecting directional ordering constraints."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-05",
+    "statement": "A video game's skill tree lets a player unlock abilities, but many abilities require one or more earlier abilities to already be unlocked before they become available. Given the full list of these unlock requirements, produce a sequence in which every ability could be unlocked while never violating a requirement, or determine that the requirements are impossible to satisfy together.",
+    "pattern": "topological-sort",
+    "difficulty": "medium",
+    "tell": "a sequence in which every ability could be unlocked while never violating a requirement",
+    "whyNotOthers": {
+      "dfs": "Following one branch of abilities down to its roots can reveal a circular requirement, but it doesn't directly assemble the single overall unlock sequence spanning abilities from unrelated branches.",
+      "backtracking": "No trial-and-error search with undoing choices is needed; the valid order can be built directly from how many unresolved requirements each ability still has.",
+      "greedy": "Unlocking whichever ability seems most useful first, without checking what still requires it to wait, can leave later abilities stuck behind requirements that were bypassed.",
+      "knapsack-unbounded": "Abilities aren't being chosen repeatedly to fill some budget; every ability is unlocked exactly once, and the concern is purely the order of unlocking."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-06",
+    "statement": "A film studio schedules post-production tasks like color grading, sound mixing, and visual effects, where some tasks cannot begin until specific other tasks have wrapped, forming a dependency network across many departments. Given this network, output one overall schedule order for all tasks that honors every dependency, or report that the schedule cannot be completed due to a circular requirement.",
+    "pattern": "topological-sort",
+    "difficulty": "medium",
+    "tell": "output one overall schedule order for all tasks that honors every dependency",
+    "whyNotOthers": {
+      "dfs": "Exploring one department's dependency chain can uncover a cycle, but the overall schedule spanning every department's tasks needs ordering information combined across the whole network, not a single traversal path.",
+      "bfs": "Tasks waiting on multiple unrelated departments to finish first won't be correctly sequenced by expanding outward from just one starting task.",
+      "greedy": "Scheduling whichever task looks fastest first, without regard to what still depends on it, can leave dependent tasks scheduled before something they actually needed.",
+      "top-k-heap": "No fixed number of top tasks is being selected or ranked; every task must appear in the final schedule exactly once."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-07",
+    "statement": "A large software monorepo defines package dependencies where each package may depend on several others, and those in turn depend on more, forming a deep dependency graph across the whole repo. Given all declared dependencies, determine a build order in which every package is built only after all packages it depends on, and detect whether any group of packages depends on each other in a way that makes building impossible.",
+    "pattern": "topological-sort",
+    "difficulty": "hard",
+    "tell": "detect whether any group of packages depends on each other in a way that makes building impossible",
+    "whyNotOthers": {
+      "dfs": "A depth-first pass can flag one particular cycle when it revisits a package still being processed, but producing the single consistent build order across the entire repo's packages requires combining ordering results from every branch, not just detecting a cycle locally.",
+      "union-find": "Packages aren't being merged into unordered groups; dependency edges are directional, and the build order must respect that direction rather than just tracking which packages are connected.",
+      "bfs": "Packages with several independent dependencies won't be placed correctly by expanding layer by layer from one package, since a package only becomes buildable once every one of its dependencies, wherever they sit in the graph, is done.",
+      "backtracking": "No speculative choice-and-undo search over partial build orders is needed; the order and any impossibility can both be read off directly from tracking how many unresolved dependencies remain per package."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-08",
+    "statement": "A university registrar manages thousands of courses across departments, each with its own prerequisite chain that can span multiple departments, and wants a single semester-by-semester plan that a student could follow to take every course in the catalog without ever taking a course before its prerequisites. Given all prerequisite pairs across the entire catalog, produce this course order or report that the prerequisites are contradictory.",
+    "pattern": "topological-sort",
+    "difficulty": "hard",
+    "tell": "a single semester-by-semester plan that a student could follow to take every course",
+    "whyNotOthers": {
+      "dfs": "Tracing one department's prerequisite chain can find a contradiction within it, but the full catalog-wide order needs finishing information merged across every department's chains, not a single traversal.",
+      "bfs": "Courses depending on prerequisites from several unrelated departments won't be sequenced correctly by expanding outward from one starting course.",
+      "greedy": "Committing to whichever course looks earliest to take without checking the rest of the catalog can leave later prerequisites unsatisfied for courses processed too soon.",
+      "knapsack-01": "No subset of courses is being chosen to fit within a budget; every course in the catalog must appear in the plan exactly once."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-09",
+    "statement": "An event-driven pipeline defines processing stages where each stage subscribes to outputs from a set of earlier stages and cannot run until every stage it subscribes to has produced its output. Given the full subscription graph across all stages, compute a valid run order for the entire pipeline, or determine that the subscriptions loop back on each other so no valid order exists.",
+    "pattern": "topological-sort",
+    "difficulty": "easy",
+    "tell": "compute a valid run order for the entire pipeline",
+    "whyNotOthers": {
+      "bfs": "Stages depending on several unrelated earlier stages can't be correctly placed by expanding one stage's subscribers at a time; a stage only becomes runnable once all of its subscriptions, from anywhere in the graph, are satisfied.",
+      "dfs": "Walking one subscription chain can surface a loop within it, but assembling the single overall run order for every stage in the pipeline requires combining results across all chains, not just one.",
+      "union-find": "Stages aren't being merged into undirected groups; a subscription points from one stage to another with a direction that the run order must respect.",
+      "two-heaps": "No two balanced halves or running median is being maintained; this is purely a matter of respecting directional readiness constraints between stages."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "topological-sort-10",
+    "statement": "A spreadsheet engine recalculates formula cells, where a cell referencing other cells cannot be recalculated until every cell it references has already been recalculated, and references can chain across the whole sheet. Given the full set of cell references, determine one recalculation order for all formula cells that respects every reference, or detect a circular reference that makes recalculation impossible.",
+    "pattern": "topological-sort",
+    "difficulty": "easy",
+    "tell": "determine one recalculation order for all formula cells that respects every reference",
+    "whyNotOthers": {
+      "dfs": "Following one cell's reference chain downward can catch a circular reference within that chain, but producing the single recalculation order for the entire sheet requires combining ordering information from every chain, not just one path.",
+      "bfs": "A cell referencing several other cells scattered across the sheet won't be correctly ordered by expanding outward from just one starting cell.",
+      "greedy": "Recalculating whichever cell looks simplest first, without tracking what still references it, can compute a cell before a value it depends on is ready.",
+      "monotonic-stack": "There's no need to compare cells against a shrinking or growing stack of nearby values; the requirement is a global order respecting reference direction, not next-greater or next-smaller relationships."
+    },
+    "complexity": "O(V + E) time / O(V + E) space"
+  },
+  {
+    "id": "monotonic-stack-01",
+    "statement": "You are given the recorded temperature for each day of a season. For every day, determine how many days you would have to wait until a strictly warmer day arrives, or 0 if no warmer day ever comes. Comparing every pair of days is too slow for the input size.",
+    "pattern": "monotonic-stack",
+    "difficulty": "easy",
+    "tell": "how many days you would have to wait until a strictly warmer day",
+    "whyNotOthers": {
+      "sliding-window": "No contiguous range is optimized; each day waits on an unboundedly distant future event.",
+      "two-pointers": "The answer depends on the next greater element ahead of each position, not a converging index pair.",
+      "top-k-heap": "No ranking of the k warmest days is requested.",
+      "modified-binary-search": "The temperatures are unsorted, so there is no ordered search space to halve."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-02",
+    "statement": "A parking garage's height sensors record a bar height for each column position along a single row, forming a skyline of adjacent rectangular bars all resting on the ground. Determine the area of the largest rectangle that can be formed using contiguous columns whose height is limited by the shortest bar included.",
+    "pattern": "monotonic-stack",
+    "difficulty": "hard",
+    "tell": "height is limited by the shortest bar included",
+    "whyNotOthers": {
+      "sliding-window": "The best contiguous group isn't found by growing or shrinking a window under a running sum or count condition; it depends on how far each bar can extend before hitting a shorter neighbor.",
+      "two-pointers": "There's no pair of indices converging from opposite ends; the answer requires knowing, for every bar, the nearest shorter bar on each side.",
+      "dfs": "The bars form a flat sequence, not a graph or tree to explore branch by branch.",
+      "knapsack-01": "No subset of bars is chosen to fit a capacity; the rectangle must use a contiguous run of columns, not an arbitrary selection."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-03",
+    "statement": "A stock-tracking tool records the closing price for each trading day in order. For every day, it must report the number of consecutive prior days, ending immediately before that day, during which the price stayed less than or equal to that day's price. Recomputing this span from scratch for each day one at a time is far too slow once the number of days grows large.",
+    "pattern": "monotonic-stack",
+    "difficulty": "medium",
+    "tell": "during which the price stayed less than or equal",
+    "whyNotOthers": {
+      "sliding-window": "The span being measured isn't a window satisfying a running sum or distinct-count condition; it's determined by where an earlier day with a higher price sits relative to today.",
+      "two-pointers": "No pair of indices is moved toward each other from opposite ends; each day's span depends on the nearest earlier day breaking the condition.",
+      "top-k-heap": "No fixed number of top days by price is being tracked or ranked.",
+      "fast-slow-pointers": "There's no cycle or midpoint being located by pointers advancing at different speeds."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-04",
+    "statement": "A traffic camera logs the height of each vehicle passing under a scanner gate, in the order they pass. For each vehicle, report how many vehicles immediately behind it, before the next taller vehicle, are shorter than or equal to it, effectively describing the visible run of vehicles it blocks from view behind it. A naive pairwise comparison over all vehicles would be too slow for a busy highway.",
+    "pattern": "monotonic-stack",
+    "difficulty": "medium",
+    "tell": "run of vehicles it blocks from view behind it",
+    "whyNotOthers": {
+      "sliding-window": "The run being measured isn't defined by a sum, count, or other aggregate condition over a shifting window; it ends precisely where a taller vehicle appears.",
+      "two-pointers": "The vehicles aren't being scanned by two indices converging from either end; each vehicle's blocked run depends on the next taller vehicle ahead of it.",
+      "bfs": "There's no graph of connections to expand outward through layer by layer; the vehicles are a simple ordered sequence.",
+      "greedy": "There isn't a single irrevocable choice being made and locked in per vehicle; the answer comes from comparing against the nearest taller vehicle using a maintained stack of candidates."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-05",
+    "statement": "A warehouse robot scans a row of storage bin heights from left to right. For each bin, it needs to know the height of the closest bin to its left that is strictly taller, or report that none exists. This lookup must be computed for every bin in a single efficient pass rather than rechecking earlier bins one at a time for each new bin.",
+    "pattern": "monotonic-stack",
+    "difficulty": "easy",
+    "tell": "closest bin to its left that is strictly taller",
+    "whyNotOthers": {
+      "two-pointers": "There's no pair of indices converging from opposite ends of the row; each bin's answer depends on discarding shorter bins that came before it as the scan proceeds.",
+      "sliding-window": "No window is being grown or shrunk over a running aggregate; the query is about the nearest taller value seen so far, not a subrange property.",
+      "modified-binary-search": "The bin heights aren't sorted, so there's no ordered range to halve when searching for the taller bin.",
+      "cyclic-sort": "The bins aren't a permutation of a known range of numbers being placed into their correct index positions; heights are arbitrary values."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-06",
+    "statement": "A ride-share app logs the surge-pricing multiplier active at each minute throughout the day, in chronological order. For every minute, determine how many minutes will pass, counting forward, before the multiplier next drops to a strictly lower value than it is at that minute, or report that it never does. Checking every later minute individually for each starting minute does not scale to a full day of data.",
+    "pattern": "monotonic-stack",
+    "difficulty": "medium",
+    "tell": "before the multiplier next drops to a strictly lower value",
+    "whyNotOthers": {
+      "sliding-window": "The distance to the drop isn't governed by a running sum or count over a contiguous window; it's the position of the next smaller value ahead in the sequence.",
+      "two-pointers": "No pair of pointers converges from the two ends of the log; the answer for each minute depends only on values that come after it.",
+      "top-k-heap": "No ranking of the highest or lowest multipliers overall is requested, only the next drop relative to each minute.",
+      "union-find": "Minutes aren't being merged into connected groups; each minute's answer is a distance to a specific later minute, not a component membership."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-07",
+    "statement": "A skyline rendering engine is given the heights of adjacent buildings along a street, and for each building it must determine how far the view extends to the right before a building at least as tall blocks the line of sight, measured in number of buildings. The street can contain a very long row of buildings, so each building's blocked distance must be found without rescanning the whole row for every building.",
+    "pattern": "monotonic-stack",
+    "difficulty": "hard",
+    "tell": "before a building at least as tall blocks the line of sight",
+    "whyNotOthers": {
+      "sliding-window": "The blocked distance isn't determined by a shrinking or growing window satisfying an aggregate condition; it's set by the position of the next building meeting or exceeding the current height.",
+      "two-pointers": "There's no pair of indices moving toward each other from opposite ends; the answer for each building depends solely on buildings further along the row.",
+      "dfs": "The buildings form a flat row, not a tree or graph structure to explore recursively.",
+      "greedy": "No single locally-optimal choice is being committed to per building; the distance comes from comparing against buildings held in a maintained stack until a tall enough one appears."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-08",
+    "statement": "A factory quality log records a defect-severity score for each item on the assembly line, in production order. For each item, the inspection system must report the severity of the nearest earlier item with a strictly lower score, or note that no such item exists, so that engineers can trace severity escalation patterns. This must be computed for the entire line in one pass.",
+    "pattern": "monotonic-stack",
+    "difficulty": "easy",
+    "tell": "nearest earlier item with a strictly lower score",
+    "whyNotOthers": {
+      "two-pointers": "The items aren't scanned with two indices closing in from either end; each item's answer depends on discarding higher-or-equal scores seen earlier as the scan proceeds.",
+      "sliding-window": "There's no contiguous subrange being tracked for a sum, count, or other aggregate; the query is about a specific nearer element, not a window property.",
+      "linked-list-reversal": "The severity scores are stored as a plain sequence, not a linked list whose pointers need to be reversed.",
+      "backtracking": "No exploration of multiple candidate choices with undoing is needed; a single forward pass with a maintained stack resolves every item's answer directly."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-09",
+    "statement": "An elevator maintenance system logs the cumulative wear score after each trip in sequence over a long service history. For every trip, it needs to find the closest later trip, if any, whose wear score is strictly smaller, since that marks the point wear was reset by a service. Scanning forward from every trip individually to find this is computationally infeasible for a long history.",
+    "pattern": "monotonic-stack",
+    "difficulty": "easy",
+    "tell": "closest later trip, if any, whose wear score is strictly smaller",
+    "whyNotOthers": {
+      "sliding-window": "The reset point isn't found through a running sum or count across a subrange; it's the position of the next smaller value in the sequence.",
+      "two-pointers": "No pair of indices converges from opposite ends of the history; each trip's answer depends only on later trips.",
+      "modified-binary-search": "The wear scores don't form a sorted sequence, so there's no ordered range to halve when locating the smaller value.",
+      "fast-slow-pointers": "There's no cycle to detect or midpoint to find using pointers moving at different speeds through the log."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "monotonic-stack-10",
+    "statement": "A queue management app tracks the number of people waiting at each of several checkpoints along a hallway, listed in order from the entrance. For every checkpoint, it reports how many checkpoints ahead of it, up to and excluding the next one with a strictly larger queue, together form a run that this checkpoint's queue size dominates. The hallway can have thousands of checkpoints, so pairwise comparison across all of them is not practical.",
+    "pattern": "monotonic-stack",
+    "difficulty": "medium",
+    "tell": "up to and excluding the next one with a strictly larger queue",
+    "whyNotOthers": {
+      "sliding-window": "The dominated run isn't defined by a running total or count condition over a window; it ends exactly where a strictly larger queue appears ahead.",
+      "two-pointers": "No two indices move toward each other from opposite ends of the hallway; each checkpoint's run depends only on checkpoints that follow it.",
+      "top-k-heap": "No fixed number of the largest queues overall is being tracked, only the extent of domination relative to each checkpoint.",
+      "cyclic-sort": "Queue sizes aren't a permutation of a known index range being placed into matching positions; they're arbitrary counts."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "union-find-01",
+    "statement": "A social network processes a stream of friendship events one at a time, where each event links two existing users together, and after every single event the system must be able to answer whether two given users belong to the same friend circle. New friendship events keep arriving indefinitely, and each query must be answered quickly against the network's current state.",
+    "pattern": "union-find",
+    "difficulty": "easy",
+    "tell": "answer whether two given users belong to the same friend circle",
+    "whyNotOthers": {
+      "bfs": "Re-running a full traversal from scratch after every new friendship event to answer a same-circle query would be far too slow across a long stream of incremental updates.",
+      "dfs": "A one-shot exploration works for a fixed, unchanging graph, but here the connections keep growing incrementally and each query must reflect the network's state at that exact moment.",
+      "topological-sort": "Friendships have no direction or dependency order between users; the relationship is symmetric, not a prerequisite chain.",
+      "trie": "There's no shared-prefix string structure involved; the users are just members that get grouped together as links arrive."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-02",
+    "statement": "A telecom company processes a running log of cable-splice operations, where each operation joins two junction boxes into the same electrical segment, and at any point in the log the company must determine whether two specified junction boxes currently sit on the same segment. New splice operations continue to be added over time, and segment membership must be checked repeatedly as splices accumulate.",
+    "pattern": "union-find",
+    "difficulty": "medium",
+    "tell": "segment membership must be checked repeatedly as splices accumulate",
+    "whyNotOthers": {
+      "dfs": "Re-traversing the entire cable network after each new splice to answer a segment query would be wasteful when the network only grows by one link at a time.",
+      "bfs": "A single layered expansion answers reachability for a static snapshot, but here splices keep being added and every query must reflect the segments as they stand at that moment.",
+      "greedy": "There's no cost or value being optimized by choosing which splice to perform; every splice in the log must be applied, and the task is purely tracking resulting groupings.",
+      "monotonic-stack": "No comparison against a running set of nearby values is involved; the task is grouping junction boxes together, not ordering values by size."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-03",
+    "statement": "A distributed systems dashboard receives a live stream of \"server A can now reach server B\" events as network links come back online after an outage, and operators repeatedly ask whether two specific servers are currently part of the same reachable cluster. Because links keep being restored over time and each question must reflect the very latest state, recomputing reachability with a full traversal for every question is impractical.",
+    "pattern": "union-find",
+    "difficulty": "medium",
+    "tell": "each question must reflect the very latest state",
+    "whyNotOthers": {
+      "bfs": "Running a fresh traversal for every reachability question would repeat huge amounts of work each time a new link is restored, rather than incrementally updating cluster membership.",
+      "dfs": "A single exploration correctly answers reachability once, for a fixed graph, but this graph keeps gaining links and questions interleave with those changes throughout.",
+      "topological-sort": "Restored links aren't prerequisite relationships requiring an ordering; a link simply merges two servers into the same cluster with no direction implied.",
+      "backtracking": "No speculative choice-and-undo search over server states is needed; cluster membership is tracked directly as links arrive."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-04",
+    "statement": "A banking fraud team merges account records whenever two accounts are found to share identifying details, such as a phone number or a payment card, and this merging happens continuously as new shared-detail matches are discovered across an ever-growing customer database. At any time, the team needs to check whether two specific accounts have already ended up in the same merged group due to some chain of shared details.",
+    "pattern": "union-find",
+    "difficulty": "hard",
+    "tell": "merging happens continuously as new shared-detail matches are discovered",
+    "whyNotOthers": {
+      "dfs": "Re-exploring the entire account graph from scratch after every newly discovered match ignores that groups only ever merge incrementally, which can be tracked far more cheaply.",
+      "bfs": "A single expansion answers group membership for one static snapshot, but matches keep being discovered over time and a query can arrive at any point mid-stream.",
+      "greedy": "There's no locally-optimal merge to choose between competing options; every discovered shared-detail match must simply be applied to grow the grouping.",
+      "trie": "Account identifiers aren't being organized by shared string prefixes; the grouping is driven by pairwise shared-detail matches, not prefix structure."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-05",
+    "statement": "A city planning tool is given a list of proposed new roads to be built one at a time between towns that already have some existing roads connecting them in various clusters. Determine which of the proposed roads, if any, would be the first one whose two towns are already connected through some existing chain of roads, making that particular new road unnecessary.",
+    "pattern": "union-find",
+    "difficulty": "medium",
+    "tell": "already connected through some existing chain of roads",
+    "whyNotOthers": {
+      "dfs": "Re-running a full traversal of the growing road network before considering each proposed road in turn repeats work that incremental grouping avoids entirely.",
+      "bfs": "The network of towns keeps gaining roads as earlier proposals are accepted, so a single layered search over a fixed snapshot doesn't reflect the connections built up so far.",
+      "greedy": "No cost or benefit is attached to the roads to optimize; the task is purely detecting when a proposed road connects two towns already joined by earlier ones.",
+      "topological-sort": "Roads connect towns without any direction or precedence between them; there's no dependency ordering to produce, only a check for redundant connections."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-06",
+    "statement": "An image-processing tool scans a grid of pixels and repeatedly merges a pixel with its right and bottom neighbors whenever their colors match closely enough, applying these merges one pair at a time across the whole grid to build up connected regions of similar color. After all merges are applied, report the size of the largest resulting region.",
+    "pattern": "union-find",
+    "difficulty": "easy",
+    "tell": "repeatedly merges a pixel with its right and bottom neighbors",
+    "whyNotOthers": {
+      "bfs": "Grouping could be found with a full-grid search, but since the merges are applied incrementally as pairwise unions across the grid, tracking region membership as merges happen is the natural fit rather than a single flood fill.",
+      "dfs": "A recursive flood fill assumes a fixed adjacency to explore at once; here regions are built up gradually through one merge operation at a time.",
+      "cyclic-sort": "Pixels aren't a permutation of known index values needing to be placed at matching positions; they're being grouped by successive merge operations.",
+      "knapsack-01": "No subset of pixels is chosen under a capacity constraint; every qualifying neighbor pair is simply merged into the same region."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-07",
+    "statement": "An email provider processes a continuous stream of \"these two addresses belong to the same person\" signals derived from login patterns, merging the linked addresses into a shared identity group as each signal arrives. At any moment, support staff need to check whether two specific addresses have ended up in the same identity group, possibly through a chain of several earlier signals.",
+    "pattern": "union-find",
+    "difficulty": "easy",
+    "tell": "merging the linked addresses into a shared identity group as each signal arrives",
+    "whyNotOthers": {
+      "dfs": "Recomputing group membership with a full traversal every time a new signal links two addresses discards the fact that groups only grow by incremental merges.",
+      "bfs": "A single layered search answers membership for one fixed snapshot, but signals keep arriving continuously and staff can query at any point between them.",
+      "topological-sort": "The \"same person\" signal is symmetric with no direction or precedence implied between the two addresses, so there's no ordering to produce.",
+      "greedy": "There's no optimal signal to select over others; every incoming signal is simply applied to merge its two addresses into one group."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-08",
+    "statement": "A puzzle game lets a player click to remove bricks from a wall one at a time, and after each removal the game must determine how many bricks, if any, that were connected to the ceiling became disconnected and fell as a result, given that bricks can be linked to their neighbors and support can route through several paths before a removal. Processing each removal against the wall's current connectivity, which keeps changing with every click, is the crux of the problem.",
+    "pattern": "union-find",
+    "difficulty": "hard",
+    "tell": "the wall's current connectivity, which keeps changing with every click",
+    "whyNotOthers": {
+      "dfs": "Re-checking ceiling connectivity with a fresh traversal after every single click would repeat enormous amounts of work across a long sequence of removals.",
+      "bfs": "A single expansion from the ceiling answers connectivity once, but the wall's connections keep changing after every click, and processing removals in reverse as merges is what makes incremental tracking efficient.",
+      "backtracking": "No speculative removal-and-undo search over brick orderings is needed; each removal's effect on connectivity is determined directly from the current grouping.",
+      "linked-list-reversal": "The bricks form a 2D connectivity grid, not a linked list of nodes whose next-pointers need reversing."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-09",
+    "statement": "A logistics company adds new shipping partnerships between warehouses one at a time, where a partnership lets goods move freely between the two warehouses and, by extension, any warehouses already reachable from them through earlier partnerships. Given this evolving list of partnerships, identify the exact partnership at which every warehouse first became reachable from every other warehouse, if that point is ever reached.",
+    "pattern": "union-find",
+    "difficulty": "medium",
+    "tell": "the exact partnership at which every warehouse first became reachable",
+    "whyNotOthers": {
+      "bfs": "Checking full reachability with a fresh traversal after each newly added partnership would redo enormous amounts of work that incremental grouping tracks cheaply instead.",
+      "dfs": "A single exploration determines reachability for one static graph, but partnerships keep being added one at a time and the exact moment of full connectivity must be pinpointed as they arrive.",
+      "greedy": "There's no locally best partnership to select ahead of others; every partnership in the given sequence must be applied in order, and the task is tracking when full connectivity is reached.",
+      "knapsack-unbounded": "No repeated selection of partnerships to fill a budget is involved; each partnership is simply applied once, in order, to merge warehouse groups."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "union-find-10",
+    "statement": "A conference badge system links attendee badges together whenever two attendees scan into the same session room together, gradually forming groups of people considered to be in the same social circle as more sessions occur throughout the day. Given the sequence of scan-in events, determine the total number of distinct social circles remaining once all sessions for the day have concluded.",
+    "pattern": "union-find",
+    "difficulty": "easy",
+    "tell": "gradually forming groups of people considered to be in the same social circle",
+    "whyNotOthers": {
+      "bfs": "Rebuilding the whole social graph and searching it from scratch after each session ignores that circles are forming incrementally as scan-in events accumulate throughout the day.",
+      "dfs": "A one-time recursive traversal assumes a fixed, complete graph, but here the links between attendees are added gradually, one scan-in event at a time.",
+      "cyclic-sort": "Attendees aren't a permutation of known index values being placed in matching positions; they're simply being grouped together by shared session attendance.",
+      "top-k-heap": "No ranking of attendees by some score is requested, only a final count of how many distinct groups exist."
+    },
+    "complexity": "O(n α(n)) time / O(n) space"
+  },
+  {
+    "id": "trie-01",
+    "statement": "A text editor's autocomplete feature stores a large dictionary of valid words and must, as a user types each character, quickly list every stored word that begins with the letters typed so far. The dictionary can hold hundreds of thousands of words, many sharing long common beginnings, and suggestions must update after every keystroke.",
+    "pattern": "trie",
+    "difficulty": "easy",
+    "tell": "list every stored word that begins with the letters typed so far",
+    "whyNotOthers": {
+      "top-k-heap": "The task isn't ranking words by some score to find the best few; it's retrieving every word sharing a given prefix, which depends on shared character structure, not ranking.",
+      "modified-binary-search": "A sorted list of words could locate a prefix boundary, but as characters are typed one at a time, walking a structure built from shared prefixes avoids re-searching the whole dictionary from scratch on every keystroke.",
+      "dfs": "Once the prefix's location is found, listing matches involves a small exploration, but finding that location efficiently for every keystroke depends on a shared-prefix structure, not a general graph traversal.",
+      "cyclic-sort": "Words aren't a permutation of known index values needing placement at matching positions; this is about grouping strings by shared prefixes."
+    },
+    "complexity": "O(L) time per prefix / O(N × L) space"
+  },
+  {
+    "id": "trie-02",
+    "statement": "A spell-checker needs to support two operations repeatedly over a large word list: confirming whether an exact word exists in the list, and confirming whether any word in the list starts with a given sequence of letters. Both kinds of queries arrive in large numbers and must be answered quickly against the same shared word list.",
+    "pattern": "trie",
+    "difficulty": "medium",
+    "tell": "confirming whether any word in the list starts with a given sequence of letters",
+    "whyNotOthers": {
+      "modified-binary-search": "A sorted word list can locate an exact word, but efficiently answering many prefix-existence queries benefits from a structure built around shared beginnings rather than repeated range searches.",
+      "top-k-heap": "No ranking or selection of a fixed number of best-matching words is requested; the queries are yes-or-no checks about exact words and prefixes.",
+      "union-find": "Words aren't being merged into connected groups based on relationships between pairs; each query concerns a single word's presence or prefix independent of grouping.",
+      "backtracking": "No exploration of multiple candidate constructions with undoing is needed; each query is answered directly by following the letters of the query itself."
+    },
+    "complexity": "O(L) time per query / O(N × L) space"
+  },
+  {
+    "id": "trie-03",
+    "statement": "A search engine's query suggestion box stores millions of past search phrases and must return every stored phrase that begins with whatever a user has typed so far, updating the suggestion list after each new letter. Because the same beginnings are shared by huge numbers of stored phrases, scanning every phrase from scratch for each keystroke would be far too slow.",
+    "pattern": "trie",
+    "difficulty": "medium",
+    "tell": "every stored phrase that begins with whatever a user has typed so far",
+    "whyNotOthers": {
+      "top-k-heap": "Retrieving every phrase sharing a prefix isn't about identifying a fixed number of top-ranked phrases by some score; it's a structural prefix match across a huge shared vocabulary.",
+      "modified-binary-search": "A sorted list of phrases only handles static prefix lookups reasonably; but since the same shared beginnings repeat across huge swaths of phrases and queries stream in constantly, a shared-prefix structure serves each without full re-scans.",
+      "sliding-window": "No contiguous subrange of a single phrase is being grown or shrunk; the task compares the typed prefix against many stored full phrases.",
+      "bfs": "There's no unweighted graph of connections to expand outward through in layers; phrases are compared against the query by their shared leading characters."
+    },
+    "complexity": "O(L) time per prefix / O(N × L) space"
+  },
+  {
+    "id": "trie-04",
+    "statement": "A DNA analysis tool holds a reference library of gene-sequence fragments, each a string over four possible letters, and must repeatedly check whether a newly sequenced fragment exists exactly in the library or whether it is at least a prefix of some longer fragment already stored there. The reference library is enormous, and countless fragments share long stretches of identical leading letters.",
+    "pattern": "trie",
+    "difficulty": "hard",
+    "tell": "at least a prefix of some longer fragment already stored",
+    "whyNotOthers": {
+      "modified-binary-search": "Sorting the fragment library could support some lookups, but with an enormous number of fragments sharing long common leading letters, organizing them by shared prefix avoids repeatedly re-comparing full fragments for every query.",
+      "union-find": "Fragments aren't being merged into connected groups based on discovered pairwise relationships; each query independently checks one fragment's presence or prefix status against the library.",
+      "dfs": "There's no general graph or tree of arbitrary connections to traverse; the structure being searched is specifically organized around shared leading letters.",
+      "cyclic-sort": "The fragments aren't a permutation of known index values to be placed in matching positions; the task is about matching shared prefixes among strings."
+    },
+    "complexity": "O(L) time per query / O(N × L) space"
+  },
+  {
+    "id": "trie-05",
+    "statement": "An e-commerce site indexes a catalog of thousands of product names and must power a search box that, as a shopper types, shows all product names sharing the exact letters typed so far as their beginning. New product names are also added to the catalog frequently, and both insertion and prefix lookup need to stay fast even as the catalog keeps growing.",
+    "pattern": "trie",
+    "difficulty": "easy",
+    "tell": "sharing the exact letters typed so far as their beginning",
+    "whyNotOthers": {
+      "top-k-heap": "The goal isn't narrowing down to some fixed number of best-matching names by a score; it's returning every name that structurally shares the typed prefix.",
+      "modified-binary-search": "A sorted catalog could support prefix range lookups, but with frequent insertions and lookups both needing to stay fast, a structure organized by shared prefixes handles both operations directly.",
+      "backtracking": "No speculative construction of candidate product names with undoing steps is needed; the search simply follows the typed letters through matching stored names.",
+      "greedy": "There's no single irrevocable choice being locked in per character; every matching product name sharing the prefix must be returned, not just one favored option."
+    },
+    "complexity": "O(L) time per operation / O(N × L) space"
+  },
+  {
+    "id": "trie-06",
+    "statement": "A messaging app's contact search must, as a user types part of a contact's name, return every saved contact whose name starts with those exact characters, even when the contact list holds tens of thousands of names with many sharing identical first few letters. The search must respond after every keystroke without noticeably lagging.",
+    "pattern": "trie",
+    "difficulty": "medium",
+    "tell": "return every saved contact whose name starts with those exact characters",
+    "whyNotOthers": {
+      "sliding-window": "No contiguous portion of a single contact's name is being resized under a running condition; the query compares a typed prefix against many stored full names at once.",
+      "top-k-heap": "The task isn't selecting a fixed number of best-ranked contacts by some score; it's returning every contact whose name structurally matches the given prefix.",
+      "two-pointers": "There's no pair of indices converging from opposite ends of a name; matching is about following shared leading characters across many stored names simultaneously.",
+      "modified-binary-search": "A sorted contact list handles static prefix ranges reasonably, but with many contacts sharing identical first letters and lookups firing on every keystroke, a shared-prefix structure resolves each query directly rather than re-searching ranges."
+    },
+    "complexity": "O(L) time per prefix / O(N × L) space"
+  },
+  {
+    "id": "trie-07",
+    "statement": "A telecom fraud system stores a huge set of known scam phone-number prefixes and must, for each incoming call, quickly determine whether the caller's number starts with any of those known scam prefixes. Millions of calls are checked per day against a scam-prefix set that itself contains many overlapping and nested prefixes.",
+    "pattern": "trie",
+    "difficulty": "hard",
+    "tell": "determine whether the caller's number starts with any of those known scam prefixes",
+    "whyNotOthers": {
+      "modified-binary-search": "A sorted list of scam prefixes could support some range checks, but with many overlapping and nested prefixes and millions of daily lookups, organizing them by shared leading digits avoids repeated range comparisons per call.",
+      "union-find": "Phone numbers aren't being merged into groups from discovered pairwise relationships; each call is checked independently against the stored prefix set.",
+      "greedy": "There's no locally optimal prefix to commit to and stop checking; the structure must correctly determine matches across many nested and overlapping prefixes at once.",
+      "top-k-heap": "This isn't about ranking scam prefixes by frequency or severity to keep only the top few; every stored prefix must be checkable against each incoming number."
+    },
+    "complexity": "O(L) time per call / O(N × L) space"
+  },
+  {
+    "id": "trie-08",
+    "statement": "A password strength auditor is given a large list of previously breached passwords and must check, for each newly chosen password, whether it exactly matches a breached password or whether it begins with the same characters as a breached password up to some length, since that pattern also indicates risk. The breached list is huge and full of passwords sharing long common beginnings.",
+    "pattern": "trie",
+    "difficulty": "medium",
+    "tell": "begins with the same characters as a breached password",
+    "whyNotOthers": {
+      "modified-binary-search": "Sorting the breached list supports some lookups, but with enormous overlap in shared leading characters and repeated queries against the same list, organizing passwords by shared prefix avoids repeated full comparisons.",
+      "cyclic-sort": "Passwords aren't a permutation of known index values to be rearranged into matching positions; the concern is shared leading characters among arbitrary strings.",
+      "backtracking": "No trial-and-error exploration of candidate passwords with undoing is required; each check follows the given password's own characters directly through the stored structure.",
+      "dfs": "There's no arbitrary graph of connections to explore; the traversal is specifically constrained to following one password's characters through a structure organized by shared prefixes."
+    },
+    "complexity": "O(L) time per query / O(N × L) space"
+  },
+  {
+    "id": "trie-09",
+    "statement": "A file system indexing tool tracks millions of file paths and must answer whether any indexed path begins with a given directory prefix, so that a \"list everything under this folder\" query can be answered without scanning every path. Paths are added and removed from the index constantly, and enormous numbers of them share the same leading folder segments.",
+    "pattern": "trie",
+    "difficulty": "easy",
+    "tell": "answer whether any indexed path begins with a given directory prefix",
+    "whyNotOthers": {
+      "modified-binary-search": "A sorted list of paths could locate a prefix range, but with constant insertions and removals alongside enormous shared leading segments, a structure organized around those shared segments supports all three operations directly.",
+      "union-find": "Paths aren't being merged into groups from discovered pairwise relationships between them; each query checks prefix membership against the whole indexed set independently.",
+      "bfs": "There's no general graph to expand outward through layer by layer; the structure being queried is specifically organized around shared leading path segments.",
+      "top-k-heap": "The task isn't narrowing down to some fixed number of top-ranked paths; it's a yes-or-no structural check for whether any path shares the given prefix."
+    },
+    "complexity": "O(L) time per query / O(N × L) space"
+  },
+  {
+    "id": "trie-10",
+    "statement": "A voice assistant's command recognizer stores a fixed vocabulary of valid command phrases and must, as each phrase is spoken and transcribed letter by letter in real time, determine as early as possible whether the letters so far could still complete into a valid stored command, or whether they have already ruled every stored command out. The vocabulary can be large and full of commands sharing identical opening words.",
+    "pattern": "trie",
+    "difficulty": "easy",
+    "tell": "whether the letters so far could still complete into a valid stored command",
+    "whyNotOthers": {
+      "backtracking": "No speculative construction of candidate commands with undoing is needed; the check follows the transcribed letters directly through the stored vocabulary as they arrive.",
+      "modified-binary-search": "A sorted vocabulary list could check some prefixes, but with real-time letter-by-letter transcription and heavy sharing of opening words, a shared-prefix structure gives an immediate answer at each letter rather than repeated range searches.",
+      "greedy": "There's no single best next letter being committed to irreversibly; the check simply follows whatever letters have actually been transcribed against the stored vocabulary.",
+      "two-pointers": "There's no pair of indices moving toward each other; the transcription is checked incrementally against stored commands sharing the same leading letters."
+    },
+    "complexity": "O(L) time per query / O(N × L) space"
+  },
+  {
+    "id": "greedy-01",
+    "statement": "A single conference room has been requested by many speakers, each wanting to use it during their own start and end time, and any two overlapping requests cannot both be granted. Determine the maximum count of non-overlapping requests that can be granted the room, without ever needing to know the actual combined free time of the room.",
+    "pattern": "greedy",
+    "difficulty": "easy",
+    "tell": "maximum count of non-overlapping requests that can be granted",
+    "whyNotOthers": {
+      "merge-intervals": "No ranges are being merged or combined into a unified set of covered time; the goal is choosing the largest possible count of individually non-overlapping requests to keep, discarding the rest.",
+      "knapsack-01": "Each request has no separate weight or value being traded off against a capacity; picking the request that frees the room soonest is always at least as good as any other choice, which a value-based subset search would treat as needing full comparison.",
+      "dfs": "No graph of dependencies between speakers needs exploring; ranking requests by end time and scanning once is sufficient without branching exploration.",
+      "backtracking": "No combination of requests needs to be tried and undone; once requests are sorted by end time, committing to the earliest-ending compatible request at each step is always safely optimal."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
+  },
+  {
+    "id": "greedy-02",
+    "statement": "A single charging station can service one electric vehicle at a time, and a list of vehicles each want to charge during their own preferred start and end time window. Determine the largest count of vehicles that can be charged without any two chosen charging windows overlapping, given that once a vehicle finishes, the very next vehicle to start can begin immediately.",
+    "pattern": "greedy",
+    "difficulty": "easy",
+    "tell": "largest count of vehicles that can be charged without any two chosen charging windows overlapping",
+    "whyNotOthers": {
+      "merge-intervals": "The task isn't producing a combined view of when the station is occupied across overlapping requests; it's selecting the maximum count of individually compatible, non-overlapping requests to accept.",
+      "two-pointers": "The windows aren't scanned from two ends toward each other; the standard approach is a single left-to-right scan after sorting by finish time.",
+      "top-k-heap": "This isn't about ranking vehicles by some score and keeping a top few; every vehicle whose window doesn't conflict with previously accepted ones should be accepted.",
+      "knapsack-01": "There's no separate value per vehicle being weighed against a shared capacity; always accepting whichever remaining request finishes soonest is provably optimal without comparing value trade-offs."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
+  },
+  {
+    "id": "greedy-03",
+    "statement": "A cashier must give a customer exact change using the fewest coins possible, and the available coin denominations happen to form a canonical system where repeatedly taking the largest denomination not exceeding the remainder is provably optimal. Determine the minimum number of coins needed for a given change amount under this coin system.",
+    "pattern": "greedy",
+    "difficulty": "medium",
+    "tell": "repeatedly taking the largest denomination not exceeding the remainder is provably optimal",
+    "whyNotOthers": {
+      "knapsack-unbounded": "Coins of the same denomination can indeed be reused without limit, but here the coin system is specifically one where repeatedly committing to the single largest usable denomination is already proven optimal, without needing to build up and compare every smaller total.",
+      "backtracking": "No exploration of alternative coin combinations with undoing is needed; the described coin system guarantees the locally largest choice at each step leads to the overall minimum.",
+      "modified-binary-search": "The remaining amount isn't a sorted range being halved to locate a target; it's reduced step by step by subtracting the largest usable denomination.",
+      "top-k-heap": "There's no ranking of a fixed number of top coin values to maintain; only the single largest denomination not exceeding the remainder is used at each step."
+    },
+    "complexity": "O(amount) time / O(1) extra space"
+  },
+  {
+    "id": "greedy-04",
+    "statement": "A hiking group needs to cross a series of stepping stones to reach the other side of a stream, where each stone lists the farthest number of additional stones it allows a jump to reach. Starting from the first stone, determine the minimum number of jumps needed to reach the last stone, always jumping to whichever reachable stone extends the farthest possible future reach.",
+    "pattern": "greedy",
+    "difficulty": "medium",
+    "tell": "always jumping to whichever reachable stone extends",
+    "whyNotOthers": {
+      "bfs": "Layer-by-layer expansion over every possible next stone would also find the minimum jump count, but tracking only the farthest reachable stone at each step and committing to it directly avoids exploring every stone individually.",
+      "dfs": "Exploring one jump sequence deeply before backtracking to try others wastes effort here, since always advancing to the farthest-reaching stone within the current range is provably never worse than any alternative.",
+      "backtracking": "No trial jump sequence needs to be tried and abandoned; the farthest-reach choice at each step is always safely optimal, so no undoing is ever required.",
+      "knapsack-01": "No subset of stones is being chosen to fit within a weight or capacity limit; every stone along the greedily chosen path is used, and the goal is minimizing jump count, not selecting a subset."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "greedy-05",
+    "statement": "A delivery van has a single fuel tank and must travel around a circular route of fuel stations, where each station provides a certain amount of fuel and requires a certain amount of fuel to reach the next station. Determine the one starting station, if any, from which the van can complete the entire circular route without ever running out of fuel, tracking a running fuel balance across the route rather than testing every station as a candidate start from scratch.",
+    "pattern": "greedy",
+    "difficulty": "hard",
+    "tell": "tracking a running fuel balance across the route",
+    "whyNotOthers": {
+      "sliding-window": "No contiguous subrange of stations is being resized to satisfy a running sum threshold; the answer is found by tracking a running fuel balance and only ever considering the station right after the first point that balance would go negative.",
+      "two-pointers": "The stations aren't scanned by two indices converging toward each other; a single forward pass tracking cumulative fuel is enough to identify the correct start.",
+      "modified-binary-search": "The fuel amounts around the circular route have no sorted structure to halve; the valid start is found through one linear pass reasoning about where the running total first dips negative.",
+      "backtracking": "No trial starting stations need to be tested and abandoned one by one; the single running-total pass directly identifies the one valid starting station without exploring alternatives."
+    },
+    "complexity": "O(n) time / O(1) extra space"
+  },
+  {
+    "id": "greedy-06",
+    "statement": "A movie festival has many film screenings requested for a single theater, each with its own start and end time, and organizers want to accept as many screenings as possible so that no two accepted screenings overlap in the same theater. They want the maximum count of individually accepted, non-conflicting screenings, not a report of the theater's overall occupied time.",
+    "pattern": "greedy",
+    "difficulty": "easy",
+    "tell": "the maximum count of individually accepted, non-conflicting screenings",
+    "whyNotOthers": {
+      "merge-intervals": "The organizers aren't combining overlapping screening requests into unified blocks of occupied time; they're selecting the maximum count of individually compatible requests while rejecting the rest.",
+      "knapsack-01": "There's no separate value per screening being traded off against a shared capacity; the request ending soonest among remaining compatible options is always safe to accept, without weighing values against each other.",
+      "top-k-heap": "This isn't about ranking screenings by some score and retaining a fixed top few; a request is accepted whenever it doesn't overlap with previously accepted ones, however many that ends up being.",
+      "dfs": "No graph of dependencies between screenings needs exploring recursively; a single pass over requests sorted by end time is sufficient."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
+  },
+  {
+    "id": "greedy-07",
+    "statement": "A factory must assign workers to one-person tasks, where each task has a deadline and a penalty charged if the task is not completed by its deadline, and every task takes exactly one time slot to complete. Determine an assignment of tasks to time slots that minimizes total penalty, by slotting each task, taken in descending penalty order, into the latest available slot at or before its deadline.",
+    "pattern": "greedy",
+    "difficulty": "hard",
+    "tell": "slotting each task, taken in descending penalty order, into the latest available slot",
+    "whyNotOthers": {
+      "knapsack-01": "Tasks aren't chosen to fit within a fixed weight capacity by trading off competing values; every task is considered in penalty order and placed into the latest deadline-respecting slot still open, without comparing subsets.",
+      "backtracking": "No trial assignment of tasks to slots needs to be tried and undone; committing each task, in penalty order, to its latest available valid slot is always at least as good as any other assignment.",
+      "topological-sort": "Tasks have deadlines but no dependency relationships requiring one task to finish before another can start; there's no ordering constraint between tasks themselves to satisfy.",
+      "modified-binary-search": "The deadlines aren't a sorted range being halved to locate one target value; each task's latest available slot is found by direct placement, not by repeatedly halving a search space."
+    },
+    "complexity": "O(n log n) time / O(n) space"
+  },
+  {
+    "id": "greedy-08",
+    "statement": "A children's party has a supply of balloons that must be handed out to kids lined up for games, where each kid has a minimum happiness requirement compared to their immediate neighbors in line, needing strictly more balloons than a less happy neighbor. Determine the fewest total balloons needed to satisfy every kid's requirement relative to both neighbors, giving each kid at least one balloon.",
+    "pattern": "greedy",
+    "difficulty": "medium",
+    "tell": "needing strictly more balloons than a less happy neighbor",
+    "whyNotOthers": {
+      "dfs": "No tree or graph of arbitrary connections needs exploring; two straightforward passes across the line, one in each direction, resolve every kid's requirement directly.",
+      "backtracking": "No trial balloon counts need to be assigned and undone; scanning left to right and then right to left, always assigning the minimum extra balloon needed relative to a neighbor, is always sufficient.",
+      "sliding-window": "No contiguous subrange of kids is being grown or shrunk under a running aggregate condition; the requirement compares each kid only to its immediate left and right neighbor directly.",
+      "two-pointers": "The two passes move in a single direction each, not toward each other from opposite ends; they aren't converging on a shared meeting point."
+    },
+    "complexity": "O(n) time / O(n) space"
+  },
+  {
+    "id": "greedy-09",
+    "statement": "A gas station chain wants to place the fewest possible refueling stations along a long straight highway so that every stretch of highway longer than a fixed maximum distance without a station is eliminated, given a fixed set of candidate spots where a station could be built. The minimum count is achieved by always placing the next station at the farthest candidate spot that still satisfies the distance limit.",
+    "pattern": "greedy",
+    "difficulty": "medium",
+    "tell": "placing the next station at the farthest candidate spot that still satisfies the distance limit",
+    "whyNotOthers": {
+      "knapsack-01": "Candidate spots aren't being chosen to fit a fixed capacity while trading off separate values; the farthest spot that still satisfies the distance requirement at each necessary point is always the safe choice, without weighing alternative subsets.",
+      "backtracking": "No trial placement of stations needs to be tried and undone; always picking the farthest valid candidate spot when a station becomes necessary is provably at least as good as any earlier placement.",
+      "modified-binary-search": "The highway positions do have an order, but the placement isn't found by halving a sorted search space for one target; it's built up by repeatedly advancing to the farthest valid candidate as the distance limit is approached.",
+      "top-k-heap": "There's no ranking of candidate spots by some score with only a top few retained; the choice at each point is simply the single farthest candidate still satisfying the distance limit."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
+  },
+  {
+    "id": "greedy-10",
+    "statement": "A committee must select the maximum number of non-overlapping presentation slots from a long list of proposed slots, each defined by a start and end time, so that as many presentations as possible get a slot in a single-room hall. The optimal count comes from repeatedly picking whichever remaining proposal ends earliest among those still compatible with what's already picked.",
+    "pattern": "greedy",
+    "difficulty": "easy",
+    "tell": "picking whichever remaining proposal ends earliest among those still compatible",
+    "whyNotOthers": {
+      "merge-intervals": "The committee isn't combining overlapping proposals into consolidated blocks of occupied hall time; it's selecting the maximum count of individually non-conflicting proposals while turning away the rest.",
+      "two-heaps": "No running median or two balanced halves of values need to be maintained; a single sort by end time followed by one linear scan resolves the selection.",
+      "cyclic-sort": "The proposals aren't a permutation of known index values needing placement at matching positions; they're time ranges being filtered down to a non-overlapping subset.",
+      "knapsack-01": "There's no separate value per proposal being weighed against a shared capacity to decide inclusion; picking whichever remaining compatible proposal ends soonest is always safely optimal without comparing values."
+    },
+    "complexity": "O(n log n) time / O(1) extra space"
   }
 ]
