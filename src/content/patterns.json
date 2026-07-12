@@ -72,7 +72,7 @@
     "pattern": "backtracking",
     "pseudocode": "function backtrack(path, choices):\n  if path is a complete solution:\n    record(path)\n    return\n  for choice in choices:\n    if not valid(path, choice):\n      continue\n    path.add(choice)          # choose\n    backtrack(path, remaining(choices, choice))  # recurse\n    path.removeLast()         # undo\n\nbacktrack([], allChoices)",
     "references": [
-      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Combinatorial Search and Heuristic Methods (backtracking)" }
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 9 — Combinatorial Search (backtracking)" }
     ]
   },
   {
@@ -104,7 +104,7 @@
     "pseudocode": "dp = array[0..capacity] of 0\n# each item may be taken at most once\nfor item in items:\n  # iterate capacity DOWN so item isn't reused within this pass\n  for cap in capacity down to item.weight:\n    skip = dp[cap]\n    take = dp[cap - item.weight] + item.value\n    dp[cap] = max(skip, take)\nreturn dp[capacity]",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 14 — Dynamic Programming" },
-      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 8 — Dynamic Programming" }
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 10 — Dynamic Programming" }
     ]
   },
   {
@@ -112,7 +112,7 @@
     "pseudocode": "dp = array[0..capacity] of 0\n# each item may be reused any number of times\nfor item in items:\n  # iterate capacity UP so this same item can feed forward again\n  for cap in item.weight to capacity:\n    skip = dp[cap]\n    take = dp[cap - item.weight] + item.value\n    dp[cap] = max(skip, take)\nreturn dp[capacity]",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 14 — Dynamic Programming" },
-      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 8 — Dynamic Programming" }
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 10 — Dynamic Programming" }
     ]
   },
   {
@@ -135,7 +135,7 @@
     "pseudocode": "parent = [i for i in 0 .. n-1]\nrank = [0] * n\n\nfunction find(x):\n  if parent[x] != x:\n    parent[x] = find(parent[x])  # path compression\n  return parent[x]\n\nfunction union(x, y):\n  rootX = find(x)\n  rootY = find(y)\n  if rootX == rootY:\n    return\n  if rank[rootX] < rank[rootY]:\n    swap(rootX, rootY)\n  parent[rootY] = rootX  # union by rank\n  if rank[rootX] == rank[rootY]:\n    rank[rootX] += 1",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 19 — Data Structures for Disjoint Sets" },
-      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 6 — Weighted Graph Algorithms (MST/union-find)" }
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 8 — Weighted Graphs (MST/union-find)" }
     ]
   },
   {
@@ -147,7 +147,7 @@
   },
   {
     "pattern": "greedy",
-    "pseudocode": "sort candidates by the criterion that makes the locally best choice first\nresult = []\nfor c in candidates:\n  if c is compatible with result so far:\n    # take the locally best option and never reconsider it\n    result.append(c)\nreturn result",
+    "pseudocode": "sort candidates by key(c)  # the greedy criterion, e.g. earliest finish time\nresult = []\nfor c in candidates:\n  if feasible(result, c):\n    # commit to the locally best option and never reconsider it\n    result.append(c)\n  # else: discard c permanently — no backtracking\nreturn result",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 15 — Greedy Algorithms" }
     ]
