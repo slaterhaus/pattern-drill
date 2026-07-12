@@ -207,3 +207,57 @@ mark {
 .mastery.mastered .level {
   color: #34c759;
 }
+
+.pattern-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.pseudocode {
+  margin: 0;
+  padding: 0.75rem;
+  background: #161a20;
+  border: 1px solid #2a2f38;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.references {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+  color: #b7bcc4;
+  text-align: left;
+}
+
+details.study {
+  border: 1px solid #2a2f38;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.75rem;
+}
+
+details.study summary {
+  cursor: pointer;
+  color: #9aa0a6;
+}
+
+.mastery details {
+  width: 100%;
+}
+
+.mastery summary {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+}
+
+.mastery summary::-webkit-details-marker {
+  display: none;
+}

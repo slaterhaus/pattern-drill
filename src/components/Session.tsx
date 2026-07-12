@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { answerOptions } from '../lib/scheduler';
 import type { PatternId, Problem, RoundResult } from '../types';
 import { PATTERN_NAMES } from '../types';
+import PatternCard from './PatternCard';
 
 const ROUND_SECONDS = 60;
 
@@ -80,6 +81,10 @@ export default function Session({ problems, onComplete }: SessionProps) {
           ))}
         </ul>
         <p className="complexity">{problem.complexity}</p>
+        <details className="study">
+          <summary>Study this pattern</summary>
+          <PatternCard pattern={problem.pattern} />
+        </details>
         <button className="primary" onClick={next}>
           {index + 1 >= problems.length ? 'Finish session' : 'Next'}
         </button>

@@ -1,6 +1,7 @@
 import { addDays, currentStreak, patternMastery, todayStr } from '../lib/stats';
 import type { AppState } from '../types';
 import { PATTERNS, PATTERN_NAMES } from '../types';
+import PatternCard from './PatternCard';
 
 interface ProgressProps {
   state: AppState;
@@ -26,8 +27,13 @@ export default function Progress({ state, onBack }: ProgressProps) {
           const mastery = patternMastery(state.attempts, pattern);
           return (
             <li key={pattern} className={`mastery ${mastery}`}>
-              <span>{PATTERN_NAMES[pattern]}</span>
-              <span className="level">{mastery}</span>
+              <details>
+                <summary>
+                  <span>{PATTERN_NAMES[pattern]}</span>
+                  <span className="level">{mastery}</span>
+                </summary>
+                <PatternCard pattern={pattern} />
+              </details>
             </li>
           );
         })}
