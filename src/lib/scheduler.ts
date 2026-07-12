@@ -9,6 +9,8 @@ export function daysBetween(earlier: string, later: string): number {
   return Math.round((Date.parse(later) - Date.parse(earlier)) / 86_400_000);
 }
 
+// `attempts` must be in chronological order (oldest first) — the recency
+// window and staleness math read the tail of the array as most recent.
 export function patternScore(
   attempts: Attempt[],
   pattern: PatternId,
