@@ -11,7 +11,7 @@ import type { AppState, Problem, RoundResult } from './types';
 
 type View =
   | { kind: 'home' }
-  | { kind: 'session'; problems: Problem[] }
+  | { kind: 'session'; problems: Problem[]; startedOn: string }
   | { kind: 'summary'; results: RoundResult[] }
   | { kind: 'progress' };
 
@@ -27,11 +27,11 @@ export default function App() {
   }
 
   function startSession() {
-    setView({ kind: 'session', problems: buildSession(state.attempts, allProblems, todayStr()) });
+    const today = todayStr();
+    setView({ kind: 'session', problems: buildSession(state.attempts, allProblems, today), startedOn: today });
   }
 
-  function completeSession(results: RoundResult[]) {
-    const today = todayStr();
+  function completeSession(results: RoundResult[], today: string) {
     replaceState({
       version: 1,
       attempts: [
@@ -62,7 +62,12 @@ export default function App() {
         />
       );
     case 'session':
-      return <Session problems={view.problems} onComplete={completeSession} />;
+      return (
+        <Session
+          problems={view.problems}
+          onComplete={(results) => completeSession(results, view.startedOn)}
+        />
+      );
     case 'summary':
       return <Summary results={view.results} onDone={() => setView({ kind: 'home' })} />;
     case 'progress':

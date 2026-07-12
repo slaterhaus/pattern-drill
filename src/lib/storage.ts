@@ -50,6 +50,10 @@ export function saveState(state: AppState, store: KV = localStorage): void {
   store.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+export function backupState(state: AppState, store: KV = localStorage): void {
+  store.setItem(`pattern-drill-backup-${Date.now()}`, JSON.stringify(state));
+}
+
 export function exportState(state: AppState): string {
   return JSON.stringify(state, null, 2);
 }

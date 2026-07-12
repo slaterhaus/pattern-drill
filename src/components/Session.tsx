@@ -44,7 +44,8 @@ export default function Session({ problems, onComplete }: SessionProps) {
   });
 
   function answer(chosen: PatternId | null) {
-    const timeMs = chosen === null ? ROUND_SECONDS * 1000 : Date.now() - startedAt;
+    const timeMs =
+      chosen === null ? ROUND_SECONDS * 1000 : Math.min(Date.now() - startedAt, ROUND_SECONDS * 1000);
     setResults((prev) => [
       ...prev,
       { problem, chosen, correct: chosen === problem.pattern, timeMs },

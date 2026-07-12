@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { currentStreak, todayStr } from '../lib/stats';
-import { exportState, importState } from '../lib/storage';
+import { backupState, exportState, importState } from '../lib/storage';
 import type { AppState } from '../types';
 
 interface HomeProps {
@@ -28,7 +28,9 @@ export default function Home({ state, onStart, onShowProgress, onReplaceState }:
 
   async function handleImport(file: File) {
     try {
-      onReplaceState(importState(await file.text()));
+      const next = importState(await file.text());
+      backupState(state);
+      onReplaceState(next);
       alert('Import complete.');
     } catch {
       alert('Invalid backup file — nothing was changed.');
