@@ -81,3 +81,16 @@ export interface RoundResult {
   correct: boolean;
   timeMs: number;
 }
+
+export interface PatternReference {
+  source: string;
+  where: string;
+}
+
+export interface PatternInfo {
+  pattern: PatternId;
+  /** Original, language-neutral template — never book-transcribed. */
+  pseudocode: string;
+  /** 1-3 entries; real chapter/section numbers only. */
+  references: PatternReference[];
+}

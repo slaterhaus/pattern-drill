@@ -1,0 +1,155 @@
+[
+  {
+    "pattern": "sliding-window",
+    "pseudocode": "best = init\nleft = 0\nfor right in 0 .. n-1:\n  add a[right] to window\n  while window violates the constraint:\n    remove a[left] from window\n    left += 1\n  best = better(best, value(window))\nreturn best",
+    "references": [
+      { "source": "NeetCode roadmap", "where": "Sliding Window topic" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 5 — Divide and Conquer (contrast: windows avoid re-scanning)" }
+    ]
+  },
+  {
+    "pattern": "two-pointers",
+    "pseudocode": "sort a if order matters and isn't given\nleft = 0\nright = n - 1\nwhile left < right:\n  s = combine(a[left], a[right])\n  if s meets target:\n    record(left, right)\n    left += 1\n    right -= 1\n  else if s needs to grow:\n    left += 1  # move the pointer that can only increase s\n  else:\n    right -= 1\nreturn results",
+    "references": [
+      { "source": "NeetCode roadmap", "where": "Two Pointers topic" }
+    ]
+  },
+  {
+    "pattern": "fast-slow-pointers",
+    "pseudocode": "slow = head\nfast = head\nwhile fast != null and fast.next != null:\n  slow = slow.next\n  fast = fast.next.next\n  if slow == fast:\n    # cycle found; find its start\n    ptr = head\n    while ptr != slow:\n      ptr = ptr.next\n      slow = slow.next\n    return ptr\nreturn no-cycle",
+    "references": [
+      { "source": "NeetCode/Grokking", "where": "Fast & Slow Pointers (Floyd's cycle detection)" }
+    ]
+  },
+  {
+    "pattern": "merge-intervals",
+    "pseudocode": "sort intervals by start\nmerged = [intervals[0]]\nfor cur in intervals[1:]:\n  last = merged[-1]\n  if cur.start <= last.end:\n    # overlap: extend in place instead of appending\n    last.end = max(last.end, cur.end)\n  else:\n    merged.append(cur)\nreturn merged",
+    "references": [
+      { "source": "Grokking the Coding Interview", "where": "Merge Intervals pattern" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (sorting as preprocessing)" }
+    ]
+  },
+  {
+    "pattern": "cyclic-sort",
+    "pseudocode": "i = 0\nwhile i < n:\n  correct = a[i] - 1  # value v belongs at index v-1\n  if a[i] != a[correct]:\n    swap(a[i], a[correct])\n  else:\n    i += 1  # already placed, or a duplicate blocking progress\nfor i in 0 .. n-1:\n  if a[i] != i + 1:\n    report(i)\nreturn a",
+    "references": [
+      { "source": "Grokking the Coding Interview", "where": "Cyclic Sort pattern" }
+    ]
+  },
+  {
+    "pattern": "linked-list-reversal",
+    "pseudocode": "prev = null\ncur = head\nwhile cur != null:\n  nxt = cur.next   # save before overwriting the link\n  cur.next = prev\n  prev = cur\n  cur = nxt\nreturn prev  # new head",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 10 — Elementary Data Structures" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 3 — Data Structures" }
+    ]
+  },
+  {
+    "pattern": "bfs",
+    "pseudocode": "queue = [start]\nvisited = {start}\ndist = {start: 0}\nwhile queue is not empty:\n  node = queue.popFront()\n  for neighbor in graph[node]:\n    if neighbor not in visited:\n      visited.add(neighbor)\n      dist[neighbor] = dist[node] + 1\n      queue.pushBack(neighbor)\nreturn dist",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 20 — Elementary Graph Algorithms" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Graph Traversal" }
+    ]
+  },
+  {
+    "pattern": "dfs",
+    "pseudocode": "visited = {}\nfunction dfs(node):\n  visited.add(node)\n  visit(node)\n  for neighbor in graph[node]:\n    if neighbor not in visited:\n      dfs(neighbor)\n\nfor node in graph:\n  if node not in visited:\n    dfs(node)  # cover disconnected components",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 20 — Elementary Graph Algorithms" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Graph Traversal" }
+    ]
+  },
+  {
+    "pattern": "two-heaps",
+    "pseudocode": "heapLo = max-heap()  # smaller half\nheapHi = min-heap()  # larger half\nfunction insert(x):\n  if heapLo is empty or x <= top(heapLo):\n    push(heapLo, x)\n  else:\n    push(heapHi, x)\n  # rebalance so sizes differ by at most 1\n  if size(heapLo) > size(heapHi) + 1:\n    push(heapHi, pop(heapLo))\n  else if size(heapHi) > size(heapLo):\n    push(heapLo, pop(heapHi))\n\nfunction median():\n  if size(heapLo) > size(heapHi):\n    return top(heapLo)\n  return (top(heapLo) + top(heapHi)) / 2",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 6 — Heapsort (priority queues)" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (heaps)" }
+    ]
+  },
+  {
+    "pattern": "backtracking",
+    "pseudocode": "function backtrack(path, choices):\n  if path is a complete solution:\n    record(path)\n    return\n  for choice in choices:\n    if not valid(path, choice):\n      continue\n    path.add(choice)          # choose\n    backtrack(path, remaining(choices, choice))  # recurse\n    path.removeLast()         # undo\n\nbacktrack([], allChoices)",
+    "references": [
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Combinatorial Search and Heuristic Methods (backtracking)" }
+    ]
+  },
+  {
+    "pattern": "modified-binary-search",
+    "pseudocode": "lo = 0\nhi = n - 1\nwhile lo <= hi:\n  mid = lo + (hi - lo) / 2\n  if condition(a[mid]) == target:\n    return mid  # or narrow further for first/last occurrence\n  else if shouldGoRight(a[mid]):\n    lo = mid + 1\n  else:\n    hi = mid - 1\nreturn not-found",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 2 (binary search exercise)" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 5 — Divide and Conquer" }
+    ]
+  },
+  {
+    "pattern": "top-k-heap",
+    "pseudocode": "heap = empty min-heap  # size at most k\nfor x in a:\n  if size(heap) < k:\n    push(heap, x)\n  else if x > top(heap):\n    # top is the smallest of the current top-k; evict it\n    pop(heap)\n    push(heap, x)\nreturn heap  # the k largest elements",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 6 — Heapsort (priority queues)" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (priority queues)" }
+    ]
+  },
+  {
+    "pattern": "k-way-merge",
+    "pseudocode": "heap = empty min-heap\nfor i in 0 .. k-1:\n  if lists[i] is not empty:\n    push(heap, (lists[i].head, i))\n\nresult = []\nwhile heap is not empty:\n  (val, i) = pop(heap)\n  result.append(val)\n  advance(lists[i])\n  if lists[i] is not empty:\n    push(heap, (lists[i].head, i))\nreturn result",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 6 (priority queues)" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (mergesort)" }
+    ]
+  },
+  {
+    "pattern": "knapsack-01",
+    "pseudocode": "dp = array[0..capacity] of 0\n# each item may be taken at most once\nfor item in items:\n  # iterate capacity DOWN so item isn't reused within this pass\n  for cap in capacity down to item.weight:\n    skip = dp[cap]\n    take = dp[cap - item.weight] + item.value\n    dp[cap] = max(skip, take)\nreturn dp[capacity]",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 14 — Dynamic Programming" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 8 — Dynamic Programming" }
+    ]
+  },
+  {
+    "pattern": "knapsack-unbounded",
+    "pseudocode": "dp = array[0..capacity] of 0\n# each item may be reused any number of times\nfor item in items:\n  # iterate capacity UP so this same item can feed forward again\n  for cap in item.weight to capacity:\n    skip = dp[cap]\n    take = dp[cap - item.weight] + item.value\n    dp[cap] = max(skip, take)\nreturn dp[capacity]",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 14 — Dynamic Programming" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 8 — Dynamic Programming" }
+    ]
+  },
+  {
+    "pattern": "topological-sort",
+    "pseudocode": "inDegree = count of incoming edges per node\nqueue = [n for n in graph if inDegree[n] == 0]\norder = []\nwhile queue is not empty:\n  node = queue.popFront()\n  order.append(node)\n  for neighbor in graph[node]:\n    inDegree[neighbor] -= 1\n    if inDegree[neighbor] == 0:\n      queue.pushBack(neighbor)\nif len(order) < len(graph):\n  return cycle-detected\nreturn order",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 20 — Elementary Graph Algorithms" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Graph Traversal" }
+    ]
+  },
+  {
+    "pattern": "monotonic-stack",
+    "pseudocode": "stack = []  # holds indices, values kept increasing bottom-to-top\nresult = array[0..n-1] of default\nfor i in 0 .. n-1:\n  while stack is not empty and a[i] breaks the order with a[top(stack)]:\n    # a[i] resolves the answer for the popped index\n    j = pop(stack)\n    result[j] = i\n  stack.push(i)\nreturn result",
+    "references": [
+      { "source": "NeetCode roadmap", "where": "Stack (monotonic stack)" }
+    ]
+  },
+  {
+    "pattern": "union-find",
+    "pseudocode": "parent = [i for i in 0 .. n-1]\nrank = [0] * n\n\nfunction find(x):\n  if parent[x] != x:\n    parent[x] = find(parent[x])  # path compression\n  return parent[x]\n\nfunction union(x, y):\n  rootX = find(x)\n  rootY = find(y)\n  if rootX == rootY:\n    return\n  if rank[rootX] < rank[rootY]:\n    swap(rootX, rootY)\n  parent[rootY] = rootX  # union by rank\n  if rank[rootX] == rank[rootY]:\n    rank[rootX] += 1",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 19 — Data Structures for Disjoint Sets" },
+      { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 6 — Weighted Graph Algorithms (MST/union-find)" }
+    ]
+  },
+  {
+    "pattern": "trie",
+    "pseudocode": "root = new node with empty children map, isWord = false\n\nfunction insert(word):\n  node = root\n  for ch in word:\n    if ch not in node.children:\n      node.children[ch] = new node\n    node = node.children[ch]\n  node.isWord = true\n\nfunction search(word):\n  node = root\n  for ch in word:\n    if ch not in node.children:\n      return false\n    node = node.children[ch]\n  return node.isWord",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Problem 12-2 — Radix trees" }
+    ]
+  },
+  {
+    "pattern": "greedy",
+    "pseudocode": "sort candidates by the criterion that makes the locally best choice first\nresult = []\nfor c in candidates:\n  if c is compatible with result so far:\n    # take the locally best option and never reconsider it\n    result.append(c)\nreturn result",
+    "references": [
+      { "source": "CLRS (4th ed)", "where": "Ch. 15 — Greedy Algorithms" }
+    ]
+  }
+]
