@@ -2106,7 +2106,7 @@
     "difficulty": "easy",
     "tell": "produce one valid order in which a student could take all the courses",
     "whyNotOthers": {
-      "dfs": "A single traversal can detect a cycle, but producing one full, globally consistent completion order for every course requires tracking in-degrees or finish times across the whole graph, not just exploring one path.",
+      "dfs": "Depth-first exploration with reverse finish-order bookkeeping is in fact one standard implementation here, but as a label it misses the problem's signature: the required output is a prerequisite-respecting order over every course, which is exactly the ordering-under-dependencies family rather than generic graph exploration.",
       "bfs": "Plain layer-by-layer expansion from one starting course doesn't account for courses needing several different prerequisites completed by others first.",
       "union-find": "Courses aren't being grouped into connected clusters; the requirement is a linear sequence respecting direction, and prerequisite edges are directional, not symmetric merges.",
       "greedy": "There's no single locally-best course to lock in early without regard to the rest; the whole dependency structure must be respected simultaneously to build the order."
@@ -2115,15 +2115,15 @@
   },
   {
     "id": "topological-sort-02",
-    "statement": "A build system tracks, for a set of software modules, which other modules each one imports and must therefore be compiled after. Given all the import relationships, determine an order to compile every module so that each module is compiled only after everything it imports, and flag the build as broken if the imports form an unbreakable cycle.",
+    "statement": "A build farm compiles software modules in successive rounds, where each round compiles in parallel every module whose imported modules have all been compiled in earlier rounds. Given all import relationships, report which modules are compiled in each round, and flag the build as broken if some modules can never be compiled because their imports form a cycle.",
     "pattern": "topological-sort",
     "difficulty": "easy",
-    "tell": "compiled only after everything it imports",
+    "tell": "report which modules are compiled in each round",
     "whyNotOthers": {
-      "dfs": "Traversal alone can flag a cycle by revisiting an in-progress module, but assembling the actual full compile order for every module needs the accumulated ordering information from across the entire graph.",
-      "bfs": "Expanding outward from a single module doesn't capture modules with multiple independent imports that must each be resolved by other branches first.",
-      "backtracking": "There's no need to search over alternative partial orders and undo choices; a direct construction from in-degrees yields the order without any backtracking.",
-      "greedy": "No single import can be judged best to compile first in isolation; the entire dependency graph must be checked so nothing is compiled before something it needs."
+      "dfs": "Post-order exploration can produce one valid linear compile order, but it doesn't group modules into the simultaneous rounds requested here; round membership comes from repeatedly collecting every module whose imports are all resolved.",
+      "bfs": "A round resembles a layer, but membership is defined by all imports being resolved, not by edge distance from a starting module; a module one edge from the start may only become compilable in a very late round.",
+      "backtracking": "There's no need to search over alternative groupings and undo choices; each round is constructed directly from the modules that currently have no unresolved imports.",
+      "greedy": "No single module is a locally best pick to commit to ahead of others; a round is the entire set of currently compilable modules, dictated by the whole dependency structure at once."
     },
     "complexity": "O(V + E) time / O(V + E) space"
   },
@@ -2134,7 +2134,7 @@
     "difficulty": "medium",
     "tell": "one sequence of steps that respects every dependency",
     "whyNotOthers": {
-      "dfs": "A depth-first walk can surface a contradiction by finding a revisited in-progress step, but it doesn't by itself hand back the single sequence covering all steps that a scheduler would actually follow.",
+      "union-find": "Steps aren't being merged into symmetric groups; each dependency points from one step to another, and that direction must be reflected in the output sequence rather than collapsed into shared membership.",
       "bfs": "Steps can depend on several other steps finishing first, so expanding one step's neighbors at a time misses steps that only become ready once multiple unrelated branches complete.",
       "greedy": "Picking whichever step looks quickest to do next, without checking what still depends on it, can strand later steps whose prerequisites were skipped over.",
       "knapsack-01": "No step is being included or excluded to fit a capacity; every step must appear exactly once in the resulting sequence."
@@ -2149,7 +2149,7 @@
     "tell": "a valid processing order for every permit that honors all such dependencies",
     "whyNotOthers": {
       "bfs": "Some permits wait on several unrelated departments finishing their own approvals, so a single outward expansion from one permit cannot correctly place every permit in the full order.",
-      "dfs": "A recursive exploration can identify a cyclic dependency, but reading off the entire cross-department processing order for every permit requires aggregating finishing information across all branches, not just one path.",
+      "dfs": "A recursive pass that records permits in reverse finish order genuinely solves this, but that is the ordering technique's own machinery; classifying the problem as plain exploration overlooks its defining ask — emit a dependency-honoring order over all permits and flag cyclic contradictions.",
       "union-find": "Permits aren't being merged into shared groups; the approval relationships point in a direction that must be preserved in the output sequence, not treated as symmetric connections.",
       "two-heaps": "No running median or balanced split between two halves of values is involved; this is purely about respecting directional ordering constraints."
     },
@@ -2162,7 +2162,7 @@
     "difficulty": "medium",
     "tell": "a sequence in which every ability could be unlocked while never violating a requirement",
     "whyNotOthers": {
-      "dfs": "Following one branch of abilities down to its roots can reveal a circular requirement, but it doesn't directly assemble the single overall unlock sequence spanning abilities from unrelated branches.",
+      "bfs": "Unlock readiness isn't measured by edge distance from a starting ability; an ability one link away may only become available after a long requirement chain elsewhere finishes, so distance-layered expansion mis-orders it.",
       "backtracking": "No trial-and-error search with undoing choices is needed; the valid order can be built directly from how many unresolved requirements each ability still has.",
       "greedy": "Unlocking whichever ability seems most useful first, without checking what still requires it to wait, can leave later abilities stuck behind requirements that were bypassed.",
       "knapsack-unbounded": "Abilities aren't being chosen repeatedly to fill some budget; every ability is unlocked exactly once, and the concern is purely the order of unlocking."
@@ -2171,43 +2171,43 @@
   },
   {
     "id": "topological-sort-06",
-    "statement": "A film studio schedules post-production tasks like color grading, sound mixing, and visual effects, where some tasks cannot begin until specific other tasks have wrapped, forming a dependency network across many departments. Given this network, output one overall schedule order for all tasks that honors every dependency, or report that the schedule cannot be completed due to a circular requirement.",
+    "statement": "A film studio schedules post-production tasks like color grading, sound mixing, and visual effects, where some tasks cannot begin until specific other tasks have wrapped. Because departments work in parallel, the studio wants the tasks grouped into successive waves, where each wave contains every task whose blocking tasks all wrapped in earlier waves, or a report that a circular requirement makes the schedule impossible.",
     "pattern": "topological-sort",
     "difficulty": "medium",
-    "tell": "output one overall schedule order for all tasks that honors every dependency",
+    "tell": "the tasks grouped into successive waves",
     "whyNotOthers": {
-      "dfs": "Exploring one department's dependency chain can uncover a cycle, but the overall schedule spanning every department's tasks needs ordering information combined across the whole network, not a single traversal path.",
-      "bfs": "Tasks waiting on multiple unrelated departments to finish first won't be correctly sequenced by expanding outward from just one starting task.",
-      "greedy": "Scheduling whichever task looks fastest first, without regard to what still depends on it, can leave dependent tasks scheduled before something they actually needed.",
-      "top-k-heap": "No fixed number of top tasks is being selected or ranked; every task must appear in the final schedule exactly once."
+      "dfs": "Post-order traversal yields one valid linear schedule, but not the wave grouping requested here; which wave a task joins is determined by counting unresolved blockers, which finish-time ordering doesn't directly express.",
+      "bfs": "A wave is defined by all blockers being complete, not by edge distance from one starting task; a task a single edge from the start can still land in a late wave when a long chain feeds it.",
+      "greedy": "Scheduling whichever task looks fastest first, without regard to what still depends on it, can place a task in a wave before something it needed has wrapped.",
+      "top-k-heap": "No fixed number of top tasks is being selected or ranked; every task must appear in exactly one wave of the final schedule."
     },
     "complexity": "O(V + E) time / O(V + E) space"
   },
   {
     "id": "topological-sort-07",
-    "statement": "A large software monorepo defines package dependencies where each package may depend on several others, and those in turn depend on more, forming a deep dependency graph across the whole repo. Given all declared dependencies, determine a build order in which every package is built only after all packages it depends on, and detect whether any group of packages depends on each other in a way that makes building impossible.",
+    "statement": "A large software monorepo defines package dependencies where each package may depend on several others, and those in turn depend on more, forming a deep dependency graph across the whole repo. The CI system has unlimited parallelism, so determine the minimum number of build stages needed, where each stage builds every package whose dependencies were all built in earlier stages, and detect any group of packages whose mutual dependencies make building impossible.",
     "pattern": "topological-sort",
     "difficulty": "hard",
-    "tell": "detect whether any group of packages depends on each other in a way that makes building impossible",
+    "tell": "the minimum number of build stages needed",
     "whyNotOthers": {
-      "dfs": "A depth-first pass can flag one particular cycle when it revisits a package still being processed, but producing the single consistent build order across the entire repo's packages requires combining ordering results from every branch, not just detecting a cycle locally.",
-      "union-find": "Packages aren't being merged into unordered groups; dependency edges are directional, and the build order must respect that direction rather than just tracking which packages are connected.",
-      "bfs": "Packages with several independent dependencies won't be placed correctly by expanding layer by layer from one package, since a package only becomes buildable once every one of its dependencies, wherever they sit in the graph, is done.",
-      "backtracking": "No speculative choice-and-undo search over partial build orders is needed; the order and any impossibility can both be read off directly from tracking how many unresolved dependencies remain per package."
+      "dfs": "A depth-first pass with memoized chain depths could compute each package's stage, but that is dependency-ordering machinery under another name; the recognizable core is staged, prerequisites-first processing of the whole graph, not exploration for its own sake.",
+      "union-find": "Packages aren't being merged into unordered groups; dependency edges are directional, and stage placement must respect that direction rather than just tracking which packages are connected.",
+      "bfs": "Stage membership is fixed by all dependencies completing, not by edge distance from any starting package, so distance-layered expansion from a source assigns packages to the wrong stages.",
+      "backtracking": "No speculative choice-and-undo search over stage assignments is needed; stages fall out directly from repeatedly peeling off packages with no unbuilt dependencies."
     },
     "complexity": "O(V + E) time / O(V + E) space"
   },
   {
     "id": "topological-sort-08",
-    "statement": "A university registrar manages thousands of courses across departments, each with its own prerequisite chain that can span multiple departments, and wants a single semester-by-semester plan that a student could follow to take every course in the catalog without ever taking a course before its prerequisites. Given all prerequisite pairs across the entire catalog, produce this course order or report that the prerequisites are contradictory.",
+    "statement": "A university registrar manages thousands of courses across departments, each with prerequisite chains that can span multiple departments, and a student wants to finish every course in the catalog in as few semesters as possible, taking in each semester every course whose prerequisites are already complete. Given all prerequisite pairs across the entire catalog, compute the minimum number of semesters required, or report that contradictory prerequisites make finishing impossible.",
     "pattern": "topological-sort",
     "difficulty": "hard",
-    "tell": "a single semester-by-semester plan that a student could follow to take every course",
+    "tell": "compute the minimum number of semesters required",
     "whyNotOthers": {
-      "dfs": "Tracing one department's prerequisite chain can find a contradiction within it, but the full catalog-wide order needs finishing information merged across every department's chains, not a single traversal.",
-      "bfs": "Courses depending on prerequisites from several unrelated departments won't be sequenced correctly by expanding outward from one starting course.",
-      "greedy": "Committing to whichever course looks earliest to take without checking the rest of the catalog can leave later prerequisites unsatisfied for courses processed too soon.",
-      "knapsack-01": "No subset of courses is being chosen to fit within a budget; every course in the catalog must appear in the plan exactly once."
+      "dfs": "Memoized recursion over prerequisite chains can compute each course's earliest semester, but that is this ordering pattern's own depth computation; the structural cue to spot is semester-by-semester, prerequisites-first processing of a dependency graph.",
+      "bfs": "A semester is defined by every prerequisite being complete, not by edge distance from a starting course; a course one prerequisite away may still wait many semesters on a long chain elsewhere.",
+      "greedy": "Front-loading whichever courses look convenient cannot shorten the plan; the semester count is dictated by the longest prerequisite chain, which only global dependency bookkeeping reveals.",
+      "knapsack-01": "No subset of courses is being chosen to fit within a budget; every course must be completed, and the question is how the dependency structure compresses into semesters."
     },
     "complexity": "O(V + E) time / O(V + E) space"
   },
@@ -2219,7 +2219,7 @@
     "tell": "compute a valid run order for the entire pipeline",
     "whyNotOthers": {
       "bfs": "Stages depending on several unrelated earlier stages can't be correctly placed by expanding one stage's subscribers at a time; a stage only becomes runnable once all of its subscriptions, from anywhere in the graph, are satisfied.",
-      "dfs": "Walking one subscription chain can surface a loop within it, but assembling the single overall run order for every stage in the pipeline requires combining results across all chains, not just one.",
+      "greedy": "Running whichever stage looks cheapest next, without tracking unresolved subscriptions, can execute a stage before an input it consumes exists; the order comes from readiness bookkeeping across the whole graph, not a local preference.",
       "union-find": "Stages aren't being merged into undirected groups; a subscription points from one stage to another with a direction that the run order must respect.",
       "two-heaps": "No two balanced halves or running median is being maintained; this is purely a matter of respecting directional readiness constraints between stages."
     },
@@ -2232,7 +2232,7 @@
     "difficulty": "easy",
     "tell": "determine one recalculation order for all formula cells that respects every reference",
     "whyNotOthers": {
-      "dfs": "Following one cell's reference chain downward can catch a circular reference within that chain, but producing the single recalculation order for the entire sheet requires combining ordering information from every chain, not just one path.",
+      "dfs": "Recursively resolving references and emitting cells in reverse finish order does work as an implementation, but the thing to recognize is the dependency-ordering requirement itself — a full recalculation order honoring every reference plus cycle detection — not exploration as an end in itself.",
       "bfs": "A cell referencing several other cells scattered across the sheet won't be correctly ordered by expanding outward from just one starting cell.",
       "greedy": "Recalculating whichever cell looks simplest first, without tracking what still references it, can compute a cell before a value it depends on is ready.",
       "monotonic-stack": "There's no need to compare cells against a shrinking or growing stack of nearby values; the requirement is a global order respecting reference direction, not next-greater or next-smaller relationships."
@@ -2451,15 +2451,15 @@
   },
   {
     "id": "union-find-06",
-    "statement": "An image-processing tool scans a grid of pixels and repeatedly merges a pixel with its right and bottom neighbors whenever their colors match closely enough, applying these merges one pair at a time across the whole grid to build up connected regions of similar color. After all merges are applied, report the size of the largest resulting region.",
+    "statement": "An interactive photo-editing tool lets a user click pairs of adjacent color regions to merge them into one, and immediately after every click it must display the pixel size of the newly combined region so the user can judge each merge's effect. Merges keep arriving as the user works, and every size readout must reflect all merges made so far.",
     "pattern": "union-find",
     "difficulty": "easy",
-    "tell": "repeatedly merges a pixel with its right and bottom neighbors",
+    "tell": "display the pixel size of the newly combined region",
     "whyNotOthers": {
-      "bfs": "Grouping could be found with a full-grid search, but since the merges are applied incrementally as pairwise unions across the grid, tracking region membership as merges happen is the natural fit rather than a single flood fill.",
-      "dfs": "A recursive flood fill assumes a fixed adjacency to explore at once; here regions are built up gradually through one merge operation at a time.",
-      "cyclic-sort": "Pixels aren't a permutation of known index values needing to be placed at matching positions; they're being grouped by successive merge operations.",
-      "knapsack-01": "No subset of pixels is chosen under a capacity constraint; every qualifying neighbor pair is simply merged into the same region."
+      "bfs": "Recomputing the merged region's size with a fresh flood fill after every single click repeats work across the whole editing session; membership and sizes change only incrementally with each merge.",
+      "dfs": "A recursive fill measures one static snapshot, but sizes must be reported continuously as merges accumulate, with each answer folding in every earlier merge without re-exploring the image.",
+      "cyclic-sort": "Regions aren't a permutation of index values being placed at matching positions; they're groups that combine step by step as the user merges them.",
+      "knapsack-01": "No subset of regions is chosen under a capacity limit; every clicked pair simply merges, and the task is tracking group sizes as that happens."
     },
     "complexity": "O(n α(n)) time / O(n) space"
   },
@@ -2507,15 +2507,15 @@
   },
   {
     "id": "union-find-10",
-    "statement": "A conference badge system links attendee badges together whenever two attendees scan into the same session room together, gradually forming groups of people considered to be in the same social circle as more sessions occur throughout the day. Given the sequence of scan-in events, determine the total number of distinct social circles remaining once all sessions for the day have concluded.",
+    "statement": "A conference badge system links two attendees' badges whenever they scan into a session room together, and the organizer's dashboard must show the live count of distinct social circles after every scan-in event throughout the day. Because events stream in continuously, each updated count needs to build on the previous state rather than being recomputed from all events so far.",
     "pattern": "union-find",
     "difficulty": "easy",
-    "tell": "gradually forming groups of people considered to be in the same social circle",
+    "tell": "the live count of distinct social circles after every scan-in event",
     "whyNotOthers": {
-      "bfs": "Rebuilding the whole social graph and searching it from scratch after each session ignores that circles are forming incrementally as scan-in events accumulate throughout the day.",
-      "dfs": "A one-time recursive traversal assumes a fixed, complete graph, but here the links between attendees are added gradually, one scan-in event at a time.",
-      "cyclic-sort": "Attendees aren't a permutation of known index values being placed in matching positions; they're simply being grouped together by shared session attendance.",
-      "top-k-heap": "No ranking of attendees by some score is requested, only a final count of how many distinct groups exist."
+      "bfs": "A full traversal could count circles for one snapshot, but the count is needed after every event in a continuous stream, and re-searching the whole graph each time redoes work that incremental merging avoids.",
+      "dfs": "Recursively exploring components recounts everything from scratch per event; each merge changes the circle count by at most one, which incremental group tracking captures directly.",
+      "cyclic-sort": "Attendees aren't a permutation of known index values being placed in matching positions; they're being grouped by shared session attendance.",
+      "top-k-heap": "No ranking of attendees by some score is requested, only how many distinct groups exist at each moment of the day."
     },
     "complexity": "O(n α(n)) time / O(n) space"
   },
@@ -2703,10 +2703,10 @@
   },
   {
     "id": "greedy-04",
-    "statement": "A hiking group needs to cross a series of stepping stones to reach the other side of a stream, where each stone lists the farthest number of additional stones it allows a jump to reach. Starting from the first stone, determine the minimum number of jumps needed to reach the last stone, always jumping to whichever reachable stone extends the farthest possible future reach.",
+    "statement": "A hiking group needs to cross a series of stepping stones to reach the other side of a stream, where each stone lists the farthest number of additional stones any jump from it may cover. Starting on the first stone, determine the fewest jumps needed to reach the last stone, given that reaching the last stone is guaranteed to be possible.",
     "pattern": "greedy",
     "difficulty": "medium",
-    "tell": "always jumping to whichever reachable stone extends",
+    "tell": "the fewest jumps needed to reach the last stone",
     "whyNotOthers": {
       "bfs": "Layer-by-layer expansion over every possible next stone would also find the minimum jump count, but tracking only the farthest reachable stone at each step and committing to it directly avoids exploring every stone individually.",
       "dfs": "Exploring one jump sequence deeply before backtracking to try others wastes effort here, since always advancing to the farthest-reaching stone within the current range is provably never worse than any alternative.",
@@ -2745,10 +2745,10 @@
   },
   {
     "id": "greedy-07",
-    "statement": "A factory must assign workers to one-person tasks, where each task has a deadline and a penalty charged if the task is not completed by its deadline, and every task takes exactly one time slot to complete. Determine an assignment of tasks to time slots that minimizes total penalty, by slotting each task, taken in descending penalty order, into the latest available slot at or before its deadline.",
+    "statement": "A factory must assign workers to one-person tasks, where each task has a deadline and a penalty charged if the task is not completed by its deadline, and every task takes exactly one time slot to complete. Only one task can occupy any given slot, tasks may be dropped entirely at the cost of their penalties, and the goal is an assignment of tasks to time slots that minimizes the total penalty paid.",
     "pattern": "greedy",
     "difficulty": "hard",
-    "tell": "slotting each task, taken in descending penalty order, into the latest available slot",
+    "tell": "a penalty charged if the task is not completed by its deadline",
     "whyNotOthers": {
       "knapsack-01": "Tasks aren't chosen to fit within a fixed weight capacity by trading off competing values; every task is considered in penalty order and placed into the latest deadline-respecting slot still open, without comparing subsets.",
       "backtracking": "No trial assignment of tasks to slots needs to be tried and undone; committing each task, in penalty order, to its latest available valid slot is always at least as good as any other assignment.",
@@ -2773,10 +2773,10 @@
   },
   {
     "id": "greedy-09",
-    "statement": "A gas station chain wants to place the fewest possible refueling stations along a long straight highway so that every stretch of highway longer than a fixed maximum distance without a station is eliminated, given a fixed set of candidate spots where a station could be built. The minimum count is achieved by always placing the next station at the farthest candidate spot that still satisfies the distance limit.",
+    "statement": "A gas station chain wants to build refueling stations along a long straight highway, choosing from a fixed set of candidate spots, so that no stretch of highway longer than a fixed maximum distance is left without a station. Determine the smallest number of stations that must be built to satisfy the distance requirement across the entire highway, or report that no placement can satisfy it.",
     "pattern": "greedy",
     "difficulty": "medium",
-    "tell": "placing the next station at the farthest candidate spot that still satisfies the distance limit",
+    "tell": "the smallest number of stations that must be built",
     "whyNotOthers": {
       "knapsack-01": "Candidate spots aren't being chosen to fit a fixed capacity while trading off separate values; the farthest spot that still satisfies the distance requirement at each necessary point is always the safe choice, without weighing alternative subsets.",
       "backtracking": "No trial placement of stations needs to be tried and undone; always picking the farthest valid candidate spot when a station becomes necessary is provably at least as good as any earlier placement.",
