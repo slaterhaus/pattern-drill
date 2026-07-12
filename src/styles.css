@@ -253,9 +253,24 @@ details.study summary {
 
 .mastery summary {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
   cursor: pointer;
   list-style: none;
+}
+
+.mastery summary > span:first-child {
+  flex: 1;
+}
+
+.mastery summary::after {
+  content: '▸';
+  color: #9aa0a6;
+  transition: transform 0.15s ease;
+}
+
+.mastery details[open] summary::after {
+  transform: rotate(90deg);
 }
 
 .mastery summary::-webkit-details-marker {

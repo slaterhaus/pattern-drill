@@ -19,6 +19,7 @@ describe('patterns.json', () => {
     for (const p of patterns) {
       expect(p.pseudocode.trim().length, p.pattern).toBeGreaterThan(0);
       expect(p.pseudocode.split('\n').length, p.pattern).toBeLessThanOrEqual(25);
+      expect(p.pseudocode.split('\n').length, p.pattern).toBeGreaterThanOrEqual(8);
       expect(p.references.length, p.pattern).toBeGreaterThanOrEqual(1);
       expect(p.references.length, p.pattern).toBeLessThanOrEqual(3);
       for (const r of p.references) {
