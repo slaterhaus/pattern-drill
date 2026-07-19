@@ -276,3 +276,30 @@ details.study summary {
 .mastery summary::-webkit-details-marker {
   display: none;
 }
+
+.flashcard h2 {
+  text-align: center;
+  margin: 2rem 0 1rem;
+}
+
+.flashcard .definition {
+  line-height: 1.5;
+}
+
+.when-to-use {
+  padding-left: 1.25rem;
+}
+
+.when-to-use li {
+  margin-bottom: 0.35rem;
+}
+
+.grade-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.grade-row button {
+  flex: 1;
+}
