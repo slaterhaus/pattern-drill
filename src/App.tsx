@@ -33,7 +33,7 @@ export default function App() {
 
   function completeSession(results: RoundResult[], today: string) {
     replaceState({
-      version: 1,
+      version: 2,
       attempts: [
         ...state.attempts,
         ...results.map((r) => ({
@@ -47,6 +47,7 @@ export default function App() {
       sessionDates: state.sessionDates.includes(today)
         ? state.sessionDates
         : [...state.sessionDates, today],
+      reviews: state.reviews,
     });
     setView({ kind: 'summary', results });
   }

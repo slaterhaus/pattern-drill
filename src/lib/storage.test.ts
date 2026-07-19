@@ -49,6 +49,30 @@ describe('loadState', () => {
     expect(loadState(store)).toEqual(freshState());
     expect(store.keys().some((k) => k.startsWith('pattern-drill-backup-'))).toBe(true);
   });
+
+  it('migrates stored v1 state to v2 with empty reviews', () => {
+    const v1 = {
+      version: 1,
+      attempts: [
+        { problemId: 'bfs-01', pattern: 'bfs', correct: true, timeMs: 1200, date: '2026-07-01' },
+      ],
+      sessionDates: ['2026-07-01'],
+    };
+    const store = fakeStore({ [STORAGE_KEY]: JSON.stringify(v1) });
+    const state = loadState(store);
+    expect(state.version).toBe(2);
+    expect(state.attempts).toEqual(v1.attempts);
+    expect(state.sessionDates).toEqual(v1.sessionDates);
+    expect(state.reviews).toEqual([]);
+  });
+
+  it('round-trips v2 state with reviews', () => {
+    const store = fakeStore({});
+    const state = freshState();
+    state.reviews.push({ cardId: 'def-bfs', deckId: 'definitions', grade: 'pass', date: '2026-07-19' });
+    saveState(state, store);
+    expect(loadState(store)).toEqual(state);
+  });
 });
 
 describe('backupState', () => {
@@ -79,5 +103,12 @@ describe('importState', () => {
 
   it('throws on valid JSON with the wrong shape', () => {
     expect(() => importState('{"version":2}')).toThrow();
+  });
+
+  it('imports a v1 backup and migrates it', () => {
+    const v1 = { version: 1, attempts: [], sessionDates: ['2026-07-01'] };
+    const state = importState(JSON.stringify(v1));
+    expect(state.version).toBe(2);
+    expect(state.reviews).toEqual([]);
   });
 });

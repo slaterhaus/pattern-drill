@@ -9,10 +9,12 @@ export interface KV {
 }
 
 export function freshState(): AppState {
-  return { version: 1, attempts: [], sessionDates: [] };
+  return { version: 2, attempts: [], sessionDates: [], reviews: [] };
 }
 
-function isValidState(value: unknown): value is AppState {
+type V1State = Omit<AppState, 'version' | 'reviews'> & { version: 1 };
+
+function isValidStateV1(value: unknown): value is V1State {
   if (typeof value !== 'object' || value === null) return false;
   const v = value as Record<string, unknown>;
   if (v.version !== 1) return false;
@@ -33,13 +35,40 @@ function isValidState(value: unknown): value is AppState {
   return attemptsOk && v.sessionDates.every((d: unknown) => typeof d === 'string');
 }
 
+function isValidReview(value: unknown): boolean {
+  if (typeof value !== 'object' || value === null) return false;
+  const r = value as Record<string, unknown>;
+  return (
+    typeof r.cardId === 'string' &&
+    typeof r.deckId === 'string' &&
+    (r.grade === 'pass' || r.grade === 'fail') &&
+    typeof r.date === 'string' &&
+    (r.timeMs === undefined || typeof r.timeMs === 'number')
+  );
+}
+
+function isValidState(value: unknown): value is AppState {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  if (v.version !== 2) return false;
+  if (!Array.isArray(v.reviews) || !v.reviews.every(isValidReview)) return false;
+  return isValidStateV1({ ...v, version: 1 } as unknown);
+}
+
+function migrate(value: unknown): AppState | null {
+  if (isValidState(value)) return value;
+  if (isValidStateV1(value)) return { ...value, version: 2, reviews: [] };
+  return null;
+}
+
 export function loadState(store: KV = localStorage): AppState {
   const raw = store.getItem(STORAGE_KEY);
   if (raw === null) return freshState();
   try {
     const parsed: unknown = JSON.parse(raw);
-    if (!isValidState(parsed)) throw new Error('invalid state shape');
-    return parsed;
+    const migrated = migrate(parsed);
+    if (migrated === null) throw new Error('invalid state shape');
+    return migrated;
   } catch {
     store.setItem(`pattern-drill-backup-${Date.now()}`, raw);
     return freshState();
@@ -60,6 +89,7 @@ export function exportState(state: AppState): string {
 
 export function importState(json: string): AppState {
   const parsed: unknown = JSON.parse(json);
-  if (!isValidState(parsed)) throw new Error('Invalid PatternDrill backup');
-  return parsed;
+  const migrated = migrate(parsed);
+  if (migrated === null) throw new Error('Invalid PatternDrill backup');
+  return migrated;
 }

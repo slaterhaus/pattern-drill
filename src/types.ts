@@ -1,3 +1,5 @@
+import type { Review } from './deck-engine';
+
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
 export const PATTERNS = [
@@ -69,10 +71,12 @@ export interface Attempt {
 }
 
 export interface AppState {
-  version: 1;
+  version: 2;
   attempts: Attempt[];
   /** Dates with at least one completed session (streak source). */
   sessionDates: string[];
+  /** Flashcard review history, chronological (oldest first). */
+  reviews: Review[];
 }
 
 export interface RoundResult {
