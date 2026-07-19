@@ -91,6 +91,12 @@ export interface PatternInfo {
   pattern: PatternId;
   /** Original, language-neutral template — never book-transcribed. */
   pseudocode: string;
+  /** 2-3 plain-English sentences: what the pattern is. Original wording. */
+  definition: string;
+  /** 2-4 short tells that signal the pattern. */
+  whenToUse: string[];
+  /** One line, typical time/space. */
+  complexity: string;
   /** 1-3 entries; real chapter/section numbers only. */
   references: PatternReference[];
 }

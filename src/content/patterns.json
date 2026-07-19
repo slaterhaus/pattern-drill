@@ -2,6 +2,13 @@
   {
     "pattern": "sliding-window",
     "pseudocode": "best = init\nleft = 0\nfor right in 0 .. n-1:\n  add a[right] to window\n  while window violates the constraint:\n    remove a[left] from window\n    left += 1\n  best = better(best, value(window))\nreturn best",
+    "definition": "Maintains a contiguous run of elements over an array or string, growing one end and shrinking the other so each element enters and leaves at most once. It replaces re-scanning every candidate range with a single linear pass that updates the window's bookkeeping incrementally.",
+    "whenToUse": [
+      "longest / shortest / best contiguous subarray or substring",
+      "a constraint on the window's contents: sum, distinct count, character frequency",
+      "fixed width k, or grow-then-shrink-until-valid phrasing"
+    ],
+    "complexity": "O(n) time; O(1) to O(k) space for window bookkeeping",
     "references": [
       { "source": "NeetCode roadmap", "where": "Sliding Window topic" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 5 — Divide and Conquer (contrast: windows avoid re-scanning)" }
@@ -10,6 +17,13 @@
   {
     "pattern": "two-pointers",
     "pseudocode": "sort a if order matters and isn't given\nleft = 0\nright = n - 1\nwhile left < right:\n  s = combine(a[left], a[right])\n  if s meets target:\n    record(left, right)\n    left += 1\n    right -= 1\n  else if s needs to grow:\n    left += 1  # move the pointer that can only increase s\n  else:\n    right -= 1\nreturn results",
+    "definition": "Walks two indices toward or away from each other across a sorted or orderable sequence, using the direction of a comparison to decide which pointer moves next. It turns an O(n^2) pairwise search into a single coordinated pass because each move rules out a whole set of impossible pairs at once.",
+    "whenToUse": [
+      "pair, triplet, or partition search in a sorted array",
+      "target sum, comparison, or palindrome check between two ends",
+      "in-place partitioning without extra space"
+    ],
+    "complexity": "O(n log n) time if a sort is needed first, else O(n); O(1) space",
     "references": [
       { "source": "NeetCode roadmap", "where": "Two Pointers topic" }
     ]
@@ -17,6 +31,13 @@
   {
     "pattern": "fast-slow-pointers",
     "pseudocode": "slow = head\nfast = head\nwhile fast != null and fast.next != null:\n  slow = slow.next\n  fast = fast.next.next\n  if slow == fast:\n    # cycle found; find its start\n    ptr = head\n    while ptr != slow:\n      ptr = ptr.next\n      slow = slow.next\n    return ptr\nreturn no-cycle",
+    "definition": "Advances two pointers through a linked list or sequence at different speeds so the gap between them exposes structural facts — a cycle, a midpoint, or an offset — without ever counting the length up front. The fast pointer laps the slow one inside a cycle, which is what makes the collision itself the signal.",
+    "whenToUse": [
+      "cycle detection in a linked list",
+      "find the middle node in one pass",
+      "detect a repeated value that behaves like a cycle (e.g. index-as-pointer)"
+    ],
+    "complexity": "O(n) time; O(1) space",
     "references": [
       { "source": "NeetCode/Grokking", "where": "Fast & Slow Pointers (Floyd's cycle detection)" }
     ]
@@ -24,6 +45,13 @@
   {
     "pattern": "merge-intervals",
     "pseudocode": "sort intervals by start\nmerged = [intervals[0]]\nfor cur in intervals[1:]:\n  last = merged[-1]\n  if cur.start <= last.end:\n    # overlap: extend in place instead of appending\n    last.end = max(last.end, cur.end)\n  else:\n    merged.append(cur)\nreturn merged",
+    "definition": "Sorts a set of ranges by start point and then sweeps through once, folding each new range into the last one whenever they overlap. Sorting first turns an all-pairs overlap check into a single linear scan, since once ranges are ordered only adjacent ones can possibly touch.",
+    "whenToUse": [
+      "overlapping, merging, or inserting intervals/ranges",
+      "meeting rooms, scheduling, or free-time style problems",
+      "input given as (start, end) pairs with no guaranteed order"
+    ],
+    "complexity": "O(n log n) time for the sort; O(n) space for the result",
     "references": [
       { "source": "Grokking the Coding Interview", "where": "Merge Intervals pattern" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (sorting as preprocessing)" }
@@ -32,6 +60,13 @@
   {
     "pattern": "cyclic-sort",
     "pseudocode": "i = 0\nwhile i < n:\n  correct = a[i] - 1  # value v belongs at index v-1\n  if a[i] != a[correct]:\n    swap(a[i], a[correct])\n  else:\n    i += 1  # already placed, or a duplicate blocking progress\nfor i in 0 .. n-1:\n  if a[i] != i + 1:\n    report(i)\nreturn a",
+    "definition": "Exploits an array holding values from a known, dense range (typically 1..n) by swapping each element directly to the index its value implies, rather than sorting generically. Once every value sits at its home index, a single follow-up pass reveals whatever is missing, duplicated, or out of place.",
+    "whenToUse": [
+      "array of n numbers drawn from a fixed range like 1..n",
+      "find the missing, duplicate, or first-missing-positive number",
+      "in-place placement with O(1) extra space required"
+    ],
+    "complexity": "O(n) time; O(1) space",
     "references": [
       { "source": "Grokking the Coding Interview", "where": "Cyclic Sort pattern" }
     ]
@@ -39,6 +74,13 @@
   {
     "pattern": "linked-list-reversal",
     "pseudocode": "prev = null\ncur = head\nwhile cur != null:\n  nxt = cur.next   # save before overwriting the link\n  cur.next = prev\n  prev = cur\n  cur = nxt\nreturn prev  # new head",
+    "definition": "Rewires a linked list's next pointers one node at a time, flipping each link to point backward while a saved reference keeps the rest of the list from being lost. It reverses structure in place, without allocating a new list or using extra memory proportional to its length.",
+    "whenToUse": [
+      "reverse a linked list, or a sublist between two positions",
+      "reverse in groups of k nodes",
+      "in-place transformation with O(1) extra space required"
+    ],
+    "complexity": "O(n) time; O(1) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 10 — Elementary Data Structures" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 3 — Data Structures" }
@@ -47,6 +89,13 @@
   {
     "pattern": "bfs",
     "pseudocode": "queue = [start]\nvisited = {start}\ndist = {start: 0}\nwhile queue is not empty:\n  node = queue.popFront()\n  for neighbor in graph[node]:\n    if neighbor not in visited:\n      visited.add(neighbor)\n      dist[neighbor] = dist[node] + 1\n      queue.pushBack(neighbor)\nreturn dist",
+    "definition": "Explores a graph or grid one distance-layer at a time using a queue, visiting every node at distance k before any node at distance k+1. That strict layering is what guarantees the first time a target is reached, it was reached by the shortest possible number of steps.",
+    "whenToUse": [
+      "shortest path or fewest steps in an unweighted graph or grid",
+      "level-order traversal of a tree",
+      "spreading/infection/multi-source reachability problems"
+    ],
+    "complexity": "O(V + E) time; O(V) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 20 — Elementary Graph Algorithms" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Graph Traversal" }
@@ -55,6 +104,13 @@
   {
     "pattern": "dfs",
     "pseudocode": "visited = {}\nfunction dfs(node):\n  visited.add(node)\n  visit(node)\n  for neighbor in graph[node]:\n    if neighbor not in visited:\n      dfs(neighbor)\n\nfor node in graph:\n  if node not in visited:\n    dfs(node)  # cover disconnected components",
+    "definition": "Follows one path in a graph or tree as deep as it goes before backtracking to try the next branch, using the call stack (or an explicit stack) to remember where to resume. It's the natural way to enumerate every reachable node, detect structure like cycles or components, or explore all paths rather than the shortest one.",
+    "whenToUse": [
+      "explore all paths, components, or connected regions",
+      "tree/graph traversal where order doesn't need to be by distance",
+      "cycle detection, or flood-fill style region marking"
+    ],
+    "complexity": "O(V + E) time; O(V) space for the visited set and recursion stack",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 20 — Elementary Graph Algorithms" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Graph Traversal" }
@@ -63,6 +119,13 @@
   {
     "pattern": "two-heaps",
     "pseudocode": "heapLo = max-heap()  # smaller half\nheapHi = min-heap()  # larger half\nfunction insert(x):\n  if heapLo is empty or x <= top(heapLo):\n    push(heapLo, x)\n  else:\n    push(heapHi, x)\n  # rebalance so sizes differ by at most 1\n  if size(heapLo) > size(heapHi) + 1:\n    push(heapHi, pop(heapLo))\n  else if size(heapHi) > size(heapLo):\n    push(heapLo, pop(heapHi))\n\nfunction median():\n  if size(heapLo) > size(heapHi):\n    return top(heapLo)\n  return (top(heapLo) + top(heapHi)) / 2",
+    "definition": "Splits a data stream into a max-heap of the smaller half and a min-heap of the larger half, keeping their sizes balanced so the boundary between them always sits at the median. Each insert costs a heap push plus a constant-size rebalance, avoiding a full re-sort every time a new value arrives.",
+    "whenToUse": [
+      "running median or a percentile of a data stream",
+      "two comparable halves that need to stay balanced as data arrives",
+      "scheduling problems that need both the smallest and largest available option"
+    ],
+    "complexity": "O(log n) time per insertion; O(n) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 6 — Heapsort (priority queues)" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (heaps)" }
@@ -71,6 +134,13 @@
   {
     "pattern": "backtracking",
     "pseudocode": "function backtrack(path, choices):\n  if path is a complete solution:\n    record(path)\n    return\n  for choice in choices:\n    if not valid(path, choice):\n      continue\n    path.add(choice)          # choose\n    backtrack(path, remaining(choices, choice))  # recurse\n    path.removeLast()         # undo\n\nbacktrack([], allChoices)",
+    "definition": "Builds a candidate solution incrementally, choosing one option at a time and recursing, then undoing that choice to try the next when a branch turns out invalid or exhausted. The explicit undo step is what lets a single path array be reused across the whole search instead of copying state at every level.",
+    "whenToUse": [
+      "generate all subsets, permutations, or combinations",
+      "constraint satisfaction: N-Queens, Sudoku, word search",
+      "\"find all ways to\" phrasing where partial solutions can be pruned early"
+    ],
+    "complexity": "O(b^d) time in general, e.g. O(n·2^n) for subsets; O(d) space for the recursion depth",
     "references": [
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 9 — Combinatorial Search (backtracking)" }
     ]
@@ -78,6 +148,13 @@
   {
     "pattern": "modified-binary-search",
     "pseudocode": "lo = 0\nhi = n - 1\nwhile lo <= hi:\n  mid = lo + (hi - lo) / 2\n  if condition(a[mid]) == target:\n    return mid  # or narrow further for first/last occurrence\n  else if shouldGoRight(a[mid]):\n    lo = mid + 1\n  else:\n    hi = mid - 1\nreturn not-found",
+    "definition": "Halves the search space each iteration by testing a condition at the midpoint rather than a plain equality check, so it still applies when the array is rotated, has duplicates, or the target is defined by a predicate instead of a value. Each comparison discards half of what's left, which is what keeps it logarithmic even as the condition gets more elaborate.",
+    "whenToUse": [
+      "sorted or rotated sorted array with a search target",
+      "find first/last occurrence, or the boundary where a condition flips",
+      "search space is monotonic even though it isn't literally an array (answer search)"
+    ],
+    "complexity": "O(log n) time; O(1) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 2 (binary search exercise)" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 5 — Divide and Conquer" }
@@ -86,6 +163,13 @@
   {
     "pattern": "top-k-heap",
     "pseudocode": "heap = empty min-heap  # size at most k\nfor x in a:\n  if size(heap) < k:\n    push(heap, x)\n  else if x > top(heap):\n    # top is the smallest of the current top-k; evict it\n    pop(heap)\n    push(heap, x)\nreturn heap  # the k largest elements",
+    "definition": "Keeps a heap capped at size k as it scans the input once, evicting the current worst member of the heap whenever a better candidate shows up. Bounding the heap to k means each update costs only O(log k), far cheaper than sorting the entire input just to read off the top few.",
+    "whenToUse": [
+      "top-k, k-th largest/smallest, or k closest elements",
+      "streaming data where the full input can't be sorted or held twice",
+      "k is much smaller than n"
+    ],
+    "complexity": "O(n log k) time; O(k) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 6 — Heapsort (priority queues)" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (priority queues)" }
@@ -94,6 +178,13 @@
   {
     "pattern": "k-way-merge",
     "pseudocode": "heap = empty min-heap\nfor i in 0 .. k-1:\n  if lists[i] is not empty:\n    push(heap, (lists[i].head, i))\n\nresult = []\nwhile heap is not empty:\n  (val, i) = pop(heap)\n  result.append(val)\n  advance(lists[i])\n  if lists[i] is not empty:\n    push(heap, (lists[i].head, i))\nreturn result",
+    "definition": "Merges several already-sorted lists into one sorted output by keeping a heap of just their current front elements, always emitting the smallest and pulling the next item from whichever list it came from. That keeps only k candidates in memory at once instead of concatenating and re-sorting everything.",
+    "whenToUse": [
+      "merge k sorted lists or arrays into one",
+      "find the smallest range or k-th element across multiple sorted sequences",
+      "input arrives as several pre-sorted streams"
+    ],
+    "complexity": "O(n log k) time for n total elements across k lists; O(k) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 6 (priority queues)" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 4 — Sorting and Searching (mergesort)" }
@@ -102,6 +193,13 @@
   {
     "pattern": "knapsack-01",
     "pseudocode": "dp = array[0..capacity] of 0\n# each item may be taken at most once\nfor item in items:\n  # iterate capacity DOWN so item isn't reused within this pass\n  for cap in capacity down to item.weight:\n    skip = dp[cap]\n    take = dp[cap - item.weight] + item.value\n    dp[cap] = max(skip, take)\nreturn dp[capacity]",
+    "definition": "Decides for each item, once, whether including it beats leaving it out, building up the best achievable value for every capacity from the bottom up. Iterating capacity downward within each item's pass is what stops that same item from being counted twice in one update.",
+    "whenToUse": [
+      "each item can be picked at most once, subject to a capacity/weight limit",
+      "\"maximize value subject to a budget\" phrasing",
+      "subset-sum or partition-into-two-equal-subsets variants"
+    ],
+    "complexity": "O(n·capacity) time; O(capacity) space with the 1-D rolling array",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 14 — Dynamic Programming" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 10 — Dynamic Programming" }
@@ -110,6 +208,13 @@
   {
     "pattern": "knapsack-unbounded",
     "pseudocode": "dp = array[0..capacity] of 0\n# each item may be reused any number of times\nfor item in items:\n  # iterate capacity UP so this same item can feed forward again\n  for cap in item.weight to capacity:\n    skip = dp[cap]\n    take = dp[cap - item.weight] + item.value\n    dp[cap] = max(skip, take)\nreturn dp[capacity]",
+    "definition": "Builds up the best achievable value per capacity the same way as 0/1 knapsack, but allows any item to be reused an unlimited number of times. Iterating capacity upward within each item's pass lets an already-updated cell feed into a larger one, which is exactly what permits repeated use of the same item.",
+    "whenToUse": [
+      "items can be reused an unlimited number of times",
+      "coin change, rod cutting, or minimum-pieces-to-reach-a-target problems",
+      "\"maximize/minimize using unlimited supply of each item\" phrasing"
+    ],
+    "complexity": "O(n·capacity) time; O(capacity) space with the 1-D rolling array",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 14 — Dynamic Programming" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 10 — Dynamic Programming" }
@@ -118,6 +223,13 @@
   {
     "pattern": "topological-sort",
     "pseudocode": "inDegree = count of incoming edges per node\nqueue = [n for n in graph if inDegree[n] == 0]\norder = []\nwhile queue is not empty:\n  node = queue.popFront()\n  order.append(node)\n  for neighbor in graph[node]:\n    inDegree[neighbor] -= 1\n    if inDegree[neighbor] == 0:\n      queue.pushBack(neighbor)\nif len(order) < len(graph):\n  return cycle-detected\nreturn order",
+    "definition": "Orders the nodes of a directed acyclic graph so that every edge points from an earlier node to a later one, built by repeatedly peeling off nodes that currently have no unresolved dependencies. If nodes remain stuck with dependencies that never clear, the graph has a cycle and no valid ordering exists.",
+    "whenToUse": [
+      "task scheduling with prerequisites or dependencies",
+      "\"can this be completed given these ordering constraints\" phrasing",
+      "detect a cycle in a directed graph"
+    ],
+    "complexity": "O(V + E) time; O(V) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 20 — Elementary Graph Algorithms" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 7 — Graph Traversal" }
@@ -126,6 +238,13 @@
   {
     "pattern": "monotonic-stack",
     "pseudocode": "stack = []  # holds indices, values kept increasing bottom-to-top\nresult = array[0..n-1] of default\nfor i in 0 .. n-1:\n  while stack is not empty and a[i] breaks the order with a[top(stack)]:\n    # a[i] resolves the answer for the popped index\n    j = pop(stack)\n    result[j] = i\n  stack.push(i)\nreturn result",
+    "definition": "Keeps a stack of indices whose values stay in strictly increasing (or decreasing) order, popping whenever the current element breaks that order because the current element is exactly the answer the popped one was waiting for. Every index is pushed and popped at most once, which is what keeps a seemingly nested comparison linear overall.",
+    "whenToUse": [
+      "next/previous greater or smaller element for each position",
+      "largest rectangle in a histogram, or trapping rain water",
+      "\"for each element, find the nearest one to the left/right that satisfies X\" phrasing"
+    ],
+    "complexity": "O(n) time; O(n) space",
     "references": [
       { "source": "NeetCode roadmap", "where": "Stack (monotonic stack)" }
     ]
@@ -133,6 +252,13 @@
   {
     "pattern": "union-find",
     "pseudocode": "parent = [i for i in 0 .. n-1]\nrank = [0] * n\n\nfunction find(x):\n  if parent[x] != x:\n    parent[x] = find(parent[x])  # path compression\n  return parent[x]\n\nfunction union(x, y):\n  rootX = find(x)\n  rootY = find(y)\n  if rootX == rootY:\n    return\n  if rank[rootX] < rank[rootY]:\n    swap(rootX, rootY)\n  parent[rootY] = rootX  # union by rank\n  if rank[rootX] == rank[rootY]:\n    rank[rootX] += 1",
+    "definition": "A forest of parent pointers that tracks which items belong to the same group, merging two groups by linking their roots. With path compression and union by rank, membership checks and merges run in effectively constant time, so connectivity can be answered incrementally as pairs arrive.",
+    "whenToUse": [
+      "are these two items in the same component / group / network?",
+      "pairs or edges stream in and groups merge over time",
+      "cycle detection in an undirected graph, or Kruskal-style MST building"
+    ],
+    "complexity": "O(α(n)) amortized per operation; O(n) space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 19 — Data Structures for Disjoint Sets" },
       { "source": "ADM (Skiena, 3rd ed)", "where": "Ch. 8 — Weighted Graphs (MST/union-find)" }
@@ -141,6 +267,13 @@
   {
     "pattern": "trie",
     "pseudocode": "root = new node with empty children map, isWord = false\n\nfunction insert(word):\n  node = root\n  for ch in word:\n    if ch not in node.children:\n      node.children[ch] = new node\n    node = node.children[ch]\n  node.isWord = true\n\nfunction search(word):\n  node = root\n  for ch in word:\n    if ch not in node.children:\n      return false\n    node = node.children[ch]\n  return node.isWord",
+    "definition": "A tree where each edge represents one character, so every root-to-node path spells a prefix and words sharing a prefix share the same path. That shared structure lets prefix lookups and autocomplete run proportional to the length of the query, independent of how many words are stored.",
+    "whenToUse": [
+      "prefix search, autocomplete, or word lookup among many strings",
+      "\"starts with\" queries over a dictionary",
+      "shared-prefix compression of a word list"
+    ],
+    "complexity": "O(L) time per insert/search for word length L; O(N·L) space for N words",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Problem 12-2 — Radix trees" }
     ]
@@ -148,6 +281,13 @@
   {
     "pattern": "greedy",
     "pseudocode": "sort candidates by key(c)  # the greedy criterion, e.g. earliest finish time\nresult = []\nfor c in candidates:\n  if feasible(result, c):\n    # commit to the locally best option and never reconsider it\n    result.append(c)\n  # else: discard c permanently — no backtracking\nreturn result",
+    "definition": "Picks whatever option looks locally best at each step, by some sorted criterion, and commits to it permanently without ever reconsidering earlier choices. It only produces a globally optimal answer when the problem has the property that a sequence of locally best choices can't be beaten by any other combination — proving that property is the real work.",
+    "whenToUse": [
+      "\"maximize/minimize the number of X\" with an obvious ordering criterion",
+      "interval scheduling, activity selection, or coin-change-with-canonical-coins",
+      "a proof or intuition that locally optimal choices never need to be undone"
+    ],
+    "complexity": "O(n log n) time for the sort, O(n) for the sweep; O(1) extra space",
     "references": [
       { "source": "CLRS (4th ed)", "where": "Ch. 15 — Greedy Algorithms" }
     ]

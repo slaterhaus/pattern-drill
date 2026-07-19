@@ -26,6 +26,14 @@ describe('patterns.json', () => {
         expect(r.source.trim().length, p.pattern).toBeGreaterThan(0);
         expect(r.where.trim().length, p.pattern).toBeGreaterThan(0);
       }
+      expect(p.definition.trim().length, p.pattern).toBeGreaterThan(80);
+      expect(p.definition.trim().length, p.pattern).toBeLessThan(500);
+      expect(p.whenToUse.length, p.pattern).toBeGreaterThanOrEqual(2);
+      expect(p.whenToUse.length, p.pattern).toBeLessThanOrEqual(4);
+      for (const w of p.whenToUse) {
+        expect(w.trim().length, p.pattern).toBeGreaterThan(10);
+      }
+      expect(p.complexity, p.pattern).toContain('O(');
     }
   });
 });
