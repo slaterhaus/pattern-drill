@@ -8,9 +8,16 @@ interface HomeProps {
   onStart: () => void;
   onShowProgress: () => void;
   onReplaceState: (next: AppState) => void;
+  onStartFlashcards: () => void;
 }
 
-export default function Home({ state, onStart, onShowProgress, onReplaceState }: HomeProps) {
+export default function Home({
+  state,
+  onStart,
+  onShowProgress,
+  onReplaceState,
+  onStartFlashcards,
+}: HomeProps) {
   const fileInput = useRef<HTMLInputElement>(null);
   const today = todayStr();
   const streak = currentStreak(state.sessionDates, today);
@@ -46,6 +53,7 @@ export default function Home({ state, onStart, onShowProgress, onReplaceState }:
       <button className="primary" onClick={onStart}>
         {doneToday ? 'Extra practice session' : "Start today's session"}
       </button>
+      <button onClick={onStartFlashcards}>Definitions</button>
       <button onClick={onShowProgress}>Progress</button>
       <div className="data-row">
         <button onClick={handleExport}>Export data</button>
